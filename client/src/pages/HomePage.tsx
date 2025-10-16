@@ -1,77 +1,95 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Star, ArrowRight } from "lucide-react";
 
-const navigationItems = ["HOME", "SERVICES", "JOBS", "CONTACT US"];
+const navigationItems = ["HOME", "ABOUT US", "BLOGS", "CONTACT US"];
 
 export const HomePage = (): JSX.Element => {
   return (
     <div className="bg-white w-full min-h-screen">
       {/* Header */}
-      <header className="w-full border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-20 py-4 flex items-center justify-between">
+      <header className="w-full bg-white py-6">
+        <div className="max-w-7xl mx-auto px-6 lg:px-20 flex items-center justify-between">
           <img
             src="/Group_1760620436964.png"
             alt="Duke Consultancy Logo"
-            className="h-12 lg:h-16"
+            className="h-14"
           />
           
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-10">
             {navigationItems.map((item, index) => (
               <a
                 key={index}
                 href="#"
-                className="text-sm font-medium text-gray-700 hover:text-[#00A6CE] transition-colors"
+                className="text-sm font-medium text-gray-800 hover:text-[#00A6CE] transition-colors"
               >
                 {item}
               </a>
             ))}
           </nav>
 
-          <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-6 py-2 rounded-full">
-            Get Started
+          <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-3 rounded-full font-medium">
+            Register
           </Button>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="w-full bg-gradient-to-br from-[#E8F7FB] to-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-20 py-16 lg:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
-                <div className="w-2 h-2 bg-[#00A6CE] rounded-full"></div>
-                <span className="text-sm text-gray-600">Professionals for Global Opportunities</span>
+      <section className="w-full bg-white pt-12 pb-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <div className="inline-flex items-center gap-2 text-[#00A6CE]">
+                <Star className="w-5 h-5 fill-current" />
+                <span className="text-base font-medium">#1 Choice for Global Healthcare Job Placement</span>
               </div>
               
-              <h1 className="text-4xl lg:text-5xl font-bold text-[#2C5F6F] leading-tight">
-                Empowering Healthcare Professionals for Global Opportunities
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
+                <span className="text-black">Empowering Healthcare Professionals for Global </span>
+                <span className="text-[#2C5F6F]">Career Success</span>
               </h1>
               
-              <p className="text-gray-600 text-lg leading-relaxed">
-                We connect caring, talented healthcare professionals from Pakistan with rewarding international career opportunities, offering complete guidance from registration to relocation.
+              <p className="text-gray-600 text-lg leading-relaxed max-w-xl">
+                We meticulously prepare healthcare workers for successful international placements through world-class training, ethical recruitment, and dedicated career guidance.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-6 rounded-full text-base">
-                  Browse Jobs
+                <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-10 py-6 rounded-full text-base font-medium">
+                  Apply Now
                 </Button>
-                <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-8 py-6 rounded-full text-base">
+                <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-10 py-6 rounded-full text-base font-medium flex items-center gap-2">
                   Learn More
+                  <ArrowRight className="w-4 h-4" />
                 </Button>
               </div>
             </div>
 
             <div className="relative">
-              <img
-                src="/pexels-tima-miroshnichenko-8376309 1_1760620436958.png"
-                alt="Healthcare Professional"
-                className="w-full rounded-3xl shadow-2xl"
-              />
-              <div className="absolute -bottom-8 -right-8 bg-white rounded-2xl shadow-xl p-6 max-w-xs hidden lg:block">
-                <div className="flex items-center gap-4">
-                  <div className="text-4xl font-bold text-[#00A6CE]">100+</div>
-                  <div className="text-sm text-gray-600">Successful Placements This Year</div>
+              <div className="relative bg-gray-200 rounded-3xl overflow-hidden">
+                <img
+                  src="/pexels-tima-miroshnichenko-8376309 1_1760620436958.png"
+                  alt="Healthcare Professional"
+                  className="w-full object-cover"
+                />
+              </div>
+              
+              {/* Top right badge - 10K+ */}
+              <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-2xl px-6 py-3 shadow-lg">
+                <div className="text-3xl font-bold text-[#00A6CE]">10K+</div>
+                <div className="text-sm text-gray-600 mt-1">Assign Jobs To<br/>Nurses</div>
+              </div>
+              
+              {/* Bottom left badge - Candidates */}
+              <div className="absolute -bottom-6 left-8 bg-white rounded-2xl px-6 py-4 shadow-xl flex items-center gap-3">
+                <div className="flex -space-x-2">
+                  <div className="w-10 h-10 rounded-full bg-gray-300 border-2 border-white"></div>
+                  <div className="w-10 h-10 rounded-full bg-gray-400 border-2 border-white"></div>
+                  <div className="w-10 h-10 rounded-full bg-gray-500 border-2 border-white"></div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-[#00A6CE]">2,650+</div>
+                  <div className="text-sm text-gray-600">Candidate have trusted us</div>
                 </div>
               </div>
             </div>
