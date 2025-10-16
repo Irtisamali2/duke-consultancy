@@ -140,15 +140,10 @@ export const HomePage = () => {
           />
           
           <nav className="hidden md:flex items-center gap-10">
-            {navigationItems.map((item, index) => (
-              <a
-                key={index}
-                href="#"
-                className="text-sm font-medium text-gray-800 hover:text-[#00A6CE] transition-colors"
-              >
-                {item}
-              </a>
-            ))}
+            <a href="/" className="text-sm font-medium text-[#00A6CE] transition-colors">HOME</a>
+            <a href="/about" className="text-sm font-medium text-gray-800 hover:text-[#00A6CE] transition-colors">ABOUT US</a>
+            <a href="#" className="text-sm font-medium text-gray-800 hover:text-[#00A6CE] transition-colors">BLOGS</a>
+            <a href="#" className="text-sm font-medium text-gray-800 hover:text-[#00A6CE] transition-colors">CONTACT US</a>
           </nav>
 
           <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-3 rounded-full font-medium">
