@@ -287,8 +287,8 @@ export const HomePage = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Healthcare Recruitment Card */}
-            <div className="bg-[#EEEEEE] rounded-3xl p-10 min-h-[340px] relative overflow-hidden flex items-center">
-              <div className="flex-1 pr-6 z-10">
+            <div className="bg-[#EEEEEE] rounded-3xl p-10 min-h-[340px] relative overflow-hidden">
+              <div className="max-w-[50%]">
                 <div className="w-12 h-12 mb-6">
                   <img src="/Icon Badge_1760624061205.png" alt="Healthcare icon" className="w-full h-full" />
                 </div>
@@ -297,17 +297,17 @@ export const HomePage = () => {
                   We connect highly skilled nurses, therapists, technicians, allied health professionals, and administrative staff with reputable healthcare facilities, ensuring a career path that matches their expertise.
                 </p>
               </div>
-              <div className="absolute right-6 top-1/2 -translate-y-1/2">
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 h-full flex items-center">
                 <img
                   src="/iPhone 13 Pro (3) 1_1760620436961.png"
                   alt="Healthcare app"
-                  className="h-56 w-auto"
+                  className="h-72 w-auto"
                 />
               </div>
             </div>
 
             {/* Professional Training & Development Card */}
-            <div className="bg-[#EEEEEE] rounded-3xl p-10 min-h-[340px]">
+            <div className="bg-[#EEEEEE] rounded-3xl p-10 min-h-[340px] relative overflow-hidden pb-40">
               <div className="w-12 h-12 mb-6">
                 <img src="/Icon Badge (1)_1760624061205.png" alt="Training icon" className="w-full h-full" />
               </div>
@@ -315,6 +315,13 @@ export const HomePage = () => {
               <p className="text-gray-600 text-sm leading-relaxed">
                 Duke Consultancy provides access to specialized training programs, helping healthcare professionals upgrade their skills and stay competitive in global markets.
               </p>
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
+                <img
+                  src="/iPhone 13 Pro (2) 1_1760620436961.png"
+                  alt="Video call app"
+                  className="h-72 w-auto"
+                />
+              </div>
             </div>
 
             {/* Job Placement Abroad Card */}
@@ -329,21 +336,14 @@ export const HomePage = () => {
             </div>
 
             {/* Application & Visa Support Card */}
-            <div className="bg-[#EEEEEE] rounded-3xl p-10 min-h-[340px] relative overflow-hidden">
+            <div className="bg-[#EEEEEE] rounded-3xl p-10 min-h-[340px]">
               <div className="w-12 h-12 mb-6">
                 <img src="/Icon Badge (3)_1760624061204.png" alt="Visa support icon" className="w-full h-full" />
               </div>
               <h3 className="text-xl font-semibold text-black mb-4">Application & Visa Support</h3>
-              <p className="text-gray-600 text-sm leading-relaxed pr-40">
+              <p className="text-gray-600 text-sm leading-relaxed">
                 Our team assists with paperwork, compliance, visa filing, and documentation, making the relocation process smooth and hassle-free.
               </p>
-              <div className="absolute -bottom-2 -right-2">
-                <img
-                  src="/iPhone 13 Pro (2) 1_1760620436961.png"
-                  alt="Video call app"
-                  className="h-60 w-auto"
-                />
-              </div>
             </div>
           </div>
         </div>
