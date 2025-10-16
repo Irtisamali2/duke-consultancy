@@ -277,80 +277,81 @@ export const HomePage = () => {
       </section>
 
       {/* Solutions Section */}
-      <section className="w-full py-16 lg:py-24">
+      <section className="w-full py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-20">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C5F6F] mb-4">
-              Our Solutions for Your <span className="text-[#00A6CE]">Nursing</span> Career
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+              <span className="text-black">Our Solutions for Your </span>
+              <span className="text-[#00A6CE]">Nursing</span>
+              <span className="text-black"> Career</span>
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 bg-[#E8F7FB] rounded-2xl flex items-center justify-center">
-                  <img src="/Icon Badge_1760620436960.png" alt="Documentation" className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-semibold text-[#2C5F6F]">Complete Documentation</h3>
-                <p className="text-gray-600">
-                  We handle all paperwork, certifications, and compliance requirements for your international placement.
-                </p>
-              </CardContent>
-            </Card>
+          {/* 2x3 Grid Layout matching Figma exactly */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Row 1, Col 1: Healthcare Recruitment Card */}
+            <div className="bg-gray-50 rounded-2xl p-8 space-y-4">
+              <div className="w-14 h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
+                <img src="/Icon Badge_1760620436960.png" alt="Healthcare" className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-black">Healthcare Recruitment</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                We connect highly skilled nurses, therapists, technicians, allied health professionals, and administrative staff with reputable healthcare facilities, ensuring a career path that matches their expertise.
+              </p>
+            </div>
 
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 bg-[#E8F7FB] rounded-2xl flex items-center justify-center">
-                  <img src="/Icon Badge (1)_1760620436960.png" alt="Job Placement" className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-semibold text-[#2C5F6F]">Job Placement Support</h3>
-                <p className="text-gray-600">
-                  Access to exclusive healthcare positions with top institutions across Europe and beyond.
-                </p>
-              </CardContent>
-            </Card>
+            {/* Row 1, Col 2: Phone mockup - Doctor interface */}
+            <div className="flex justify-center items-center bg-gray-50 rounded-2xl">
+              <img
+                src="/iPhone 13 Pro (2) 1_1760620436961.png"
+                alt="Healthcare App"
+                className="w-64 h-auto"
+              />
+            </div>
 
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 bg-[#E8F7FB] rounded-2xl flex items-center justify-center">
-                  <img src="/Icon Badge (2)_1760620436959.png" alt="Interview Support" className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-semibold text-[#2C5F6F]">Application & Job Support</h3>
-                <p className="text-gray-600">
-                  Expert coaching and preparation for interviews with international healthcare employers.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+            {/* Row 1, Col 3: Professional Training Card */}
+            <div className="bg-gray-50 rounded-2xl p-8 space-y-4">
+              <div className="w-14 h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
+                <img src="/Icon Badge (1)_1760620436960.png" alt="Training" className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-black">Professional Training & Development</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Duke Consultancy provides access to specialized training programs, helping healthcare professionals upgrade their skills and stay competitive in global markets.
+              </p>
+            </div>
 
-          <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-br from-[#E8F7FB] to-white">
-              <CardContent className="p-8 flex items-center gap-6">
-                <img
-                  src="/iPhone 13 Pro (3) 1_1760620436961.png"
-                  alt="Mobile App"
-                  className="w-32"
-                />
-                <div className="space-y-2">
-                  <h3 className="text-xl font-semibold text-[#2C5F6F]">Track Your Progress</h3>
-                  <p className="text-gray-600">
-                    Monitor your application status and communicate with our team through our mobile app.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Row 2, Col 1: Job Placement Abroad Card */}
+            <div className="bg-gray-50 rounded-2xl p-8 space-y-4">
+              <div className="w-14 h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
+                <img src="/Icon Badge (2)_1760620436959.png" alt="Job Placement" className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-black">Job Placement Abroad</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                From the UK and Europe to the Middle East, we facilitate international placements, offering candidates opportunities to expand their careers globally.
+              </p>
+            </div>
 
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 bg-[#E8F7FB] rounded-2xl flex items-center justify-center">
-                  <img src="/Icon Badge (1)_1760620436960.png" alt="Visa Support" className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-semibold text-[#2C5F6F]">Visa & Relocation Assistance</h3>
-                <p className="text-gray-600">
-                  Complete support with visa processing and relocation logistics for a smooth transition.
-                </p>
-              </CardContent>
-            </Card>
+            {/* Row 2, Col 2: Application & Visa Support Card */}
+            <div className="bg-gray-50 rounded-2xl p-8 space-y-4">
+              <div className="w-14 h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
+                <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-black">Application & Visa Support</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Our team assists with paperwork, compliance, visa filing, and documentation, making the relocation process smooth and hassle-free.
+              </p>
+            </div>
+
+            {/* Row 2, Col 3: Phone mockup - Video call */}
+            <div className="flex justify-center items-center bg-gray-50 rounded-2xl">
+              <img
+                src="/iPhone 13 Pro (3) 1_1760620436961.png"
+                alt="Video Call"
+                className="w-64 h-auto"
+              />
+            </div>
           </div>
         </div>
       </section>
