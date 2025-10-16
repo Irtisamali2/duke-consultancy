@@ -285,75 +285,75 @@ export const HomePage = () => {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Healthcare Recruitment Card */}
-            <div className="bg-gray-50 rounded-3xl p-8 flex items-start justify-between">
-              <div className="flex-1">
-                <div className="w-14 h-14 bg-[#D4F1F9] rounded-xl flex items-center justify-center mb-6">
-                  <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
+            <div className="bg-[#F5F5F5] rounded-3xl p-10 relative overflow-hidden min-h-[340px] flex items-start">
+              <div className="flex-1 pr-4">
+                <div className="w-12 h-12 bg-[#D4F1F9] rounded-lg flex items-center justify-center mb-6">
+                  <svg className="w-7 h-7 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-black mb-3">Healthcare Recruitment</h3>
+                <h3 className="text-xl font-semibold text-black mb-4">Healthcare Recruitment</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">
                   We connect highly skilled nurses, therapists, technicians, allied health professionals, and administrative staff with reputable healthcare facilities, ensuring a career path that matches their expertise.
                 </p>
               </div>
-              <div className="ml-6">
+              <div className="absolute right-0 top-1/2 -translate-y-1/2">
                 <img
                   src="/iPhone 13 Pro (3) 1_1760620436961.png"
                   alt="Healthcare app"
-                  className="w-48 h-auto"
+                  className="h-64 w-auto"
                 />
               </div>
             </div>
 
             {/* Professional Training & Development Card */}
-            <div className="bg-gray-50 rounded-3xl p-8">
-              <div className="w-14 h-14 bg-[#D4F1F9] rounded-xl flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
+            <div className="bg-[#F5F5F5] rounded-3xl p-10 min-h-[340px]">
+              <div className="w-12 h-12 bg-[#D4F1F9] rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-7 h-7 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-black mb-3">Professional Training & Development</h3>
+              <h3 className="text-xl font-semibold text-black mb-4">Professional Training & Development</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 Duke Consultancy provides access to specialized training programs, helping healthcare professionals upgrade their skills and stay competitive in global markets.
               </p>
-              <div className="mt-6 flex justify-end">
-                <img
-                  src="/iPhone 13 Pro (2) 1_1760620436961.png"
-                  alt="Training app"
-                  className="w-40 h-auto"
-                />
-              </div>
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Job Placement Abroad Card */}
-            <div className="bg-gray-50 rounded-3xl p-8">
-              <div className="w-14 h-14 bg-[#D4F1F9] rounded-xl flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            <div className="bg-[#F5F5F5] rounded-3xl p-10 min-h-[340px]">
+              <div className="w-12 h-12 bg-[#D4F1F9] rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-7 h-7 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96.54 10.05 0 9 0 7.34 0 6 1.34 6 3c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 17H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-black mb-3">Job Placement Abroad</h3>
+              <h3 className="text-xl font-semibold text-black mb-4">Job Placement Abroad</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 From the UK and Europe to the Middle East, we facilitate international placements, offering candidates opportunities to expand their careers globally.
               </p>
             </div>
 
             {/* Application & Visa Support Card */}
-            <div className="bg-gray-50 rounded-3xl p-8">
-              <div className="w-14 h-14 bg-[#D4F1F9] rounded-xl flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
-                </svg>
+            <div className="bg-[#F5F5F5] rounded-3xl p-10 relative overflow-hidden min-h-[340px] flex items-start">
+              <div className="flex-1 pr-4">
+                <div className="w-12 h-12 bg-[#D4F1F9] rounded-lg flex items-center justify-center mb-6">
+                  <svg className="w-7 h-7 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-black mb-4">Application & Visa Support</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Our team assists with paperwork, compliance, visa filing, and documentation, making the relocation process smooth and hassle-free.
+                </p>
               </div>
-              <h3 className="text-xl font-semibold text-black mb-3">Application & Visa Support</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Our team assists with paperwork, compliance, visa filing, and documentation, making the relocation process smooth and hassle-free.
-              </p>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2">
+                <img
+                  src="/iPhone 13 Pro (2) 1_1760620436961.png"
+                  alt="Video call app"
+                  className="h-64 w-auto"
+                />
+              </div>
             </div>
           </div>
         </div>
