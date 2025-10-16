@@ -5,7 +5,7 @@ import { Star, ArrowRight } from "lucide-react";
 
 const navigationItems = ["HOME", "ABOUT US", "BLOGS", "CONTACT US"];
 
-export const HomePage = (): JSX.Element => {
+export const HomePage = () => {
   return (
     <div className="bg-white w-full min-h-screen">
       {/* Header */}
