@@ -146,26 +146,30 @@ export const HomePage = (): JSX.Element => {
           <div className="space-y-32">
             {/* Step 01 - Register Online */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="space-y-4 relative">
-                <div className="absolute -top-8 -left-4 text-8xl font-bold text-gray-200 -z-10">01</div>
-                <h3 className="text-2xl font-semibold text-[#00A6CE] relative z-10">Register Online</h3>
-                <p className="text-gray-600 leading-relaxed">
+              <div className="space-y-3">
+                <h3 className="text-2xl font-semibold text-[#00A6CE]">Register Online</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
                   We know your home is more than just a place to live, that's why we're committed to providing the best home loan
                 </p>
               </div>
               
               <div className="relative">
-                <div className="absolute top-0 right-0 w-80 h-80 bg-gray-100 rounded-full -z-10"></div>
+                <div className="absolute -top-8 -left-16 text-9xl font-bold text-gray-200">01</div>
+                <img
+                  src="/Ellipse 1328 (2)_1760621126427.png"
+                  alt="Circle background"
+                  className="absolute top-0 right-0 w-96 h-48 object-contain -z-10"
+                />
                 <div className="relative z-10 bg-white rounded-2xl shadow-xl p-8 max-w-sm ml-auto">
-                  <h4 className="text-xl font-semibold text-gray-800 mb-6 text-center">Register Online</h4>
-                  <div className="space-y-4">
+                  <h4 className="text-lg font-medium text-gray-800 mb-6 text-center">Register Online</h4>
+                  <div className="space-y-3">
                     <div className="h-2 bg-gray-200 rounded-full"></div>
+                    <div className="h-2 bg-gray-200 rounded-full ml-2"></div>
                     <div className="h-2 bg-gray-200 rounded-full ml-3"></div>
-                    <div className="h-2 bg-gray-200 rounded-full ml-4"></div>
-                    <div className="h-2 bg-gray-200 rounded-full ml-3"></div>
+                    <div className="h-2 bg-gray-200 rounded-full ml-2"></div>
                   </div>
-                  <div className="mt-8 flex justify-center">
-                    <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-2 rounded-full text-sm">
+                  <div className="mt-6 flex justify-center">
+                    <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-2 rounded-full text-sm font-medium">
                       Sign up
                     </Button>
                   </div>
@@ -175,10 +179,22 @@ export const HomePage = (): JSX.Element => {
 
             {/* Step 02 - Browse Jobs */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="relative lg:order-1">
-                <div className="absolute top-0 left-0 w-80 h-80 bg-gray-100 rounded-full -z-10"></div>
-                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-6 max-w-sm">
-                  <h4 className="text-xl font-normal text-gray-800 mb-6 text-center">Search</h4>
+              <div className="space-y-3 lg:order-1">
+                <h3 className="text-2xl font-semibold text-[#00A6CE]">Browse Jobs</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
+                </p>
+              </div>
+              
+              <div className="relative lg:order-2">
+                <div className="absolute -top-8 right-0 text-9xl font-bold text-gray-200">02</div>
+                <img
+                  src="/Ellipse 1328 (1)_1760621126428.png"
+                  alt="Circle background"
+                  className="absolute top-0 right-0 w-96 h-48 object-contain -z-10"
+                />
+                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-6 max-w-sm mr-auto">
+                  <h4 className="text-lg font-normal text-gray-800 mb-6 text-center">Search</h4>
                   <div className="relative">
                     <input
                       type="text"
@@ -194,43 +210,51 @@ export const HomePage = (): JSX.Element => {
                     </div>
                   </div>
                 </div>
-              </div>
-              
-              <div className="space-y-4 relative lg:order-2">
-                <div className="absolute -top-8 -right-4 text-8xl font-bold text-gray-200 -z-10">02</div>
-                <h3 className="text-2xl font-semibold text-[#00A6CE] relative z-10">Browse Jobs</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
-                </p>
               </div>
             </div>
 
             {/* Step 03 - Apply & Track */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="space-y-4 relative">
-                <div className="absolute -top-8 -left-4 text-8xl font-bold text-gray-200 -z-10">03</div>
-                <h3 className="text-2xl font-semibold text-[#00A6CE] relative z-10">Apply & Track</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  It's about you and your family, having a comfortable payment, exceptional service and a lender.
-                </p>
-              </div>
-              
-              <div className="relative">
-                <div className="absolute top-0 right-0 w-80 h-80 bg-[#E8F7FB] rounded-full -z-10"></div>
-                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-12 max-w-sm ml-auto flex justify-center gap-4">
+              <div className="relative lg:order-1">
+                <div className="absolute -top-8 -left-16 text-9xl font-bold text-gray-200">03</div>
+                <img
+                  src="/Ellipse 1328_1760621126429.png"
+                  alt="Circle background"
+                  className="absolute top-0 left-0 w-96 h-48 object-contain -z-10"
+                />
+                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-8 max-w-xs flex justify-center gap-4">
                   <div className="text-5xl">😮</div>
                   <div className="text-5xl">😠</div>
                   <div className="text-5xl">❤️</div>
                 </div>
               </div>
+              
+              <div className="space-y-3 lg:order-2">
+                <h3 className="text-2xl font-semibold text-[#00A6CE]">Apply & Track</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  It's about you and your family, having a comfortable payment, exceptional service and a lender.
+                </p>
+              </div>
             </div>
 
             {/* Step 04 - Screening & Interviews */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="relative lg:order-1">
-                <div className="absolute top-0 left-0 w-80 h-80 bg-gray-100 rounded-full -z-10"></div>
-                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-6 max-w-sm">
-                  <h4 className="text-xl font-normal text-gray-800 mb-6 text-center">Search</h4>
+              <div className="space-y-3 lg:order-1">
+                <h3 className="text-2xl font-semibold text-[#00A6CE]">Screening & Interviews</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
+                </p>
+              </div>
+              
+              <div className="relative lg:order-2">
+                <div className="absolute -top-8 right-0 text-9xl font-bold text-gray-200">04</div>
+                <img
+                  src="/Ellipse 1328 (2)_1760621126427.png"
+                  alt="Circle background"
+                  className="absolute top-0 right-0 w-96 h-48 object-contain -z-10"
+                />
+                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-6 max-w-sm mr-auto">
+                  <h4 className="text-lg font-normal text-gray-800 mb-6 text-center">Search</h4>
                   <div className="relative">
                     <input
                       type="text"
@@ -246,14 +270,6 @@ export const HomePage = (): JSX.Element => {
                     </div>
                   </div>
                 </div>
-              </div>
-              
-              <div className="space-y-4 relative lg:order-2">
-                <div className="absolute -top-8 -right-4 text-8xl font-bold text-gray-200 -z-10">04</div>
-                <h3 className="text-2xl font-semibold text-[#00A6CE] relative z-10">Screening & Interviews</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
-                </p>
               </div>
             </div>
           </div>
