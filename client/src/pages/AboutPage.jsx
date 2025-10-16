@@ -169,21 +169,21 @@ export const AboutPage = () => {
       <section className="w-full py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-20">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="border-none bg-[#E8F7FB] p-6 text-center">
+            <Card className="border-none bg-[#E8F7FB] p-6 text-center rounded-3xl">
               <CardContent className="p-0">
                 <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
                   </svg>
                 </div>
-                <h3 className="text-gray-900 font-bold text-lg mb-2">Comprehensive Candidate Preparation</h3>
-                <p className="text-gray-600 text-sm">
-                  Tailored guidance to help you prepare for international healthcare opportunities
+                <h3 className="text-gray-900 font-bold text-base mb-3">International Certification & Licensing Support</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Expert guidance to help you prepare, qualify, and meet global standards
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-none bg-[#E8F7FB] p-6 text-center">
+            <Card className="border-none bg-[#E8F7FB] p-6 text-center rounded-3xl">
               <CardContent className="p-0">
                 <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 20 20">
@@ -191,28 +191,28 @@ export const AboutPage = () => {
                     <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"/>
                   </svg>
                 </div>
-                <h3 className="text-gray-900 font-bold text-lg mb-2">Streamlined Job Placement</h3>
-                <p className="text-gray-600 text-sm">
-                  We handle every aspect from job searching to final placement
+                <h3 className="text-gray-900 font-bold text-base mb-3">Streamlined Job Application Process</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  We simplify every step, ensuring a smooth and hassle-free application journey
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-none bg-[#E8F7FB] p-6 text-center">
+            <Card className="border-none bg-[#E8F7FB] p-6 text-center rounded-3xl">
               <CardContent className="p-0">
                 <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd"/>
                   </svg>
                 </div>
-                <h3 className="text-gray-900 font-bold text-lg mb-2">Documentation & Compliance Support</h3>
-                <p className="text-gray-600 text-sm">
-                  Smooth and reliable processing of essential documents
+                <h3 className="text-gray-900 font-bold text-base mb-3">Guaranteed Job Placement Pathways</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Access verified global opportunities with trusted healthcare employers
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-none bg-[#E8F7FB] p-6 text-center">
+            <Card className="border-none bg-[#E8F7FB] p-6 text-center rounded-3xl">
               <CardContent className="p-0">
                 <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 20 20">
@@ -220,9 +220,9 @@ export const AboutPage = () => {
                     <path d="M3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762z"/>
                   </svg>
                 </div>
-                <h3 className="text-gray-900 font-bold text-lg mb-2">Post-placement Training and Support</h3>
-                <p className="text-gray-600 text-sm">
-                  Continued support to ensure you excel in your position
+                <h3 className="text-gray-900 font-bold text-base mb-3">End-to-End Support & Cultural Readiness</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  From initial prep to settling in abroad, we have got you covered
                 </p>
               </CardContent>
             </Card>
