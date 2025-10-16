@@ -1,156 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, ArrowRight } from "lucide-react";
-
-const navigationItems = ["HOME", "ABOUT US", "BLOGS", "CONTACT US"];
-
-const testimonials = [
-  {
-    id: 1,
-    name: "Dr. Ahmed Malik",
-    role: "Medical Officer, UK",
-    image: "/doctor-male.jpg",
-    text: '"Duke Consultancy made my dream of working in the UK a reality. Their support throughout the entire process was exceptional, from documentation to my first day at work."'
-  },
-  {
-    id: 2,
-    name: "Ayesha Rahman",
-    role: "Registered Nurse, Germany",
-    image: "/nurse-female-1.jpg",
-    text: '"Professional, reliable, and genuinely caring. The team at Duke Consultancy guided me through every step and I\'m now working at a top hospital in Germany."'
-  },
-  {
-    id: 3,
-    name: "Zainab Hussain",
-    role: "Healthcare Specialist, UAE",
-    image: "/nurse-female-2.jpg",
-    text: '"Duke Consultancy\'s dedication to finding the perfect match for my skills was impressive. Within months I secured an excellent position in Dubai."'
-  }
-];
-
-const TestimonialCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const goToPrevious = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
-    );
-  };
-
-  const goToNext = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  const currentTestimonial = testimonials[currentIndex];
-  const nextTestimonial = testimonials[(currentIndex + 1) % testimonials.length];
-
-  return (
-    <div className="relative">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-        {/* Testimonial Card 1 */}
-        <div className="bg-[#D6EEF5] rounded-3xl overflow-hidden flex flex-col lg:flex-row">
-          <div className="lg:w-56 lg:flex-shrink-0">
-            <img
-              src={currentTestimonial.image}
-              alt={currentTestimonial.name}
-              className="w-full h-64 lg:h-full object-cover"
-            />
-          </div>
-          <div className="p-6 lg:p-8 flex flex-col justify-center flex-1">
-            <p className="text-gray-700 text-sm lg:text-base leading-relaxed mb-6">
-              {currentTestimonial.text}
-            </p>
-            <div className="mt-auto">
-              <h4 className="text-[#00A6CE] font-bold text-lg mb-1">{currentTestimonial.name}</h4>
-              <p className="text-gray-600 text-sm font-medium">{currentTestimonial.role}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Testimonial Card 2 */}
-        <div className="bg-[#D6EEF5] rounded-3xl overflow-hidden flex flex-col lg:flex-row">
-          <div className="lg:w-56 lg:flex-shrink-0">
-            <img
-              src={nextTestimonial.image}
-              alt={nextTestimonial.name}
-              className="w-full h-64 lg:h-full object-cover"
-            />
-          </div>
-          <div className="p-6 lg:p-8 flex flex-col justify-center flex-1">
-            <p className="text-gray-700 text-sm lg:text-base leading-relaxed mb-6">
-              {nextTestimonial.text}
-            </p>
-            <div className="mt-auto">
-              <h4 className="text-[#00A6CE] font-bold text-lg mb-1">{nextTestimonial.name}</h4>
-              <p className="text-gray-600 text-sm font-medium">{nextTestimonial.role}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation Arrows and Dots */}
-      <div className="flex items-center justify-between">
-        <button 
-          onClick={goToPrevious}
-          className="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center hover:bg-gray-400 transition-colors"
-        >
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        
-        <div className="flex gap-3">
-          {testimonials.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`w-2.5 h-2.5 rounded-full transition-colors ${
-                index === currentIndex ? 'bg-[#00A6CE]' : 'bg-gray-300'
-              }`}
-            />
-          ))}
-        </div>
-        
-        <button 
-          onClick={goToNext}
-          className="w-14 h-14 rounded-full bg-[#00A6CE] flex items-center justify-center hover:bg-[#008fb5] transition-colors"
-        >
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  );
-};
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 
 export const HomePage = () => {
   return (
     <div className="bg-white w-full min-h-screen">
-      {/* Header */}
-      <header className="w-full bg-white py-6">
-        <div className="max-w-7xl mx-auto px-6 lg:px-20 flex items-center justify-between">
-          <img
-            src="/Group_1760620436964.png"
-            alt="Duke Consultancy Logo"
-            className="h-14"
-          />
-          
-          <nav className="hidden md:flex items-center gap-10">
-            <a href="/" className="text-sm font-medium text-[#00A6CE] transition-colors">HOME</a>
-            <a href="/about" className="text-sm font-medium text-gray-800 hover:text-[#00A6CE] transition-colors">ABOUT US</a>
-            <a href="#" className="text-sm font-medium text-gray-800 hover:text-[#00A6CE] transition-colors">BLOGS</a>
-            <a href="#" className="text-sm font-medium text-gray-800 hover:text-[#00A6CE] transition-colors">CONTACT US</a>
-          </nav>
-
-          <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-3 rounded-full font-medium">
-            Register
-          </Button>
-        </div>
-      </header>
+      <Header currentPage="home" />
 
       {/* Hero Section */}
       <section className="w-full bg-white pt-12 pb-20">
@@ -579,60 +438,7 @@ export const HomePage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="w-full bg-gradient-to-b from-white to-[#B3E0EC] py-12">
-        <div className="max-w-7xl mx-auto px-6 lg:px-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
-            <div className="space-y-5">
-              <img
-                src="/Group_1760620436964.png"
-                alt="Duke Consultancy Logo"
-                className="h-12"
-              />
-              <p className="text-gray-800 text-sm leading-relaxed max-w-xs">
-                Connecting skilled healthcare professionals from Pakistan to leading hospitals across Europe, the UK, and beyond.
-              </p>
-              <div className="flex gap-3">
-                <a href="#" className="w-10 h-10 rounded-full bg-[#00A6CE] flex items-center justify-center hover:bg-[#0090B5] transition-colors">
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                  </svg>
-                </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-[#00A6CE] flex items-center justify-center hover:bg-[#0090B5] transition-colors">
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                  </svg>
-                </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-[#00A6CE] flex items-center justify-center hover:bg-[#0090B5] transition-colors">
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
-                  </svg>
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-bold text-gray-900 mb-4">Services</h3>
-              <ul className="space-y-3 text-gray-800 text-sm">
-                <li><a href="#" className="hover:text-[#00A6CE]">Professional Training</a></li>
-                <li><a href="#" className="hover:text-[#00A6CE]">Healthcare Recruitment</a></li>
-                <li><a href="#" className="hover:text-[#00A6CE]">Job Placement Abroad</a></li>
-                <li><a href="#" className="hover:text-[#00A6CE]">Application & Visa Support</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-bold text-gray-900 mb-4">Company</h3>
-              <ul className="space-y-3 text-gray-800 text-sm">
-                <li><a href="#" className="hover:text-[#00A6CE]">About us</a></li>
-                <li><a href="#" className="hover:text-[#00A6CE]">Careers</a></li>
-                <li><a href="#" className="hover:text-[#00A6CE]">Blogs</a></li>
-                <li><a href="#" className="hover:text-[#00A6CE]">Contact Us</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
