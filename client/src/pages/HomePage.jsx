@@ -277,80 +277,84 @@ export const HomePage = () => {
       </section>
 
       {/* Solutions Section */}
-      <section className="w-full py-16 lg:py-24">
+      <section className="w-full py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-20">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C5F6F] mb-4">
+            <h2 className="text-4xl font-bold text-black">
               Our Solutions for Your <span className="text-[#00A6CE]">Nursing</span> Career
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 bg-[#E8F7FB] rounded-2xl flex items-center justify-center">
-                  <img src="/Icon Badge_1760620436960.png" alt="Documentation" className="w-10 h-10" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Healthcare Recruitment Card */}
+            <div className="bg-gray-50 rounded-3xl p-8 flex items-start justify-between">
+              <div className="flex-1">
+                <div className="w-14 h-14 bg-[#D4F1F9] rounded-xl flex items-center justify-center mb-6">
+                  <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
+                  </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-[#2C5F6F]">Complete Documentation</h3>
-                <p className="text-gray-600">
-                  We handle all paperwork, certifications, and compliance requirements for your international placement.
+                <h3 className="text-xl font-semibold text-black mb-3">Healthcare Recruitment</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  We connect highly skilled nurses, therapists, technicians, allied health professionals, and administrative staff with reputable healthcare facilities, ensuring a career path that matches their expertise.
                 </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 bg-[#E8F7FB] rounded-2xl flex items-center justify-center">
-                  <img src="/Icon Badge (1)_1760620436960.png" alt="Job Placement" className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-semibold text-[#2C5F6F]">Job Placement Support</h3>
-                <p className="text-gray-600">
-                  Access to exclusive healthcare positions with top institutions across Europe and beyond.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 bg-[#E8F7FB] rounded-2xl flex items-center justify-center">
-                  <img src="/Icon Badge (2)_1760620436959.png" alt="Interview Support" className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-semibold text-[#2C5F6F]">Application & Job Support</h3>
-                <p className="text-gray-600">
-                  Expert coaching and preparation for interviews with international healthcare employers.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-br from-[#E8F7FB] to-white">
-              <CardContent className="p-8 flex items-center gap-6">
+              </div>
+              <div className="ml-6">
                 <img
                   src="/iPhone 13 Pro (3) 1_1760620436961.png"
-                  alt="Mobile App"
-                  className="w-32"
+                  alt="Healthcare app"
+                  className="w-48 h-auto"
                 />
-                <div className="space-y-2">
-                  <h3 className="text-xl font-semibold text-[#2C5F6F]">Track Your Progress</h3>
-                  <p className="text-gray-600">
-                    Monitor your application status and communicate with our team through our mobile app.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-8 space-y-4">
-                <div className="w-16 h-16 bg-[#E8F7FB] rounded-2xl flex items-center justify-center">
-                  <img src="/Icon Badge (1)_1760620436960.png" alt="Visa Support" className="w-10 h-10" />
-                </div>
-                <h3 className="text-xl font-semibold text-[#2C5F6F]">Visa & Relocation Assistance</h3>
-                <p className="text-gray-600">
-                  Complete support with visa processing and relocation logistics for a smooth transition.
-                </p>
-              </CardContent>
-            </Card>
+            {/* Professional Training & Development Card */}
+            <div className="bg-gray-50 rounded-3xl p-8">
+              <div className="w-14 h-14 bg-[#D4F1F9] rounded-xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-black mb-3">Professional Training & Development</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Duke Consultancy provides access to specialized training programs, helping healthcare professionals upgrade their skills and stay competitive in global markets.
+              </p>
+              <div className="mt-6 flex justify-end">
+                <img
+                  src="/iPhone 13 Pro (2) 1_1760620436961.png"
+                  alt="Training app"
+                  className="w-40 h-auto"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Job Placement Abroad Card */}
+            <div className="bg-gray-50 rounded-3xl p-8">
+              <div className="w-14 h-14 bg-[#D4F1F9] rounded-xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-black mb-3">Job Placement Abroad</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                From the UK and Europe to the Middle East, we facilitate international placements, offering candidates opportunities to expand their careers globally.
+              </p>
+            </div>
+
+            {/* Application & Visa Support Card */}
+            <div className="bg-gray-50 rounded-3xl p-8">
+              <div className="w-14 h-14 bg-[#D4F1F9] rounded-xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-black mb-3">Application & Visa Support</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Our team assists with paperwork, compliance, visa filing, and documentation, making the relocation process smooth and hassle-free.
+              </p>
+            </div>
           </div>
         </div>
       </section>
