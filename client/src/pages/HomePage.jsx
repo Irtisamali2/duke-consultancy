@@ -8,24 +8,24 @@ const navigationItems = ["HOME", "ABOUT US", "BLOGS", "CONTACT US"];
 const testimonials = [
   {
     id: 1,
-    name: "David Panjaitan",
-    role: "General Nurse",
-    image: "/Image (7)_1760620436959.png",
-    text: '" The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero\'s De Finibus Bonorum et Malorum. "'
+    name: "Sarah Ahmed",
+    role: "Registered Nurse, UK",
+    image: "/Image (6)_1760620436963.png",
+    text: '"Duke Consultancy made my dream of working in the UK a reality. Their support throughout the entire process was exceptional, from documentation to my first day at work. The team guided me through every certification requirement and visa procedure with professionalism and care."'
   },
   {
     id: 2,
-    name: "Ester Howard",
-    role: "General Nurse",
+    name: "Ali Hassan",
+    role: "Medical Technician, Germany",
     image: "/Image (7)_1760620436959.png",
-    text: '" The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero\'s De Finibus Bonorum et Malorum. "'
+    text: '"Professional, reliable, and genuinely caring. The team at Duke Consultancy guided me through every step of the relocation process. From interview preparation to settling in Germany, their comprehensive support made my international career transition smooth and stress-free."'
   },
   {
     id: 3,
-    name: "Sarah Ahmed",
-    role: "Registered Nurse, UK",
-    image: "/Image (7)_1760620436959.png",
-    text: '"Duke Consultancy made my dream of working in the UK a reality. Their support throughout the entire process was exceptional, from documentation to my first day at work."'
+    name: "Fatima Khan",
+    role: "Healthcare Administrator, UAE",
+    image: "/Image (6)_1760620436963.png",
+    text: '"I was impressed by Duke Consultancy\'s dedication to finding the perfect match for my skills and career goals. Their training programs helped me upgrade my qualifications, and within months I secured an excellent position in Dubai. Highly recommended for any healthcare professional seeking international opportunities."'
   }
 ];
 
