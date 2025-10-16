@@ -1,8 +1,8 @@
 module.exports = {
-  content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}",
-    "./src/**/*.{html,js,ts,jsx,tsx}",
-    "app/**/*.{ts,tsx}",
-    "components/**/*.{ts,tsx}",
+  content: ["./client/index.html", "./client/src/**/*.{js,jsx}",
+    "./src/**/*.{html,js,jsx}",
+    "app/**/*.{js,jsx}",
+    "components/**/*.{js,jsx}",
   ],
   theme: {
     extend: {
