@@ -357,52 +357,73 @@ export const HomePage = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="w-full py-16 lg:py-24 bg-gray-50">
+      <section className="w-full py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-20">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C5F6F]">
-              Testimonials from Our Satisfied Candidates
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+              <span className="text-black">Testimonials From Our </span>
+              <span className="text-[#00A6CE]">Satisfied</span>
+              <span className="text-black"> Candidates</span>
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="border-none shadow-lg">
-              <CardContent className="p-8">
-                <div className="flex items-start gap-4 mb-4">
+          <div className="relative">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              {/* Testimonial 1 */}
+              <div className="bg-[#D6EEF5] rounded-3xl p-0 flex flex-col lg:flex-row overflow-hidden">
+                <div className="lg:w-72 lg:flex-shrink-0">
                   <img
                     src="/Image (7)_1760620436959.png"
-                    alt="Testimonial"
-                    className="w-20 h-20 rounded-full object-cover"
+                    alt="David Panjaitan"
+                    className="w-full h-full object-cover"
                   />
-                  <div>
-                    <h4 className="font-semibold text-[#2C5F6F]">Sarah Ahmed</h4>
-                    <p className="text-sm text-gray-500">Registered Nurse, UK</p>
-                  </div>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
-                  "Duke Consultancy made my dream of working in the UK a reality. Their support throughout the entire process was exceptional, from documentation to my first day at work."
-                </p>
-              </CardContent>
-            </Card>
+                <div className="p-8 flex flex-col justify-center">
+                  <p className="text-gray-800 text-base leading-relaxed mb-6">
+                    " The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum. "
+                  </p>
+                  <h4 className="text-[#00A6CE] font-semibold text-lg">David Panjaitan</h4>
+                  <p className="text-gray-500 text-sm">General Nurse</p>
+                </div>
+              </div>
 
-            <Card className="border-none shadow-lg bg-[#E8F7FB]">
-              <CardContent className="p-8">
-                <div className="flex items-start gap-4 mb-4">
+              {/* Testimonial 2 */}
+              <div className="bg-[#D6EEF5] rounded-3xl p-0 flex flex-col lg:flex-row overflow-hidden">
+                <div className="lg:w-72 lg:flex-shrink-0">
                   <img
                     src="/Image (7)_1760620436959.png"
-                    alt="Testimonial"
-                    className="w-20 h-20 rounded-full object-cover"
+                    alt="Ester Howard"
+                    className="w-full h-full object-cover"
                   />
-                  <div>
-                    <h4 className="font-semibold text-[#2C5F6F]">Ali Hassan</h4>
-                    <p className="text-sm text-gray-500">Medical Technician, Germany</p>
-                  </div>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
-                  "Professional, reliable, and genuinely caring. The team at Duke Consultancy guided me through every step and I'm now working at a top hospital in Germany."
-                </p>
-              </CardContent>
-            </Card>
+                <div className="p-8 flex flex-col justify-center">
+                  <p className="text-gray-800 text-base leading-relaxed mb-6">
+                    " The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum. "
+                  </p>
+                  <h4 className="text-[#00A6CE] font-semibold text-lg">Ester Howard</h4>
+                  <p className="text-gray-500 text-sm">General Nurse</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation Arrows and Dots */}
+            <div className="flex items-center justify-center gap-4">
+              <button className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center hover:bg-gray-400 transition-colors">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#00A6CE]"></div>
+                <div className="w-3 h-3 rounded-full bg-gray-300"></div>
+                <div className="w-3 h-3 rounded-full bg-gray-300"></div>
+              </div>
+              <button className="w-12 h-12 rounded-full bg-[#00A6CE] flex items-center justify-center hover:bg-[#008fb5] transition-colors">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </section>
