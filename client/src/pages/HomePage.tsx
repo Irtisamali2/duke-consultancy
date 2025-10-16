@@ -66,30 +66,30 @@ export const HomePage = (): JSX.Element => {
             </div>
 
             <div className="relative">
-              <div className="relative bg-gray-200 rounded-3xl overflow-hidden">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="/pexels-tima-miroshnichenko-8376309 1_1760620436958.png"
+                  src="/Mask group (1)_1760620861162.png"
                   alt="Healthcare Professional"
-                  className="w-full object-cover"
+                  className="w-full h-auto"
                 />
-              </div>
-              
-              {/* Top right badge - 10K+ */}
-              <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-2xl px-6 py-3 shadow-lg">
-                <div className="text-3xl font-bold text-[#00A6CE]">10K+</div>
-                <div className="text-sm text-gray-600 mt-1">Assign Jobs To<br/>Nurses</div>
+                
+                {/* Top right badge - 10K+ */}
+                <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-lg text-right">
+                  <div className="text-4xl font-bold text-[#00A6CE]">10K+</div>
+                  <div className="text-sm text-gray-600 mt-1">Assign Jobs To<br/>Nurses</div>
+                </div>
               </div>
               
               {/* Bottom left badge - Candidates */}
-              <div className="absolute -bottom-6 left-8 bg-white rounded-2xl px-6 py-4 shadow-xl flex items-center gap-3">
-                <div className="flex -space-x-2">
-                  <div className="w-10 h-10 rounded-full bg-gray-300 border-2 border-white"></div>
-                  <div className="w-10 h-10 rounded-full bg-gray-400 border-2 border-white"></div>
-                  <div className="w-10 h-10 rounded-full bg-gray-500 border-2 border-white"></div>
+              <div className="absolute -bottom-8 left-4 bg-white rounded-2xl px-6 py-5 shadow-2xl flex items-center gap-4">
+                <div className="flex -space-x-3">
+                  <div className="w-12 h-12 rounded-full bg-gray-300 border-3 border-white"></div>
+                  <div className="w-12 h-12 rounded-full bg-gray-400 border-3 border-white"></div>
+                  <div className="w-12 h-12 rounded-full bg-gray-500 border-3 border-white"></div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-[#00A6CE]">2,650+</div>
-                  <div className="text-sm text-gray-600">Candidate have trusted us</div>
+                  <div className="text-3xl font-bold text-[#00A6CE]">2,650+</div>
+                  <div className="text-sm text-gray-600 whitespace-nowrap">Candidate have trusted us</div>
                 </div>
               </div>
             </div>
