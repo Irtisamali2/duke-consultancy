@@ -153,12 +153,12 @@ export const HomePage = (): JSX.Element => {
                 </p>
               </div>
               
-              <div className="relative">
-                <div className="absolute -top-8 -left-16 text-9xl font-bold text-gray-200">01</div>
+              <div className="relative h-72">
+                <div className="absolute -top-8 -left-16 text-9xl font-bold text-gray-200 z-0">01</div>
                 <img
-                  src="/Ellipse 1328 (2)_1760621126427.png"
+                  src="/Ellipse 1328 (2)_1760621468329.png"
                   alt="Circle background"
-                  className="absolute top-0 right-0 w-96 h-48 object-contain -z-10"
+                  className="absolute -top-16 right-0 w-[500px] h-auto"
                 />
                 <div className="relative z-10 bg-white rounded-2xl shadow-xl p-8 max-w-sm ml-auto">
                   <h4 className="text-lg font-medium text-gray-800 mb-6 text-center">Register Online</h4>
@@ -186,14 +186,14 @@ export const HomePage = (): JSX.Element => {
                 </p>
               </div>
               
-              <div className="relative lg:order-2">
-                <div className="absolute -top-8 right-0 text-9xl font-bold text-gray-200">02</div>
+              <div className="relative h-72 lg:order-2">
+                <div className="absolute -top-8 -right-16 text-9xl font-bold text-gray-200 z-0">02</div>
                 <img
-                  src="/Ellipse 1328 (1)_1760621126428.png"
+                  src="/Ellipse 1328 (1)_1760621468329.png"
                   alt="Circle background"
-                  className="absolute top-0 right-0 w-96 h-48 object-contain -z-10"
+                  className="absolute -top-16 left-0 w-[500px] h-auto"
                 />
-                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-6 max-w-sm mr-auto">
+                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-6 max-w-sm">
                   <h4 className="text-lg font-normal text-gray-800 mb-6 text-center">Search</h4>
                   <div className="relative">
                     <input
@@ -204,7 +204,7 @@ export const HomePage = (): JSX.Element => {
                     />
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
                       <div className="w-px h-6 bg-gray-300"></div>
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 text-[#00A6CE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                       </svg>
                     </div>
@@ -215,12 +215,12 @@ export const HomePage = (): JSX.Element => {
 
             {/* Step 03 - Apply & Track */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <div className="relative lg:order-1">
-                <div className="absolute -top-8 -left-16 text-9xl font-bold text-gray-200">03</div>
+              <div className="relative h-72 lg:order-1">
+                <div className="absolute -top-8 -left-16 text-9xl font-bold text-gray-200 z-0">03</div>
                 <img
-                  src="/Ellipse 1328_1760621126429.png"
+                  src="/Ellipse 1328_1760621468330.png"
                   alt="Circle background"
-                  className="absolute top-0 left-0 w-96 h-48 object-contain -z-10"
+                  className="absolute -top-16 left-0 w-[500px] h-auto"
                 />
                 <div className="relative z-10 bg-white rounded-2xl shadow-xl p-8 max-w-xs flex justify-center gap-4">
                   <div className="text-5xl">😮</div>
@@ -246,14 +246,14 @@ export const HomePage = (): JSX.Element => {
                 </p>
               </div>
               
-              <div className="relative lg:order-2">
-                <div className="absolute -top-8 right-0 text-9xl font-bold text-gray-200">04</div>
+              <div className="relative h-72 lg:order-2">
+                <div className="absolute -top-8 -right-16 text-9xl font-bold text-gray-200 z-0">04</div>
                 <img
-                  src="/Ellipse 1328 (2)_1760621126427.png"
+                  src="/Ellipse 1328 (2)_1760621468329.png"
                   alt="Circle background"
-                  className="absolute top-0 right-0 w-96 h-48 object-contain -z-10"
+                  className="absolute -top-16 right-0 w-[500px] h-auto"
                 />
-                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-6 max-w-sm mr-auto">
+                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-6 max-w-sm ml-auto">
                   <h4 className="text-lg font-normal text-gray-800 mb-6 text-center">Search</h4>
                   <div className="relative">
                     <input
@@ -264,7 +264,7 @@ export const HomePage = (): JSX.Element => {
                     />
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
                       <div className="w-px h-6 bg-gray-300"></div>
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 text-[#00A6CE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                       </svg>
                     </div>
