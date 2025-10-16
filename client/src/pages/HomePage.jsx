@@ -1,9 +1,127 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, ArrowRight } from "lucide-react";
 
 const navigationItems = ["HOME", "ABOUT US", "BLOGS", "CONTACT US"];
+
+const testimonials = [
+  {
+    id: 1,
+    name: "David Panjaitan",
+    role: "General Nurse",
+    image: "/Image (7)_1760620436959.png",
+    text: '" The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero\'s De Finibus Bonorum et Malorum. "'
+  },
+  {
+    id: 2,
+    name: "Ester Howard",
+    role: "General Nurse",
+    image: "/Image (7)_1760620436959.png",
+    text: '" The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero\'s De Finibus Bonorum et Malorum. "'
+  },
+  {
+    id: 3,
+    name: "Sarah Ahmed",
+    role: "Registered Nurse, UK",
+    image: "/Image (7)_1760620436959.png",
+    text: '"Duke Consultancy made my dream of working in the UK a reality. Their support throughout the entire process was exceptional, from documentation to my first day at work."'
+  }
+];
+
+const TestimonialCarousel = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const goToPrevious = () => {
+    setCurrentIndex((prevIndex) => 
+      prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
+    );
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prevIndex) => 
+      prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const currentTestimonial = testimonials[currentIndex];
+  const nextTestimonial = testimonials[(currentIndex + 1) % testimonials.length];
+
+  return (
+    <div className="relative">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {/* Testimonial Card 1 */}
+        <div className="bg-[#D6EEF5] rounded-3xl overflow-hidden flex flex-col lg:flex-row h-80">
+          <div className="lg:w-64 lg:flex-shrink-0 h-full">
+            <img
+              src={currentTestimonial.image}
+              alt={currentTestimonial.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="p-8 flex flex-col justify-center flex-1">
+            <p className="text-gray-800 text-base leading-relaxed mb-6">
+              {currentTestimonial.text}
+            </p>
+            <h4 className="text-[#00A6CE] font-semibold text-lg">{currentTestimonial.name}</h4>
+            <p className="text-gray-500 text-sm">{currentTestimonial.role}</p>
+          </div>
+        </div>
+
+        {/* Testimonial Card 2 */}
+        <div className="bg-[#D6EEF5] rounded-3xl overflow-hidden flex flex-col lg:flex-row h-80">
+          <div className="lg:w-64 lg:flex-shrink-0 h-full">
+            <img
+              src={nextTestimonial.image}
+              alt={nextTestimonial.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="p-8 flex flex-col justify-center flex-1">
+            <p className="text-gray-800 text-base leading-relaxed mb-6">
+              {nextTestimonial.text}
+            </p>
+            <h4 className="text-[#00A6CE] font-semibold text-lg">{nextTestimonial.name}</h4>
+            <p className="text-gray-500 text-sm">{nextTestimonial.role}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Arrows and Dots */}
+      <div className="flex items-center justify-center gap-6">
+        <button 
+          onClick={goToPrevious}
+          className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center hover:bg-gray-400 transition-colors"
+        >
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <div className="flex gap-2">
+          {testimonials.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`w-3 h-3 rounded-full transition-colors ${
+                index === currentIndex ? 'bg-[#00A6CE]' : 'bg-gray-300'
+              }`}
+            />
+          ))}
+        </div>
+        
+        <button 
+          onClick={goToNext}
+          className="w-12 h-12 rounded-full bg-[#00A6CE] flex items-center justify-center hover:bg-[#008fb5] transition-colors"
+        >
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export const HomePage = () => {
   return (
@@ -367,64 +485,7 @@ export const HomePage = () => {
             </h2>
           </div>
 
-          <div className="relative">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              {/* Testimonial 1 */}
-              <div className="bg-[#D6EEF5] rounded-3xl p-0 flex flex-col lg:flex-row overflow-hidden">
-                <div className="lg:w-72 lg:flex-shrink-0">
-                  <img
-                    src="/Image (7)_1760620436959.png"
-                    alt="David Panjaitan"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-8 flex flex-col justify-center">
-                  <p className="text-gray-800 text-base leading-relaxed mb-6">
-                    " The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum. "
-                  </p>
-                  <h4 className="text-[#00A6CE] font-semibold text-lg">David Panjaitan</h4>
-                  <p className="text-gray-500 text-sm">General Nurse</p>
-                </div>
-              </div>
-
-              {/* Testimonial 2 */}
-              <div className="bg-[#D6EEF5] rounded-3xl p-0 flex flex-col lg:flex-row overflow-hidden">
-                <div className="lg:w-72 lg:flex-shrink-0">
-                  <img
-                    src="/Image (7)_1760620436959.png"
-                    alt="Ester Howard"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-8 flex flex-col justify-center">
-                  <p className="text-gray-800 text-base leading-relaxed mb-6">
-                    " The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum. "
-                  </p>
-                  <h4 className="text-[#00A6CE] font-semibold text-lg">Ester Howard</h4>
-                  <p className="text-gray-500 text-sm">General Nurse</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Navigation Arrows and Dots */}
-            <div className="flex items-center justify-center gap-4">
-              <button className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center hover:bg-gray-400 transition-colors">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <div className="flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-[#00A6CE]"></div>
-                <div className="w-3 h-3 rounded-full bg-gray-300"></div>
-                <div className="w-3 h-3 rounded-full bg-gray-300"></div>
-              </div>
-              <button className="w-12 h-12 rounded-full bg-[#00A6CE] flex items-center justify-center hover:bg-[#008fb5] transition-colors">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-          </div>
+          <TestimonialCarousel />
         </div>
       </section>
 
