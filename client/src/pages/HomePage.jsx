@@ -8,24 +8,24 @@ const navigationItems = ["HOME", "ABOUT US", "BLOGS", "CONTACT US"];
 const testimonials = [
   {
     id: 1,
-    name: "Sarah Ahmed",
-    role: "Registered Nurse, UK",
-    image: "/Image (6)_1760620436963.png",
-    text: '"Duke Consultancy made my dream of working in the UK a reality. Their support throughout the entire process was exceptional, from documentation to my first day at work. The team guided me through every certification requirement and visa procedure with professionalism and care."'
+    name: "Dr. Ahmed Malik",
+    role: "Medical Officer, UK",
+    image: "/doctor-male.jpg",
+    text: '"Duke Consultancy made my dream of working in the UK a reality. Their support throughout the entire process was exceptional, from documentation to my first day at work."'
   },
   {
     id: 2,
-    name: "Ali Hassan",
-    role: "Medical Technician, Germany",
-    image: "/Image (7)_1760620436959.png",
-    text: '"Professional, reliable, and genuinely caring. The team at Duke Consultancy guided me through every step of the relocation process. From interview preparation to settling in Germany, their comprehensive support made my international career transition smooth and stress-free."'
+    name: "Ayesha Rahman",
+    role: "Registered Nurse, Germany",
+    image: "/nurse-female-1.jpg",
+    text: '"Professional, reliable, and genuinely caring. The team at Duke Consultancy guided me through every step and I\'m now working at a top hospital in Germany."'
   },
   {
     id: 3,
-    name: "Fatima Khan",
-    role: "Healthcare Administrator, UAE",
-    image: "/Image (6)_1760620436963.png",
-    text: '"I was impressed by Duke Consultancy\'s dedication to finding the perfect match for my skills and career goals. Their training programs helped me upgrade my qualifications, and within months I secured an excellent position in Dubai. Highly recommended for any healthcare professional seeking international opportunities."'
+    name: "Zainab Hussain",
+    role: "Healthcare Specialist, UAE",
+    image: "/nurse-female-2.jpg",
+    text: '"Duke Consultancy\'s dedication to finding the perfect match for my skills was impressive. Within months I secured an excellent position in Dubai."'
   }
 ];
 
@@ -49,40 +49,44 @@ const TestimonialCarousel = () => {
 
   return (
     <div className="relative">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Testimonial Card 1 */}
-        <div className="bg-[#D6EEF5] rounded-3xl overflow-hidden flex flex-col lg:flex-row h-80">
-          <div className="lg:w-64 lg:flex-shrink-0 h-full">
+        <div className="bg-[#D6EEF5] rounded-3xl overflow-hidden flex flex-col lg:flex-row">
+          <div className="lg:w-56 lg:flex-shrink-0">
             <img
               src={currentTestimonial.image}
               alt={currentTestimonial.name}
-              className="w-full h-full object-cover"
+              className="w-full h-64 lg:h-full object-cover"
             />
           </div>
-          <div className="p-8 flex flex-col justify-center flex-1">
-            <p className="text-gray-800 text-base leading-relaxed mb-6">
+          <div className="p-6 lg:p-8 flex flex-col justify-center flex-1">
+            <p className="text-gray-700 text-sm lg:text-base leading-relaxed mb-6">
               {currentTestimonial.text}
             </p>
-            <h4 className="text-[#00A6CE] font-semibold text-lg">{currentTestimonial.name}</h4>
-            <p className="text-gray-500 text-sm">{currentTestimonial.role}</p>
+            <div className="mt-auto">
+              <h4 className="text-[#00A6CE] font-bold text-lg mb-1">{currentTestimonial.name}</h4>
+              <p className="text-gray-600 text-sm font-medium">{currentTestimonial.role}</p>
+            </div>
           </div>
         </div>
 
         {/* Testimonial Card 2 */}
-        <div className="bg-[#D6EEF5] rounded-3xl overflow-hidden flex flex-col lg:flex-row h-80">
-          <div className="lg:w-64 lg:flex-shrink-0 h-full">
+        <div className="bg-[#D6EEF5] rounded-3xl overflow-hidden flex flex-col lg:flex-row">
+          <div className="lg:w-56 lg:flex-shrink-0">
             <img
               src={nextTestimonial.image}
               alt={nextTestimonial.name}
-              className="w-full h-full object-cover"
+              className="w-full h-64 lg:h-full object-cover"
             />
           </div>
-          <div className="p-8 flex flex-col justify-center flex-1">
-            <p className="text-gray-800 text-base leading-relaxed mb-6">
+          <div className="p-6 lg:p-8 flex flex-col justify-center flex-1">
+            <p className="text-gray-700 text-sm lg:text-base leading-relaxed mb-6">
               {nextTestimonial.text}
             </p>
-            <h4 className="text-[#00A6CE] font-semibold text-lg">{nextTestimonial.name}</h4>
-            <p className="text-gray-500 text-sm">{nextTestimonial.role}</p>
+            <div className="mt-auto">
+              <h4 className="text-[#00A6CE] font-bold text-lg mb-1">{nextTestimonial.name}</h4>
+              <p className="text-gray-600 text-sm font-medium">{nextTestimonial.role}</p>
+            </div>
           </div>
         </div>
       </div>
