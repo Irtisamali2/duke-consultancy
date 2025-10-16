@@ -132,7 +132,7 @@ export const HomePage = (): JSX.Element => {
 
       {/* How it Works Section */}
       <section className="w-full py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6 lg:px-20">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-3">
               <span className="text-black">How it </span>
@@ -147,13 +147,13 @@ export const HomePage = (): JSX.Element => {
             {/* Step 01 - Register Online */}
             <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               <div className="relative min-h-[280px]">
-                <div className="absolute -top-4 -left-12 text-[120px] font-bold text-gray-200 leading-none">01</div>
+                <div className="absolute -top-4 -left-12 text-[120px] font-bold text-gray-200 leading-none z-10">01</div>
                 <img
                   src="/Ellipse 1328 (2)_1760621468329.png"
                   alt="Circle background"
-                  className="absolute top-0 left-8 w-[400px] h-auto"
+                  className="absolute top-0 left-8 w-[400px] h-auto z-0"
                 />
-                <div className="absolute top-16 left-0 bg-white rounded-xl shadow-2xl p-6 w-[280px]">
+                <div className="absolute top-16 left-0 bg-white rounded-xl shadow-2xl p-6 w-[280px] z-20">
                   <h4 className="text-base font-medium text-gray-800 mb-5 text-center">Register Online</h4>
                   <div className="space-y-2.5">
                     <div className="h-1.5 bg-gray-200 rounded-full"></div>
@@ -187,13 +187,13 @@ export const HomePage = (): JSX.Element => {
               </div>
 
               <div className="relative min-h-[240px]">
-                <div className="absolute -top-4 -right-12 text-[120px] font-bold text-gray-200 leading-none">02</div>
+                <div className="absolute -top-4 -right-12 text-[120px] font-bold text-gray-200 leading-none z-10">02</div>
                 <img
                   src="/Ellipse 1328 (1)_1760621468329.png"
                   alt="Circle background"
-                  className="absolute top-0 right-8 w-[400px] h-auto"
+                  className="absolute top-0 right-8 w-[400px] h-auto z-0"
                 />
-                <div className="absolute top-16 right-0 bg-white rounded-xl shadow-2xl p-5 w-[280px]">
+                <div className="absolute top-16 right-0 bg-white rounded-xl shadow-2xl p-5 w-[280px] z-20">
                   <h4 className="text-base font-normal text-gray-800 mb-4 text-center">Search</h4>
                   <div className="relative">
                     <input
@@ -216,13 +216,13 @@ export const HomePage = (): JSX.Element => {
             {/* Step 03 - Apply & Track */}
             <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               <div className="relative min-h-[240px]">
-                <div className="absolute -top-4 -left-12 text-[120px] font-bold text-gray-200 leading-none">03</div>
+                <div className="absolute -top-4 -left-12 text-[120px] font-bold text-gray-200 leading-none z-10">03</div>
                 <img
                   src="/Ellipse 1328_1760621468330.png"
                   alt="Circle background"
-                  className="absolute top-0 left-8 w-[400px] h-auto"
+                  className="absolute top-0 left-8 w-[400px] h-auto z-0"
                 />
-                <div className="absolute top-20 left-0 bg-white rounded-xl shadow-2xl p-8 w-[260px] flex justify-center gap-3">
+                <div className="absolute top-20 left-0 bg-white rounded-xl shadow-2xl p-8 w-[260px] flex justify-center gap-3 z-20">
                   <div className="text-4xl">😮</div>
                   <div className="text-4xl">😠</div>
                   <div className="text-4xl">❤️</div>
@@ -247,13 +247,13 @@ export const HomePage = (): JSX.Element => {
               </div>
 
               <div className="relative min-h-[240px]">
-                <div className="absolute -top-4 -right-12 text-[120px] font-bold text-gray-200 leading-none">04</div>
+                <div className="absolute -top-4 -right-12 text-[120px] font-bold text-gray-200 leading-none z-10">04</div>
                 <img
                   src="/Ellipse 1328 (2)_1760621468329.png"
                   alt="Circle background"
-                  className="absolute top-0 right-8 w-[400px] h-auto"
+                  className="absolute top-0 right-8 w-[400px] h-auto z-0"
                 />
-                <div className="absolute top-16 right-0 bg-white rounded-xl shadow-2xl p-5 w-[280px]">
+                <div className="absolute top-16 right-0 bg-white rounded-xl shadow-2xl p-5 w-[280px] z-20">
                   <h4 className="text-base font-normal text-gray-800 mb-4 text-center">Search</h4>
                   <div className="relative">
                     <input
