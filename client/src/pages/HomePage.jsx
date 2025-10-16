@@ -92,22 +92,22 @@ const TestimonialCarousel = () => {
       </div>
 
       {/* Navigation Arrows and Dots */}
-      <div className="flex items-center justify-center gap-6">
+      <div className="flex items-center justify-between">
         <button 
           onClick={goToPrevious}
-          className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center hover:bg-gray-400 transition-colors"
+          className="w-14 h-14 rounded-full bg-gray-300 flex items-center justify-center hover:bg-gray-400 transition-colors"
         >
           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
         
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           {testimonials.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-3 h-3 rounded-full transition-colors ${
+              className={`w-2.5 h-2.5 rounded-full transition-colors ${
                 index === currentIndex ? 'bg-[#00A6CE]' : 'bg-gray-300'
               }`}
             />
@@ -116,7 +116,7 @@ const TestimonialCarousel = () => {
         
         <button 
           onClick={goToNext}
-          className="w-12 h-12 rounded-full bg-[#00A6CE] flex items-center justify-center hover:bg-[#008fb5] transition-colors"
+          className="w-14 h-14 rounded-full bg-[#00A6CE] flex items-center justify-center hover:bg-[#008fb5] transition-colors"
         >
           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
