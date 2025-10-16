@@ -585,7 +585,7 @@ export const HomePage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="w-full bg-[#B3E5EC] py-12">
+      <footer className="w-full bg-gradient-to-b from-white to-[#B3E0EC] py-12">
         <div className="max-w-7xl mx-auto px-6 lg:px-20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
             <div className="space-y-5">
