@@ -131,93 +131,129 @@ export const HomePage = (): JSX.Element => {
       </section>
 
       {/* How it Works Section */}
-      <section className="w-full py-16 lg:py-24 bg-gray-50">
+      <section className="w-full py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-20">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C5F6F] mb-4">
-              How it works
+          <div className="text-center mb-20">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+              <span className="text-black">How it </span>
+              <span className="text-[#00A6CE]">works</span>
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Our streamlined process makes it easy for healthcare professionals to find and secure international opportunities
+            <p className="text-gray-600 max-w-3xl mx-auto text-base">
+              We make the recruitment process simple, transparent, and stress-free. Our step-by-step approach ensures that every candidate moves smoothly from registration to placement.
             </p>
           </div>
 
-          <div className="space-y-24">
-            {/* Step 01 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-32">
+            {/* Step 01 - Register Online */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <div className="space-y-4 relative">
+                <div className="absolute -top-8 -left-4 text-8xl font-bold text-gray-200 -z-10">01</div>
+                <h3 className="text-2xl font-semibold text-[#00A6CE] relative z-10">Register Online</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  We know your home is more than just a place to live, that's why we're committed to providing the best home loan
+                </p>
+              </div>
+              
               <div className="relative">
-                <div className="absolute -top-12 -left-8 text-9xl font-bold text-gray-200">01</div>
-                <img
-                  src="/Ellipse 1328_1760620436962.png"
-                  alt="Register"
-                  className="relative z-10 w-full max-w-md mx-auto"
-                />
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <img src="/Illustration_1760620436963.png" alt="Register Illustration" className="w-48" />
+                <div className="absolute top-0 right-0 w-80 h-80 bg-gray-100 rounded-full -z-10"></div>
+                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-8 max-w-sm ml-auto">
+                  <h4 className="text-xl font-semibold text-gray-800 mb-6 text-center">Register Online</h4>
+                  <div className="space-y-4">
+                    <div className="h-2 bg-gray-200 rounded-full"></div>
+                    <div className="h-2 bg-gray-200 rounded-full ml-3"></div>
+                    <div className="h-2 bg-gray-200 rounded-full ml-4"></div>
+                    <div className="h-2 bg-gray-200 rounded-full ml-3"></div>
+                  </div>
+                  <div className="mt-8 flex justify-center">
+                    <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-2 rounded-full text-sm">
+                      Sign up
+                    </Button>
+                  </div>
                 </div>
               </div>
-              <div className="space-y-4">
-                <h3 className="text-2xl font-semibold text-[#2C5F6F]">Register Online</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Create your profile in minutes. Upload your credentials, certifications, and work experience to get started on your global healthcare career journey.
-                </p>
-              </div>
             </div>
 
-            {/* Step 02 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="space-y-4 lg:order-2">
-                <h3 className="text-2xl font-semibold text-[#2C5F6F]">Browse Jobs</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Explore hundreds of verified healthcare positions across Europe, UK, and beyond. Filter by specialty, location, and compensation to find your perfect match.
-                </p>
-              </div>
+            {/* Step 02 - Browse Jobs */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="relative lg:order-1">
-                <div className="absolute -top-12 -right-8 text-9xl font-bold text-gray-200">02</div>
-                <img
-                  src="/Ellipse 1328 (1)_1760620436962.png"
-                  alt="Browse"
-                  className="relative z-10 w-full max-w-md mx-auto"
-                />
-              </div>
-            </div>
-
-            {/* Step 03 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="relative">
-                <div className="absolute -top-12 -left-8 text-9xl font-bold text-gray-200">03</div>
-                <img
-                  src="/Ellipse 1328 (2)_1760620436961.png"
-                  alt="Apply"
-                  className="relative z-10 w-full max-w-md mx-auto"
-                />
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <img src="/Group 1000001647_1760620436964.png" alt="Apply Illustration" className="w-48" />
+                <div className="absolute top-0 left-0 w-80 h-80 bg-gray-100 rounded-full -z-10"></div>
+                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-6 max-w-sm">
+                  <h4 className="text-xl font-normal text-gray-800 mb-6 text-center">Search</h4>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search services"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-400"
+                      readOnly
+                    />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                      <div className="w-px h-6 bg-gray-300"></div>
+                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="space-y-4">
-                <h3 className="text-2xl font-semibold text-[#2C5F6F]">Apply & Track</h3>
+              
+              <div className="space-y-4 relative lg:order-2">
+                <div className="absolute -top-8 -right-4 text-8xl font-bold text-gray-200 -z-10">02</div>
+                <h3 className="text-2xl font-semibold text-[#00A6CE] relative z-10">Browse Jobs</h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Submit applications with one click and track your progress in real-time through our dashboard. Stay updated on every step of your application journey.
+                  It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                 </p>
               </div>
             </div>
 
-            {/* Step 04 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="space-y-4 lg:order-2">
-                <h3 className="text-2xl font-semibold text-[#2C5F6F]">Screening & Interviews</h3>
+            {/* Step 03 - Apply & Track */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <div className="space-y-4 relative">
+                <div className="absolute -top-8 -left-4 text-8xl font-bold text-gray-200 -z-10">03</div>
+                <h3 className="text-2xl font-semibold text-[#00A6CE] relative z-10">Apply & Track</h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Our team guides you through screening, interviews, and documentation. We ensure you're fully prepared for every interaction with potential employers.
+                  It's about you and your family, having a comfortable payment, exceptional service and a lender.
                 </p>
               </div>
+              
+              <div className="relative">
+                <div className="absolute top-0 right-0 w-80 h-80 bg-[#E8F7FB] rounded-full -z-10"></div>
+                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-12 max-w-sm ml-auto flex justify-center gap-4">
+                  <div className="text-5xl">😮</div>
+                  <div className="text-5xl">😠</div>
+                  <div className="text-5xl">❤️</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 04 - Screening & Interviews */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="relative lg:order-1">
-                <div className="absolute -top-12 -right-8 text-9xl font-bold text-gray-200">04</div>
-                <img
-                  src="/Ellipse 1328_1760620436962.png"
-                  alt="Interview"
-                  className="relative z-10 w-full max-w-md mx-auto"
-                />
+                <div className="absolute top-0 left-0 w-80 h-80 bg-gray-100 rounded-full -z-10"></div>
+                <div className="relative z-10 bg-white rounded-2xl shadow-xl p-6 max-w-sm">
+                  <h4 className="text-xl font-normal text-gray-800 mb-6 text-center">Search</h4>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search services"
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-400"
+                      readOnly
+                    />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                      <div className="w-px h-6 bg-gray-300"></div>
+                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-4 relative lg:order-2">
+                <div className="absolute -top-8 -right-4 text-8xl font-bold text-gray-200 -z-10">04</div>
+                <h3 className="text-2xl font-semibold text-[#00A6CE] relative z-10">Screening & Interviews</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
+                </p>
               </div>
             </div>
           </div>
