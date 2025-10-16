@@ -1,413 +1,483 @@
-import { UserIcon } from "lucide-react";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-const navigationItems = [
-  { label: "HOME" },
-  { label: "ABOUT US" },
-  { label: "JOBS" },
-  { label: "CONTACT US" },
-];
-
-const contactInfo = [
-  {
-    icon: "/figmaAssets/icon-email.svg",
-    text: "1010 Avenue Of the moon\nlorem ipsum loresus",
-  },
-  {
-    icon: "/figmaAssets/icon-address.svg",
-    text: "Write us\ninfo@consultancy.com",
-  },
-  {
-    icon: "/figmaAssets/icon-phone.svg",
-    text: "212 456 879\nFree Call",
-  },
-];
-
-const howItWorksSteps = [
-  {
-    number: "01",
-    title: "Register Online",
-    description:
-      "we know your home is more than just a place to live, that's why we're committed to providing the best home loan",
-    image: "/figmaAssets/ellipse-1328.svg",
-    imagePosition: "left",
-    contentPosition: "right",
-    cardContent: {
-      title: "Register Online",
-      hasButton: true,
-    },
-  },
-  {
-    number: "02",
-    title: "Browse Jobs",
-    description:
-      "It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center",
-    image: "/figmaAssets/ellipse-1328.svg",
-    imagePosition: "right",
-    contentPosition: "left",
-    searchContent: {
-      title: "Search",
-    },
-  },
-  {
-    number: "03",
-    title: "Apply & Track",
-    description:
-      "It's about you and your family, having a comfortable payment, exceptional service and a lender.",
-    image: "/figmaAssets/ellipse-1328.svg",
-    imagePosition: "left",
-    contentPosition: "right",
-    trackingImage: "/figmaAssets/group-690.png",
-  },
-  {
-    number: "04",
-    title: "Screening & Interviews",
-    description:
-      "It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center",
-    image: "/figmaAssets/ellipse-1328.svg",
-    imagePosition: "right",
-    contentPosition: "left",
-    searchContent: {
-      title: "Search",
-    },
-  },
-];
+const navigationItems = ["HOME", "SERVICES", "JOBS", "CONTACT US"];
 
 export const HomePage = (): JSX.Element => {
   return (
-    <div className="bg-white w-full min-h-screen relative">
-      <header className="w-full">
-        <div className="w-full bg-[#11467a0d] py-3">
-          <div className="max-w-[1512px] mx-auto px-[172px] flex items-center justify-end gap-[35px]">
-            {contactInfo.map((info, index) => (
-              <div key={index} className="flex items-start gap-2.5">
-                <img
-                  className="w-[18px] h-[18px] mt-0.5"
-                  alt="Contact icon"
-                  src={info.icon}
-                />
-                <div className="[font-family:'Poppins',Helvetica] font-normal text-text-2 text-sm tracking-[0] leading-[22.4px] whitespace-pre-line">
-                  {info.text}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <nav className="w-full h-[67px] bg-[#11467a] flex items-center justify-between px-[172px]">
+    <div className="bg-white w-full min-h-screen">
+      {/* Header */}
+      <header className="w-full border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 lg:px-20 py-4 flex items-center justify-between">
           <img
-            className="w-[145px] h-[54px]"
+            src="/Group_1760620436964.png"
             alt="Duke Consultancy Logo"
-            src="/figmaAssets/image-5.png"
+            className="h-12 lg:h-16"
           />
-
-          <div className="flex items-center gap-10">
+          
+          <nav className="hidden md:flex items-center gap-8">
             {navigationItems.map((item, index) => (
-              <button
+              <a
                 key={index}
-                className="h-[38px] flex items-center justify-center px-0 py-2.5"
+                href="#"
+                className="text-sm font-medium text-gray-700 hover:text-[#00A6CE] transition-colors"
               >
-                <span className="[font-family:'Poppins',Helvetica] font-medium text-white text-sm tracking-[0] leading-[normal]">
-                  {item.label}
-                </span>
-              </button>
+                {item}
+              </a>
             ))}
-          </div>
+          </nav>
 
-          <div className="w-[38px] h-[38px] flex items-center justify-center">
-            <UserIcon className="w-[38px] h-[38px] text-white" />
-          </div>
-        </nav>
+          <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-6 py-2 rounded-full">
+            Get Started
+          </Button>
+        </div>
       </header>
 
-      <main>
-        <section className="w-full">
-          <img
-            className="w-full h-[600px] object-cover"
-            alt="Hero section"
-            src="/figmaAssets/hero-section.png"
-          />
-        </section>
+      {/* Hero Section */}
+      <section className="w-full bg-gradient-to-br from-[#E8F7FB] to-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-20 py-16 lg:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
+                <div className="w-2 h-2 bg-[#00A6CE] rounded-full"></div>
+                <span className="text-sm text-gray-600">Professionals for Global Opportunities</span>
+              </div>
+              
+              <h1 className="text-4xl lg:text-5xl font-bold text-[#2C5F6F] leading-tight">
+                Empowering Healthcare Professionals for Global Opportunities
+              </h1>
+              
+              <p className="text-gray-600 text-lg leading-relaxed">
+                We connect caring, talented healthcare professionals from Pakistan with rewarding international career opportunities, offering complete guidance from registration to relocation.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-6 rounded-full text-base">
+                  Browse Jobs
+                </Button>
+                <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-8 py-6 rounded-full text-base">
+                  Learn More
+                </Button>
+              </div>
+            </div>
 
-        <section className="max-w-[1512px] mx-auto px-[180px] py-[100px]">
-          <div className="grid grid-cols-2 gap-10 items-center">
+            <div className="relative">
+              <img
+                src="/pexels-tima-miroshnichenko-8376309 1_1760620436958.png"
+                alt="Healthcare Professional"
+                className="w-full rounded-3xl shadow-2xl"
+              />
+              <div className="absolute -bottom-8 -right-8 bg-white rounded-2xl shadow-xl p-6 max-w-xs hidden lg:block">
+                <div className="flex items-center gap-4">
+                  <div className="text-4xl font-bold text-[#00A6CE]">100+</div>
+                  <div className="text-sm text-gray-600">Successful Placements This Year</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Building Global Healthcare Section */}
+      <section className="w-full py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-6 lg:px-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <img
-                className="w-full h-[386px] object-cover"
-                alt="About Duke Consultancy"
-                src="/figmaAssets/rectangle-1.png"
+                src="/Image (6)_1760620436963.png"
+                alt="Healthcare Team"
+                className="w-full rounded-3xl shadow-xl"
               />
             </div>
 
-            <div className="flex flex-col gap-2.5">
-              <div className="flex flex-col gap-5">
-                <img
-                  className="w-[83px] h-[3px]"
-                  alt="Line"
-                  src="/figmaAssets/line-1.svg"
-                />
-                <h2 className="[font-family:'Poppins',Helvetica] font-semibold text-bluee text-[32px] tracking-[0] leading-[41.6px]">
-                  About Duke Consltancy
-                </h2>
-              </div>
+            <div className="space-y-6">
+              <h2 className="text-3xl lg:text-4xl font-bold text-[#2C5F6F]">
+                Building Global Healthcare Career Pathways
+              </h2>
+              
+              <p className="text-gray-600 text-lg leading-relaxed">
+                Duke Consultancy is a healthcare recruitment and placement firm dedicated to bridging the gap between skilled professionals in Pakistan and healthcare institutions across Europe, the UK, and other international destinations.
+              </p>
+              
+              <p className="text-gray-600 leading-relaxed">
+                With years of experience and a trusted process, we ensure every candidate is guided through documentation, compliance, and visa procedures smoothly, so they can focus on their careers.
+              </p>
 
-              <div className="[font-family:'Poppins',Helvetica] text-base tracking-[0] leading-[28.8px]">
-                <span className="font-medium text-black">
-                  Duke Consultancy is a healthcare recruitment and placement
-                  firm dedicated to bridging the gap between skilled
-                  professionals in Pakistan and healthcare institutions across
-                  Europe, the UK, and other international destinations.
-                  <br />
-                </span>
-                <span className="font-normal text-black">
-                  With years of experience and a trusted process, we ensure
-                  every candidate is guided through documentation, compliance,
-                  and visa procedures smoothly, so they can focus on their
-                  careers.
-                </span>
-              </div>
-
-              <button className="flex items-center gap-1 px-0 py-[3px] w-fit">
-                <span className="[font-family:'Poppins',Helvetica] font-medium text-[#11467a] text-sm tracking-[0] leading-[25.2px]">
-                  Read More
-                </span>
-                <div className="w-[15px] h-[13px] flex items-center justify-center">
-                  <img
-                    className="w-[11px] h-2.5"
-                    alt="Arrow"
-                    src="/figmaAssets/arrow.svg"
-                  />
-                </div>
-              </button>
+              <Button variant="link" className="text-[#00A6CE] text-base p-0 h-auto">
+                Read More →
+              </Button>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="max-w-[1512px] mx-auto px-[180px] py-[50px]">
-          <div className="flex flex-col items-center gap-[52px] mb-[90px]">
-            <h2 className="[font-family:'Poppins',Helvetica] font-semibold text-bluee text-[32px] text-center tracking-[0] leading-[48px]">
+      {/* How it Works Section */}
+      <section className="w-full py-16 lg:py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-20">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C5F6F] mb-4">
               How it works
             </h2>
-            <p className="max-w-[594px] [font-family:'Poppins',Helvetica] font-normal text-[#425466] text-base text-center tracking-[0] leading-[26px]">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Our streamlined process makes it easy for healthcare professionals to find and secure international opportunities
             </p>
           </div>
 
-          <div className="flex flex-col gap-[90px]">
-            {howItWorksSteps.map((step, index) => (
-              <div
-                key={index}
-                className={`relative flex items-center ${
-                  step.imagePosition === "left"
-                    ? "justify-start"
-                    : "justify-end"
-                }`}
-              >
-                {step.imagePosition === "left" && (
-                  <>
-                    <div className="absolute left-0 top-0 [font-family:'Poppins',Helvetica] font-bold text-[#d6d6d6] text-8xl text-center tracking-[0] leading-[96px]">
-                      {step.number}
-                    </div>
-                    <img
-                      className="absolute left-[31px] top-[105px] w-[418px] h-[209px]"
-                      alt="Background ellipse"
-                      src={step.image}
-                    />
-                  </>
-                )}
-
-                {step.imagePosition === "right" && (
-                  <>
-                    <div className="absolute right-[507px] top-0 [font-family:'Poppins',Helvetica] font-bold text-[#d6d6d6] text-8xl text-center tracking-[0] leading-[96px]">
-                      {step.number}
-                    </div>
-                    <img
-                      className="absolute right-[31px] top-[48px] w-[418px] h-[209px]"
-                      alt="Background ellipse"
-                      src={step.image}
-                    />
-                  </>
-                )}
-
-                <div
-                  className={`flex items-center gap-[100px] w-full ${
-                    step.contentPosition === "left"
-                      ? "flex-row"
-                      : "flex-row-reverse"
-                  }`}
-                >
-                  <div className="flex flex-col gap-[18px] w-[346px]">
-                    <h3 className="[font-family:'Poppins',Helvetica] font-medium text-bluee text-2xl tracking-[-0.24px] leading-[normal]">
-                      {step.title}
-                    </h3>
-                    <p className="[font-family:'Poppins',Helvetica] font-normal text-black text-base tracking-[0] leading-[30px]">
-                      {step.description}
-                    </p>
-                  </div>
-
-                  <div className="relative">
-                    {step.cardContent && (
-                      <Card className="w-[325px] h-[285px] bg-white border-[0.6px] border-[#f1f1f1] shadow-[0px_1.12px_1.9px_#38383806,0px_4.91px_3.93px_#3838380a,0px_12.05px_7.83px_#3838380d,0px_23.21px_15.35px_#38383810,0px_39.05px_28.23px_#38383813]">
-                        <CardContent className="p-[36px]">
-                          <div className="flex flex-col gap-[21.8px]">
-                            <h4 className="[font-family:'Poppins',Helvetica] font-medium text-[#222831] text-[26.2px] tracking-[-0.26px] leading-[normal] text-center">
-                              {step.cardContent.title}
-                            </h4>
-                            <div className="flex flex-col gap-[15.3px]">
-                              <div className="h-[10.92px] bg-[#f1f1f1] rounded-[65.52px]" />
-                              <div className="h-[10.92px] bg-[#f1f1f1] rounded-[65.52px] ml-[12px]" />
-                              <div className="h-[10.92px] bg-[#f1f1f1] rounded-[65.52px] ml-[15.3px]" />
-                              <div className="h-[10.92px] bg-[#f1f1f1] rounded-[65.52px] ml-[12px]" />
-                            </div>
-                            {step.cardContent.hasButton && (
-                              <div className="flex justify-center mt-[27.3px]">
-                                <Button className="h-[34.94px] bg-[#11467a] text-white text-[10.8px] px-6">
-                                  Sign up
-                                </Button>
-                              </div>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )}
-
-                    {step.searchContent && (
-                      <div className="w-[385px] h-[137px]">
-                        <Card className="w-[383px] h-[137px] bg-white border-[0.83px] border-[#f1f1f1] shadow-[0px_1.53px_2.61px_#38383806,0px_6.74px_5.39px_#3838380a,0px_16.55px_10.76px_#3838380d,0px_31.88px_21.09px_#38383810,0px_53.64px_38.77px_#38383813]">
-                          <CardContent className="p-0">
-                            <div className="pt-[13px] pb-[57px] px-[39px]">
-                              <h4 className="[font-family:'Poppins',Helvetica] font-normal text-[#313131] text-[22px] text-center tracking-[0] leading-[normal] mb-[44px]">
-                                {step.searchContent.title}
-                              </h4>
-                              <div className="relative w-[315px] h-[50px] bg-neutral-50 shadow-[inset_0px_0px_6px_#00000026]">
-                                <img
-                                  className="absolute top-2 left-[238px] w-[9px] h-[42px]"
-                                  alt="Divider"
-                                  src={
-                                    index === 1
-                                      ? "/figmaAssets/group-1000001638.png"
-                                      : "/figmaAssets/group-1000001638-1.png"
-                                  }
-                                />
-                                <img
-                                  className="absolute top-[17px] left-[267px] w-[21px] h-[21px]"
-                                  alt="Search"
-                                  src={
-                                    index === 1
-                                      ? "/figmaAssets/search-1.png"
-                                      : "/figmaAssets/search-1-1.png"
-                                  }
-                                />
-                                <span className="absolute top-[17px] left-[13px] [font-family:'Poppins',Helvetica] font-normal text-[#d6d6d6] text-xs tracking-[0] leading-[normal]">
-                                  Search services
-                                </span>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    )}
-
-                    {step.trackingImage && (
-                      <img
-                        className="w-[378px] h-[207px]"
-                        alt="Application tracking"
-                        src={step.trackingImage}
-                      />
-                    )}
-                  </div>
+          <div className="space-y-24">
+            {/* Step 01 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="relative">
+                <div className="absolute -top-12 -left-8 text-9xl font-bold text-gray-200">01</div>
+                <img
+                  src="/Ellipse 1328_1760620436962.png"
+                  alt="Register"
+                  className="relative z-10 w-full max-w-md mx-auto"
+                />
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <img src="/Illustration_1760620436963.png" alt="Register Illustration" className="w-48" />
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="max-w-[1512px] mx-auto px-[180px] py-[50px] flex justify-center">
-          <Button className="h-12 bg-orange hover:bg-orange/90 text-white px-[30px] py-2.5 rounded flex items-center gap-2.5">
-            <span className="[font-family:'Poppins',Helvetica] font-medium text-sm text-center tracking-[0] leading-6">
-              Start Your Application
-            </span>
-            <img
-              className="w-[11px] h-2.5"
-              alt="Arrow"
-              src="/figmaAssets/arrow.svg"
-            />
-          </Button>
-        </section>
-
-        <section className="w-full bg-[#11467a0d]">
-          <div className="max-w-[1512px] mx-auto grid grid-cols-2 gap-16 items-center">
-            <div>
-              <img
-                className="w-full h-[460px] object-cover"
-                alt="Why Choose Duke Consultancy"
-                src="/figmaAssets/rectangle-1-1.png"
-              />
+              <div className="space-y-4">
+                <h3 className="text-2xl font-semibold text-[#2C5F6F]">Register Online</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Create your profile in minutes. Upload your credentials, certifications, and work experience to get started on your global healthcare career journey.
+                </p>
+              </div>
             </div>
 
-            <div className="flex flex-col gap-5 pr-[180px]">
-              <h2 className="[font-family:'Poppins',Helvetica] font-semibold text-bluee text-[32px] tracking-[0] leading-[41.6px]">
-                Why Choose Duke Consultancy
-              </h2>
-              <img
-                className="w-[83px] h-[3px]"
-                alt="Line"
-                src="/figmaAssets/line-1.svg"
-              />
-              <div className="[font-family:'Poppins',Helvetica] font-normal text-black text-base tracking-[0] leading-[28.8px]">
-                Expertise in international healthcare recruitment.
-                <br />
-                End-to-end support from application to relocation.
-                <br />
-                Transparent tracking through your personal dashboard.
-                <br />
-                Strong network of employers across Europe & beyond.
-                <br />
-                Focus on ethical, compliant, and professional recruitment.
+            {/* Step 02 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-4 lg:order-2">
+                <h3 className="text-2xl font-semibold text-[#2C5F6F]">Browse Jobs</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Explore hundreds of verified healthcare positions across Europe, UK, and beyond. Filter by specialty, location, and compensation to find your perfect match.
+                </p>
               </div>
-              <button className="flex items-center gap-1 px-0 py-[3px] w-fit">
-                <span className="[font-family:'Poppins',Helvetica] font-medium text-blue-text1 text-sm tracking-[0] leading-[25.2px]">
-                  Read More
-                </span>
-                <div className="w-[15px] h-[13px] flex items-center justify-center">
+              <div className="relative lg:order-1">
+                <div className="absolute -top-12 -right-8 text-9xl font-bold text-gray-200">02</div>
+                <img
+                  src="/Ellipse 1328 (1)_1760620436962.png"
+                  alt="Browse"
+                  className="relative z-10 w-full max-w-md mx-auto"
+                />
+              </div>
+            </div>
+
+            {/* Step 03 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="relative">
+                <div className="absolute -top-12 -left-8 text-9xl font-bold text-gray-200">03</div>
+                <img
+                  src="/Ellipse 1328 (2)_1760620436961.png"
+                  alt="Apply"
+                  className="relative z-10 w-full max-w-md mx-auto"
+                />
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <img src="/Group 1000001647_1760620436964.png" alt="Apply Illustration" className="w-48" />
+                </div>
+              </div>
+              <div className="space-y-4">
+                <h3 className="text-2xl font-semibold text-[#2C5F6F]">Apply & Track</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Submit applications with one click and track your progress in real-time through our dashboard. Stay updated on every step of your application journey.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 04 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-4 lg:order-2">
+                <h3 className="text-2xl font-semibold text-[#2C5F6F]">Screening & Interviews</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Our team guides you through screening, interviews, and documentation. We ensure you're fully prepared for every interaction with potential employers.
+                </p>
+              </div>
+              <div className="relative lg:order-1">
+                <div className="absolute -top-12 -right-8 text-9xl font-bold text-gray-200">04</div>
+                <img
+                  src="/Ellipse 1328_1760620436962.png"
+                  alt="Interview"
+                  className="relative z-10 w-full max-w-md mx-auto"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Solutions Section */}
+      <section className="w-full py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-6 lg:px-20">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C5F6F] mb-4">
+              Our Solutions for Your <span className="text-[#00A6CE]">Nursing</span> Career
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-8 space-y-4">
+                <div className="w-16 h-16 bg-[#E8F7FB] rounded-2xl flex items-center justify-center">
+                  <img src="/Icon Badge_1760620436960.png" alt="Documentation" className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-semibold text-[#2C5F6F]">Complete Documentation</h3>
+                <p className="text-gray-600">
+                  We handle all paperwork, certifications, and compliance requirements for your international placement.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-8 space-y-4">
+                <div className="w-16 h-16 bg-[#E8F7FB] rounded-2xl flex items-center justify-center">
+                  <img src="/Icon Badge (1)_1760620436960.png" alt="Job Placement" className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-semibold text-[#2C5F6F]">Job Placement Support</h3>
+                <p className="text-gray-600">
+                  Access to exclusive healthcare positions with top institutions across Europe and beyond.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-8 space-y-4">
+                <div className="w-16 h-16 bg-[#E8F7FB] rounded-2xl flex items-center justify-center">
+                  <img src="/Icon Badge (2)_1760620436959.png" alt="Interview Support" className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-semibold text-[#2C5F6F]">Application & Job Support</h3>
+                <p className="text-gray-600">
+                  Expert coaching and preparation for interviews with international healthcare employers.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-br from-[#E8F7FB] to-white">
+              <CardContent className="p-8 flex items-center gap-6">
+                <img
+                  src="/iPhone 13 Pro (3) 1_1760620436961.png"
+                  alt="Mobile App"
+                  className="w-32"
+                />
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold text-[#2C5F6F]">Track Your Progress</h3>
+                  <p className="text-gray-600">
+                    Monitor your application status and communicate with our team through our mobile app.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow">
+              <CardContent className="p-8 space-y-4">
+                <div className="w-16 h-16 bg-[#E8F7FB] rounded-2xl flex items-center justify-center">
+                  <img src="/Icon Badge (1)_1760620436960.png" alt="Visa Support" className="w-10 h-10" />
+                </div>
+                <h3 className="text-xl font-semibold text-[#2C5F6F]">Visa & Relocation Assistance</h3>
+                <p className="text-gray-600">
+                  Complete support with visa processing and relocation logistics for a smooth transition.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="w-full py-16 lg:py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-20">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C5F6F]">
+              Testimonials from Our Satisfied Candidates
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="border-none shadow-lg">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-4 mb-4">
                   <img
-                    className="w-[11px] h-2.5"
-                    alt="Arrow"
-                    src="/figmaAssets/arrow.svg"
+                    src="/Image (7)_1760620436959.png"
+                    alt="Testimonial"
+                    className="w-20 h-20 rounded-full object-cover"
                   />
+                  <div>
+                    <h4 className="font-semibold text-[#2C5F6F]">Sarah Ahmed</h4>
+                    <p className="text-sm text-gray-500">Registered Nurse, UK</p>
+                  </div>
                 </div>
-              </button>
+                <p className="text-gray-600 leading-relaxed">
+                  "Duke Consultancy made my dream of working in the UK a reality. Their support throughout the entire process was exceptional, from documentation to my first day at work."
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg bg-[#E8F7FB]">
+              <CardContent className="p-8">
+                <div className="flex items-start gap-4 mb-4">
+                  <img
+                    src="/Image (7)_1760620436959.png"
+                    alt="Testimonial"
+                    className="w-20 h-20 rounded-full object-cover"
+                  />
+                  <div>
+                    <h4 className="font-semibold text-[#2C5F6F]">Ali Hassan</h4>
+                    <p className="text-sm text-gray-500">Medical Technician, Germany</p>
+                  </div>
+                </div>
+                <p className="text-gray-600 leading-relaxed">
+                  "Professional, reliable, and genuinely caring. The team at Duke Consultancy guided me through every step and I'm now working at a top hospital in Germany."
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Expert Advice Section */}
+      <section className="w-full py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-6 lg:px-20">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-[#2C5F6F]">
+              Expert Health Advice and Updates
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
+              <img
+                src="/pexels-tima-miroshnichenko-8376309 1_1760620436958.png"
+                alt="Blog post"
+                className="w-full h-48 object-cover"
+              />
+              <CardContent className="p-6 space-y-3">
+                <p className="text-sm text-gray-500">Jun 12, 2023 - Health Tips</p>
+                <h3 className="text-lg font-semibold text-[#2C5F6F]">
+                  How to Prepare for International Health Exams
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Essential tips for healthcare professionals preparing for international licensing exams.
+                </p>
+                <Button variant="link" className="text-[#00A6CE] p-0 h-auto">
+                  Read More →
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
+              <img
+                src="/Image (6)_1760620436963.png"
+                alt="Blog post"
+                className="w-full h-48 object-cover"
+              />
+              <CardContent className="p-6 space-y-3">
+                <p className="text-sm text-gray-500">Jun 10, 2023 - Career</p>
+                <h3 className="text-lg font-semibold text-[#2C5F6F]">
+                  Top 5 Countries for Healthcare Professionals
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Discover the best destinations for healthcare professionals seeking international opportunities.
+                </p>
+                <Button variant="link" className="text-[#00A6CE] p-0 h-auto">
+                  Read More →
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
+              <img
+                src="/pexels-tima-miroshnichenko-8376309 1_1760620436958.png"
+                alt="Blog post"
+                className="w-full h-48 object-cover"
+              />
+              <CardContent className="p-6 space-y-3">
+                <p className="text-sm text-gray-500">Jun 08, 2023 - Documentation</p>
+                <h3 className="text-lg font-semibold text-[#2C5F6F]">
+                  Breaking Down Healthcare Visa Requirements
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  A comprehensive guide to understanding visa requirements for healthcare workers.
+                </p>
+                <Button variant="link" className="text-[#00A6CE] p-0 h-auto">
+                  Read More →
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="w-full py-16 lg:py-24 bg-gradient-to-r from-[#2C5F6F] to-[#00A6CE]">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
+            Start Your Professional Journey Here
+          </h2>
+          <p className="text-white/90 text-lg mb-8">
+            Join thousands of healthcare professionals who have successfully launched their international careers with Duke Consultancy
+          </p>
+          <Button className="bg-white text-[#2C5F6F] hover:bg-gray-100 px-8 py-6 rounded-full text-base font-semibold">
+            Get Started Today
+          </Button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="w-full bg-[#2C5F6F] text-white py-12">
+        <div className="max-w-7xl mx-auto px-6 lg:px-20">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div className="space-y-4">
+              <img
+                src="/Group_1760620436964.png"
+                alt="Duke Consultancy Logo"
+                className="h-12 brightness-0 invert"
+              />
+              <p className="text-white/80 text-sm">
+                Connecting talented healthcare professionals with global opportunities.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-4">Services</h3>
+              <ul className="space-y-2 text-white/80 text-sm">
+                <li><a href="#" className="hover:text-white">Job Placement</a></li>
+                <li><a href="#" className="hover:text-white">Documentation Support</a></li>
+                <li><a href="#" className="hover:text-white">Visa Assistance</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-4">Company</h3>
+              <ul className="space-y-2 text-white/80 text-sm">
+                <li><a href="#" className="hover:text-white">About Us</a></li>
+                <li><a href="#" className="hover:text-white">Contact</a></li>
+                <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-4">Follow Us</h3>
+              <div className="flex gap-4">
+                <a href="#" className="hover:opacity-80">
+                  <img src="/fb_1760620436958.png" alt="Facebook" className="w-8 h-8" />
+                </a>
+                <a href="#" className="hover:opacity-80">
+                  <img src="/twt_1760620436957.png" alt="Twitter" className="w-8 h-8" />
+                </a>
+                <a href="#" className="hover:opacity-80">
+                  <img src="/ig_1760620436957.png" alt="Instagram" className="w-8 h-8" />
+                </a>
+              </div>
             </div>
           </div>
-        </section>
 
-        <section className="w-full">
-          <img
-            className="w-full h-[179px]"
-            alt="About us section"
-            src="/figmaAssets/about-us.png"
-          />
-        </section>
-
-        <section className="w-full">
-          <img
-            className="w-full h-[552px]"
-            alt="About us section"
-            src="/figmaAssets/about-us-1.png"
-          />
-        </section>
-
-        <section className="w-full">
-          <img
-            className="w-full h-[420px]"
-            alt="About us section"
-            src="/figmaAssets/about-us-2.png"
-          />
-        </section>
-      </main>
+          <div className="border-t border-white/20 pt-8 text-center text-white/60 text-sm">
+            © 2024 Duke Consultancy & Training. All rights reserved.
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
