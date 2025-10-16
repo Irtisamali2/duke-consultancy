@@ -287,70 +287,70 @@ export const HomePage = () => {
             </h2>
           </div>
 
-          {/* 2x3 Grid Layout matching Figma exactly */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Row 1, Col 1: Healthcare Recruitment Card */}
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-4">
-              <div className="w-14 h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
-                <img src="/Icon Badge_1760620436960.png" alt="Healthcare" className="w-8 h-8" />
+          {/* Grid Layout matching Figma exactly */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 auto-rows-fr">
+            {/* Healthcare Recruitment Card with phone mockup inside */}
+            <div className="bg-gray-50 rounded-3xl p-8 flex flex-col lg:flex-row gap-6 lg:col-span-2">
+              <div className="flex-1 space-y-4">
+                <div className="w-14 h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
+                  <img src="/Icon Badge_1760620436960.png" alt="Healthcare" className="w-8 h-8" />
+                </div>
+                <h3 className="text-2xl font-bold text-black">Healthcare Recruitment</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  We connect highly skilled nurses, therapists, technicians, allied health professionals, and administrative staff with reputable healthcare facilities, ensuring a career path that matches their expertise.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-black">Healthcare Recruitment</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                We connect highly skilled nurses, therapists, technicians, allied health professionals, and administrative staff with reputable healthcare facilities, ensuring a career path that matches their expertise.
-              </p>
-            </div>
-
-            {/* Row 1, Col 2: Phone mockup - Doctor interface */}
-            <div className="flex justify-center items-center bg-gray-50 rounded-2xl">
-              <img
-                src="/iPhone 13 Pro (2) 1_1760620436961.png"
-                alt="Healthcare App"
-                className="w-64 h-auto"
-              />
-            </div>
-
-            {/* Row 1, Col 3: Professional Training Card */}
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-4">
-              <div className="w-14 h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
-                <img src="/Icon Badge (1)_1760620436960.png" alt="Training" className="w-8 h-8" />
+              <div className="flex justify-center items-center">
+                <img
+                  src="/Mobile (1)_1760624836582.png"
+                  alt="Healthcare App"
+                  className="w-56 h-auto"
+                />
               </div>
-              <h3 className="text-xl font-bold text-black">Professional Training & Development</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Duke Consultancy provides access to specialized training programs, helping healthcare professionals upgrade their skills and stay competitive in global markets.
-              </p>
             </div>
 
-            {/* Row 2, Col 1: Job Placement Abroad Card */}
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-4">
+            {/* Professional Training & Development - Tall block with phone at bottom */}
+            <div className="bg-gray-50 rounded-3xl p-8 lg:row-span-2 flex flex-col">
+              <div className="space-y-4 mb-8">
+                <div className="w-14 h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
+                  <img src="/Icon Badge (1)_1760620436960.png" alt="Training" className="w-8 h-8" />
+                </div>
+                <h3 className="text-2xl font-bold text-black">Professional Training & Development</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Duke Consultancy provides access to specialized training programs, helping healthcare professionals upgrade their skills and stay competitive in global markets.
+                </p>
+              </div>
+              <div className="flex-1 flex justify-center items-end">
+                <img
+                  src="/iPhone 13 Pro (3) 1_1760620436961.png"
+                  alt="Video Call"
+                  className="w-64 h-auto"
+                />
+              </div>
+            </div>
+
+            {/* Job Placement Abroad Card */}
+            <div className="bg-gray-50 rounded-3xl p-8 space-y-4">
               <div className="w-14 h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
                 <img src="/Icon Badge (2)_1760620436959.png" alt="Job Placement" className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-black">Job Placement Abroad</h3>
+              <h3 className="text-2xl font-bold text-black">Job Placement Abroad</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 From the UK and Europe to the Middle East, we facilitate international placements, offering candidates opportunities to expand their careers globally.
               </p>
             </div>
 
-            {/* Row 2, Col 2: Application & Visa Support Card */}
-            <div className="bg-gray-50 rounded-2xl p-8 space-y-4">
+            {/* Application & Visa Support Card */}
+            <div className="bg-gray-50 rounded-3xl p-8 space-y-4">
               <div className="w-14 h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
                 <svg className="w-8 h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-black">Application & Visa Support</h3>
+              <h3 className="text-2xl font-bold text-black">Application & Visa Support</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 Our team assists with paperwork, compliance, visa filing, and documentation, making the relocation process smooth and hassle-free.
               </p>
-            </div>
-
-            {/* Row 2, Col 3: Phone mockup - Video call */}
-            <div className="flex justify-center items-center bg-gray-50 rounded-2xl">
-              <img
-                src="/iPhone 13 Pro (3) 1_1760620436961.png"
-                alt="Video Call"
-                className="w-64 h-auto"
-              />
             </div>
           </div>
         </div>
