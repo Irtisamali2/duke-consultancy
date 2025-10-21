@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, ArrowRight } from "lucide-react";
@@ -7,6 +8,8 @@ import { Footer } from "@/components/Footer";
 import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 
 export const HomePage = () => {
+  const [, setLocation] = useLocation();
+  
   return (
     <div className="bg-white w-full min-h-screen">
       <Header currentPage="home" />
@@ -31,7 +34,10 @@ export const HomePage = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-10 py-6 rounded-full text-base font-medium">
+                <Button 
+                  onClick={() => setLocation('/candidate/register')}
+                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-10 py-6 rounded-full text-base font-medium"
+                >
                   Apply Now
                 </Button>
                 <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-10 py-6 rounded-full text-base font-medium flex items-center gap-2">
@@ -428,7 +434,10 @@ export const HomePage = () => {
             Start Your Professional Journey Here
           </h2>
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-10 py-6 rounded-full text-base font-semibold">
+            <Button 
+              onClick={() => setLocation('/candidate/register')}
+              className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-10 py-6 rounded-full text-base font-semibold"
+            >
               Get Registered
             </Button>
             <Button variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-[#00A6CE] bg-transparent px-10 py-6 rounded-full text-base font-semibold">

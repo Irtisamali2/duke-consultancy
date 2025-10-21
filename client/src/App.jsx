@@ -19,6 +19,11 @@ import JobFormPage from "@/pages/admin/JobFormPage";
 import ApplicationsPage from "@/pages/admin/ApplicationsPage";
 import ApplicationDetailsPage from "@/pages/admin/ApplicationDetailsPage";
 
+import CandidateLoginPage from "@/pages/candidate/CandidateLoginPage";
+import CandidateRegisterPage from "@/pages/candidate/CandidateRegisterPage";
+import CandidateProfileFormPage from "@/pages/candidate/CandidateProfileFormPage";
+import CandidateDashboardPage from "@/pages/candidate/CandidateDashboardPage";
+
 function Router() {
   return (
     <Switch>
@@ -26,6 +31,12 @@ function Router() {
       <Route path="/" component={HomePage} />
       <Route path="/about" component={AboutPage} />
       <Route path="/contact" component={ContactPage} />
+      
+      {/* Candidate pages */}
+      <Route path="/candidate/login" component={CandidateLoginPage} />
+      <Route path="/candidate/register" component={CandidateRegisterPage} />
+      <Route path="/candidate/dashboard" component={CandidateDashboardPage} />
+      <Route path="/candidate/profile" component={CandidateProfileFormPage} />
       
       {/* Admin pages */}
       <Route path="/admin/login" component={AdminLoginPage} />

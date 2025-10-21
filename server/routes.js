@@ -9,6 +9,8 @@ import applicationsRoutes from "./routes/applications.js";
 import healthcareProfilesRoutes from "./routes/healthcare-profiles.js";
 import blogsRoutes from "./routes/blogs.js";
 import statsRoutes from "./routes/stats.js";
+import candidateAuthRoutes from "./routes/candidate-auth.js";
+import candidateProfileRoutes from "./routes/candidate-profile.js";
 
 export async function registerRoutes(app) {
   // Database test routes
@@ -18,6 +20,7 @@ export async function registerRoutes(app) {
   
   // Authentication routes
   app.use('/api', authRoutes);
+  app.use('/api', candidateAuthRoutes);
   
   // Admin CRUD routes
   app.use('/api', jobsRoutes);
@@ -25,6 +28,9 @@ export async function registerRoutes(app) {
   app.use('/api', healthcareProfilesRoutes);
   app.use('/api', blogsRoutes);
   app.use('/api', statsRoutes);
+  
+  // Candidate routes
+  app.use('/api', candidateProfileRoutes);
 
   // put application routes here
   // prefix all routes with /api
