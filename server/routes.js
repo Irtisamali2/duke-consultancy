@@ -1,7 +1,11 @@
 import { createServer } from "http";
 import { storage } from "./storage.js";
+import testRoutes from "./routes/test.js";
 
 export async function registerRoutes(app) {
+  // Database test routes
+  app.use('/api', testRoutes);
+
   // put application routes here
   // prefix all routes with /api
 
