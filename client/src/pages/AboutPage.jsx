@@ -234,24 +234,34 @@ export const AboutPage = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="w-full py-16 bg-[#00A6CE]">
+      <section className="w-full py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-20">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
-              <h3 className="text-4xl lg:text-5xl font-bold text-white mb-2">10K+</h3>
-              <p className="text-white/90 text-sm">Successful Placements</p>
-            </div>
-            <div className="text-center">
-              <h3 className="text-4xl lg:text-5xl font-bold text-white mb-2">2,650+</h3>
-              <p className="text-white/90 text-sm">Healthcare Professionals</p>
-            </div>
-            <div className="text-center">
-              <h3 className="text-4xl lg:text-5xl font-bold text-white mb-2">15+</h3>
-              <p className="text-white/90 text-sm">Countries Served</p>
-            </div>
-            <div className="text-center">
-              <h3 className="text-4xl lg:text-5xl font-bold text-white mb-2">100%</h3>
-              <p className="text-white/90 text-sm">Client Satisfaction</p>
+          <div className="bg-[#00A6CE] rounded-3xl p-8 lg:p-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-[#3D7A8A] rounded-2xl p-6">
+                <h3 className="text-4xl lg:text-5xl font-bold text-white mb-3">10K+</h3>
+                <p className="text-white text-sm leading-relaxed">
+                  Nurses and healthcare professionals supported in building global careers.
+                </p>
+              </div>
+              <div className="p-6">
+                <h3 className="text-4xl lg:text-5xl font-bold text-white mb-3">2,650+</h3>
+                <p className="text-white text-sm leading-relaxed">
+                  Candidates placed successfully with trusted international employers.
+                </p>
+              </div>
+              <div className="p-6">
+                <h3 className="text-4xl lg:text-5xl font-bold text-white mb-3">15+</h3>
+                <p className="text-white text-sm leading-relaxed">
+                  Years of combined expertise in healthcare recruitment and training.
+                </p>
+              </div>
+              <div className="p-6">
+                <h3 className="text-4xl lg:text-5xl font-bold text-white mb-3">100%</h3>
+                <p className="text-white text-sm leading-relaxed">
+                  Commitment to ethical, transparent, and candidate-first recruitment.
+                </p>
+              </div>
             </div>
           </div>
         </div>
