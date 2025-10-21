@@ -8,25 +8,30 @@ CREATE TABLE IF NOT EXISTS admins (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Candidates/Nurses Table  
+-- Candidates/Healthcare Professionals Table  
 CREATE TABLE IF NOT EXISTS candidates (
   id INT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(255) UNIQUE NOT NULL,
   password VARCHAR(255) NOT NULL,
-  first_name VARCHAR(255),
-  last_name VARCHAR(255),
-  phone VARCHAR(50),
   status ENUM('pending', 'verified', 'rejected') DEFAULT 'pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Nurse Profiles Table (detailed information)
-CREATE TABLE IF NOT EXISTS nurse_profiles (
+-- Healthcare Profiles Table (detailed information matching Figma exactly)
+CREATE TABLE IF NOT EXISTS healthcare_profiles (
   id INT AUTO_INCREMENT PRIMARY KEY,
   candidate_id INT NOT NULL,
   
-  -- Personal Information
+  -- 1-Trade Information
+  trade_applied_for VARCHAR(255),
+  availability_to_join VARCHAR(100),
+  willingness_to_relocate ENUM('yes', 'no'),
+  
+  -- 2-Personal Information
+  photo_url VARCHAR(500),
+  first_name VARCHAR(255),
+  last_name VARCHAR(255),
   father_husband_name VARCHAR(255),
   marital_status VARCHAR(50),
   gender VARCHAR(20),
@@ -41,51 +46,30 @@ CREATE TABLE IF NOT EXISTS nurse_profiles (
   passport_number VARCHAR(50),
   passport_issue_date DATE,
   passport_expire_date DATE,
-  email_confirm VARCHAR(255),
-  tel_off VARCHAR(50),
-  tel_res VARCHAR(50),
-  mobile VARCHAR(50),
+  email_address VARCHAR(255),
+  confirm_email_address VARCHAR(255),
+  tel_off_no VARCHAR(50),
+  tel_res_no VARCHAR(50),
+  mobile_no VARCHAR(50),
   present_address TEXT,
   present_street VARCHAR(255),
   present_postal_code VARCHAR(20),
   permanent_address TEXT,
   permanent_street VARCHAR(255),
   permanent_postal_code VARCHAR(20),
-  same_as_present BOOLEAN DEFAULT FALSE,
-  
-  -- Trade Information
-  trade_applied_for VARCHAR(255),
-  availability_to_join VARCHAR(100),
-  willingness_to_relocate ENUM('yes', 'no'),
-  
-  -- Professional Details
-  current_job_title VARCHAR(255),
-  current_employer VARCHAR(255),
-  specialization VARCHAR(255),
-  years_of_experience INT,
-  preferred_country VARCHAR(255),
-  expected_salary VARCHAR(100),
-  
-  -- Documents
-  photo_url VARCHAR(500),
-  cv_url VARCHAR(500),
-  passport_url VARCHAR(500),
-  degree_certificates_url VARCHAR(500),
-  license_certificate_url VARCHAR(500),
-  ielts_certificate_url VARCHAR(500),
-  experience_letters_url VARCHAR(500),
+  same_as_present_address BOOLEAN DEFAULT FALSE,
   
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
 );
 
--- Education Records Table
+-- 4-Education & Certifications Table
 CREATE TABLE IF NOT EXISTS education_records (
   id INT AUTO_INCREMENT PRIMARY KEY,
   candidate_id INT NOT NULL,
-  degree_title VARCHAR(255),
-  university_name VARCHAR(255),
+  degree_diploma_title VARCHAR(255),
+  university_institute_name VARCHAR(255),
   graduation_year VARCHAR(10),
   program_duration VARCHAR(50),
   registration_number VARCHAR(100),
@@ -94,7 +78,7 @@ CREATE TABLE IF NOT EXISTS education_records (
   FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
 );
 
--- Work Experience Table
+-- 3-Professional Details / Work Experience Table
 CREATE TABLE IF NOT EXISTS work_experience (
   id INT AUTO_INCREMENT PRIMARY KEY,
   candidate_id INT NOT NULL,
@@ -105,6 +89,21 @@ CREATE TABLE IF NOT EXISTS work_experience (
   to_date DATE,
   total_experience VARCHAR(50),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
+);
+
+-- 5-Document Uploads
+CREATE TABLE IF NOT EXISTS candidate_documents (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  candidate_id INT NOT NULL,
+  cv_resume_url VARCHAR(500),
+  passport_url VARCHAR(500),
+  degree_certificates_url VARCHAR(500),
+  license_certificate_url VARCHAR(500),
+  ielts_oet_certificate_url VARCHAR(500),
+  experience_letters_url VARCHAR(500),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
 );
 
