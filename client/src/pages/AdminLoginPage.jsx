@@ -1,16 +1,40 @@
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { Button } from '../components/ui/button';
 
 export default function AdminLoginPage() {
+  const [, setLocation] = useLocation();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Admin login:', formData);
-    // TODO: Implement login logic
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setLocation('/admin/dashboard');
+      } else {
+        setError(data.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -37,6 +61,12 @@ export default function AdminLoginPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
+              
               <div>
                 <label className="block text-gray-900 text-sm font-medium mb-2">
                   Email Address
@@ -49,6 +79,7 @@ export default function AdminLoginPage() {
                   placeholder="Email Address"
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-sm"
                   required
+                  disabled={loading}
                 />
               </div>
 
@@ -64,22 +95,21 @@ export default function AdminLoginPage() {
                   placeholder="************"
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-sm"
                   required
+                  disabled={loading}
                 />
               </div>
 
               <div className="text-center">
-                <p className="text-gray-600 text-sm mb-6">
-                  Don't have an account?{' '}
-                  <a href="#" className="text-[#00A6CE] font-medium hover:underline">
-                    Register
-                  </a>
-                </p>
                 <Button 
                   type="submit"
                   className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-12 py-6 rounded-full text-base font-semibold"
+                  disabled={loading}
                 >
-                  Register
+                  {loading ? 'Logging in...' : 'Login'}
                 </Button>
+                <p className="text-gray-600 text-xs mt-4">
+                  Demo: admin@duke.com / admin123
+                </p>
               </div>
             </form>
           </div>

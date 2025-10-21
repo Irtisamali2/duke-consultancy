@@ -2,11 +2,15 @@ import { createServer } from "http";
 import { storage } from "./storage.js";
 import testRoutes from "./routes/test.js";
 import migrateRoutes from "./routes/migrate.js";
+import authRoutes from "./routes/auth.js";
 
 export async function registerRoutes(app) {
   // Database test routes
   app.use('/api', testRoutes);
   app.use('/api', migrateRoutes);
+  
+  // Authentication routes
+  app.use('/api', authRoutes);
 
   // put application routes here
   // prefix all routes with /api

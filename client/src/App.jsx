@@ -9,6 +9,7 @@ import { HomePage } from "@/pages/HomePage";
 import { AboutPage } from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
 import AdminLoginPage from "@/pages/AdminLoginPage";
+import AdminDashboardPage from "@/pages/AdminDashboardPage";
 import DatabaseTestPage from "@/pages/DatabaseTestPage";
 
 function Router() {
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/about" component={AboutPage} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/admin/login" component={AdminLoginPage} />
+      <Route path="/admin/dashboard" component={AdminDashboardPage} />
       <Route path="/db-test" component={DatabaseTestPage} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
