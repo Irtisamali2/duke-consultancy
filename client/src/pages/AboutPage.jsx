@@ -62,7 +62,7 @@ export const AboutPage = () => {
       <Header currentPage="about" />
 
       {/* Hero Section */}
-      <section className="w-full py-16 lg:py-24 bg-[#E8F7FB]">
+      <section className="w-full py-16 lg:py-24 bg-gradient-to-b from-[#37AFCD]/40 to-white">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full mb-6">
             <svg className="w-5 h-5 text-[#00A6CE]" fill="currentColor" viewBox="0 0 20 20">
