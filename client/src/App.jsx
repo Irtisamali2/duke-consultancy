@@ -18,8 +18,6 @@ import JobsPage from "@/pages/admin/JobsPage";
 import JobFormPage from "@/pages/admin/JobFormPage";
 import ApplicationsPage from "@/pages/admin/ApplicationsPage";
 import ApplicationDetailsPage from "@/pages/admin/ApplicationDetailsPage";
-import HealthcareProfilesPage from "@/pages/admin/HealthcareProfilesPage";
-import HealthcareProfileDetailsPage from "@/pages/admin/HealthcareProfileDetailsPage";
 
 function Router() {
   return (
@@ -46,10 +44,6 @@ function Router() {
       {/* Applications */}
       <Route path="/admin/applications" component={ApplicationsPage} />
       <Route path="/admin/applications/:id" component={ApplicationDetailsPage} />
-      
-      {/* Healthcare Profiles */}
-      <Route path="/admin/profiles" component={HealthcareProfilesPage} />
-      <Route path="/admin/profiles/:id" component={HealthcareProfileDetailsPage} />
       
       {/* Database test */}
       <Route path="/db-test" component={DatabaseTestPage} />

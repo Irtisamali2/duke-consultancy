@@ -98,7 +98,7 @@ export default function AdminDashboardPage() {
         {/* Quick Actions */}
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Button 
               onClick={() => setLocation('/admin/applications')}
               className="bg-[#00A6CE] hover:bg-[#0090B5] text-white"
@@ -110,12 +110,6 @@ export default function AdminDashboardPage() {
               className="bg-[#00A6CE] hover:bg-[#0090B5] text-white"
             >
               Manage Jobs
-            </Button>
-            <Button 
-              onClick={() => setLocation('/admin/profiles')}
-              className="bg-[#00A6CE] hover:bg-[#0090B5] text-white"
-            >
-              View Profiles
             </Button>
             <Button 
               onClick={() => setLocation('/admin/blogs')}

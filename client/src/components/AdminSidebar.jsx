@@ -7,7 +7,6 @@ export default function AdminSidebar({ admin, onLogout }) {
     { path: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
     { path: '/admin/jobs', label: 'Job Management', icon: '💼' },
     { path: '/admin/applications', label: 'Applications Management', icon: '📝' },
-    { path: '/admin/profiles', label: 'Nurse Profiles', icon: '👥' },
     { path: '/admin/blogs', label: 'Blogs', icon: '📰' },
     { path: '/admin/profile', label: 'My Profile', icon: '👤' },
   ];
