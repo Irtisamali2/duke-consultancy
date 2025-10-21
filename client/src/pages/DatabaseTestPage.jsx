@@ -4,6 +4,7 @@ import { Button } from '../components/ui/button';
 export default function DatabaseTestPage() {
   const [testResult, setTestResult] = useState(null);
   const [tablesResult, setTablesResult] = useState(null);
+  const [migrationResult, setMigrationResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const testConnection = async () => {
@@ -26,6 +27,23 @@ export default function DatabaseTestPage() {
       setTablesResult(data);
     } catch (error) {
       setTablesResult({ success: false, message: 'Failed to get tables', error: error.message });
+    }
+    setLoading(false);
+  };
+
+  const runMigration = async () => {
+    if (!confirm('This will create all database tables. Continue?')) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch('/api/run-migration', { method: 'POST' });
+      const data = await response.json();
+      setMigrationResult(data);
+      if (data.success) {
+        checkTables(); // Refresh tables list
+      }
+    } catch (error) {
+      setMigrationResult({ success: false, message: 'Migration failed', error: error.message });
     }
     setLoading(false);
   };
@@ -60,6 +78,25 @@ export default function DatabaseTestPage() {
             disabled={loading}
           >
             Test Connection Again
+          </Button>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <h2 className="text-xl font-bold mb-4">Create Database Tables</h2>
+          <p className="text-gray-600 mb-4">Run this to create all tables for the admin portal</p>
+          
+          {migrationResult && (
+            <div className="bg-gray-100 rounded p-4 font-mono text-sm mb-4">
+              <pre>{JSON.stringify(migrationResult, null, 2)}</pre>
+            </div>
+          )}
+
+          <Button 
+            onClick={runMigration} 
+            className="bg-green-600 hover:bg-green-700 text-white"
+            disabled={loading}
+          >
+            Run Migration (Create Tables)
           </Button>
         </div>
 
