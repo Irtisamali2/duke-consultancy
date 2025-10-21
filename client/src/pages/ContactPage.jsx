@@ -135,7 +135,7 @@ export default function ContactPage() {
             </div>
 
             {/* Contact Info */}
-            <div className="bg-[#3D7A8A] rounded-3xl p-8 lg:p-10 text-white">
+            <div className="bg-gradient-to-b from-[#24495C] to-[#00AADC] rounded-3xl p-8 lg:p-10 text-white">
               <h2 className="text-2xl font-bold mb-3">Contact Info</h2>
               <p className="text-white/90 text-sm mb-8">
                 Explore our services today and see how we can help you succeed.
