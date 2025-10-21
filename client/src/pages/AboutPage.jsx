@@ -82,7 +82,7 @@ export const AboutPage = () => {
       {/* Who We Are Section */}
       <section className="w-full py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-16">
             <div>
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">Who We Are</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
@@ -105,59 +105,47 @@ export const AboutPage = () => {
                 className="w-full h-full object-cover"
               />
               <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
-                <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-3 rounded-full text-base font-semibold">
+                <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-10 py-3 rounded-full text-base font-semibold">
                   Apply Now
                 </Button>
               </div>
             </div>
           </div>
 
-          {/* Mission & Vision within Who We Are */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Mission & Vision - Below Who We Are */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Our Mission</h3>
-              <ul className="space-y-4">
+              <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6">Our Mission</h3>
+              <ul className="space-y-3">
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-[#00A6CE] mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">To empower</span>
+                  <span className="text-gray-700 text-base">• Prepare</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-[#00A6CE] mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">To provide</span>
+                  <span className="text-gray-700 text-base">• Empower</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-[#00A6CE] mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">To educate</span>
+                  <span className="text-gray-700 text-base">• Facilitate</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-gray-700 text-base">• Support</span>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Our Vision</h3>
-              <ul className="space-y-4">
+              <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6">Our Vision</h3>
+              <ul className="space-y-3">
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-[#00A6CE] mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">To lead</span>
+                  <span className="text-gray-700 text-base">• Lead</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-[#00A6CE] mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">To build</span>
+                  <span className="text-gray-700 text-base">• Bridge</span>
                 </li>
                 <li className="flex items-start">
-                  <svg className="w-6 h-6 text-[#00A6CE] mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">To innovate</span>
+                  <span className="text-gray-700 text-base">• Empower</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-gray-700 text-base">• Elevate</span>
                 </li>
               </ul>
             </div>
