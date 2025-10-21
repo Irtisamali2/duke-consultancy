@@ -5,21 +5,21 @@ const testimonials = [
     id: 1,
     name: "Dr. Ahmed Malik",
     role: "Registered Nurse in London",
-    image: "/testimonial-photo1.png",
+    image: "/testimonial-doctor.jpg",
     text: "The guidance I received from Duke Consultancy was exceptional. They helped me navigate the complex visa process and secure a position at a leading hospital in London. Highly recommended!"
   },
   {
     id: 2,
     name: "Ayesha Rahman",
     role: "Healthcare Professional in Germany",
-    image: "/testimonial-photo2.png",
+    image: "/testimonial-nurse1.jpg",
     text: "Duke Consultancy made my dream of working abroad a reality. Their team was professional, supportive, and guided me through every step of the application process."
   },
   {
     id: 3,
     name: "Zainab Hussain",
     role: "Nurse Practitioner in UAE",
-    image: "/testimonial-photo3.jpg",
+    image: "/testimonial-nurse2.jpg",
     text: "I'm grateful for the comprehensive support Duke Consultancy provided. From training to placement, they were with me every step of the way. Now I'm successfully working in Dubai!"
   }
 ];
