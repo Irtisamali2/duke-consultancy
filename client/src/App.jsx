@@ -12,16 +12,48 @@ import AdminLoginPage from "@/pages/AdminLoginPage";
 import AdminDashboardPage from "@/pages/AdminDashboardPage";
 import DatabaseTestPage from "@/pages/DatabaseTestPage";
 
+import BlogsPage from "@/pages/admin/BlogsPage";
+import BlogFormPage from "@/pages/admin/BlogFormPage";
+import JobsPage from "@/pages/admin/JobsPage";
+import JobFormPage from "@/pages/admin/JobFormPage";
+import ApplicationsPage from "@/pages/admin/ApplicationsPage";
+import ApplicationDetailsPage from "@/pages/admin/ApplicationDetailsPage";
+import HealthcareProfilesPage from "@/pages/admin/HealthcareProfilesPage";
+import HealthcareProfileDetailsPage from "@/pages/admin/HealthcareProfileDetailsPage";
+
 function Router() {
   return (
     <Switch>
-      {/* Add pages below */}
+      {/* Public pages */}
       <Route path="/" component={HomePage} />
       <Route path="/about" component={AboutPage} />
       <Route path="/contact" component={ContactPage} />
+      
+      {/* Admin pages */}
       <Route path="/admin/login" component={AdminLoginPage} />
       <Route path="/admin/dashboard" component={AdminDashboardPage} />
+      
+      {/* Blogs */}
+      <Route path="/admin/blogs" component={BlogsPage} />
+      <Route path="/admin/blogs/new" component={BlogFormPage} />
+      <Route path="/admin/blogs/edit/:id" component={BlogFormPage} />
+      
+      {/* Jobs */}
+      <Route path="/admin/jobs" component={JobsPage} />
+      <Route path="/admin/jobs/new" component={JobFormPage} />
+      <Route path="/admin/jobs/edit/:id" component={JobFormPage} />
+      
+      {/* Applications */}
+      <Route path="/admin/applications" component={ApplicationsPage} />
+      <Route path="/admin/applications/:id" component={ApplicationDetailsPage} />
+      
+      {/* Healthcare Profiles */}
+      <Route path="/admin/profiles" component={HealthcareProfilesPage} />
+      <Route path="/admin/profiles/:id" component={HealthcareProfileDetailsPage} />
+      
+      {/* Database test */}
       <Route path="/db-test" component={DatabaseTestPage} />
+      
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>

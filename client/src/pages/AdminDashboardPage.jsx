@@ -1,83 +1,48 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '../components/ui/button';
+import AdminLayout from '../components/AdminLayout';
 
 export default function AdminDashboardPage() {
   const [, setLocation] = useLocation();
-  const [admin, setAdmin] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalApplications: 0,
+    activeJobs: 0,
+    healthcareProfiles: 0,
+    publishedBlogs: 0
+  });
 
   useEffect(() => {
-    checkAuth();
+    fetchStats();
   }, []);
 
-  const checkAuth = async () => {
+  const fetchStats = async () => {
     try {
-      const response = await fetch('/api/admin/verify');
+      const response = await fetch('/api/stats');
       const data = await response.json();
-
       if (data.success) {
-        setAdmin(data.admin);
-      } else {
-        setLocation('/admin/login');
+        setStats(data.stats);
       }
     } catch (error) {
-      setLocation('/admin/login');
-    } finally {
-      setLoading(false);
+      console.error('Failed to fetch stats:', error);
     }
   };
-
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/admin/logout', { method: 'POST' });
-      setLocation('/admin/login');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00A6CE] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <img src="/Group_1760620436964.png" alt="Duke Consultancy Logo" className="h-10" />
-            <h1 className="ml-4 text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-gray-700">Welcome, {admin?.name}</span>
-            <Button 
-              onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
-              Logout
-            </Button>
-          </div>
+    <AdminLayout>
+      <div className="p-8">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Main Content */}
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm font-medium">Total Applications</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
+                <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalApplications}</p>
               </div>
               <div className="bg-blue-100 rounded-full p-3">
                 <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,7 +56,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm font-medium">Active Jobs</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
+                <p className="text-3xl font-bold text-gray-900 mt-2">{stats.activeJobs}</p>
               </div>
               <div className="bg-green-100 rounded-full p-3">
                 <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,7 +70,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm font-medium">Healthcare Profiles</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
+                <p className="text-3xl font-bold text-gray-900 mt-2">{stats.healthcareProfiles}</p>
               </div>
               <div className="bg-purple-100 rounded-full p-3">
                 <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,7 +84,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm font-medium">Published Blogs</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">0</p>
+                <p className="text-3xl font-bold text-gray-900 mt-2">{stats.publishedBlogs}</p>
               </div>
               <div className="bg-yellow-100 rounded-full p-3">
                 <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -134,16 +99,28 @@ export default function AdminDashboardPage() {
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white">
+            <Button 
+              onClick={() => setLocation('/admin/applications')}
+              className="bg-[#00A6CE] hover:bg-[#0090B5] text-white"
+            >
               Manage Applications
             </Button>
-            <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white">
+            <Button 
+              onClick={() => setLocation('/admin/jobs')}
+              className="bg-[#00A6CE] hover:bg-[#0090B5] text-white"
+            >
               Manage Jobs
             </Button>
-            <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white">
+            <Button 
+              onClick={() => setLocation('/admin/profiles')}
+              className="bg-[#00A6CE] hover:bg-[#0090B5] text-white"
+            >
               View Profiles
             </Button>
-            <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white">
+            <Button 
+              onClick={() => setLocation('/admin/blogs')}
+              className="bg-[#00A6CE] hover:bg-[#0090B5] text-white"
+            >
               Manage Blogs
             </Button>
           </div>
@@ -156,7 +133,7 @@ export default function AdminDashboardPage() {
             <p>No recent activity to display</p>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }
