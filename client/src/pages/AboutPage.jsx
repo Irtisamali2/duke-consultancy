@@ -82,7 +82,7 @@ export const AboutPage = () => {
       {/* Who We Are Section */}
       <section className="w-full py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div>
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">Who We Are</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
