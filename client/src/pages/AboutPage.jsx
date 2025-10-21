@@ -82,7 +82,7 @@ export const AboutPage = () => {
       {/* Who We Are Section */}
       <section className="w-full py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div>
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">Who We Are</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
@@ -94,10 +94,34 @@ export const AboutPage = () => {
               <p className="text-gray-600 leading-relaxed mb-4">
                 Our mission is rooted in excellence, integrity, and empowerment, ensuring every candidate is equipped not only with professional qualifications but also with a clear path forward.
               </p>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-gray-600 leading-relaxed mb-8">
                 With us, it's a placement with a pathway to purpose, growth, and global impact.
               </p>
+
+              {/* Mission & Vision within left column */}
+              <div className="grid grid-cols-2 gap-8 mt-12">
+                <div>
+                  <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">Our Mission</h3>
+                  <ul className="space-y-2">
+                    <li className="text-gray-700">• Prepare</li>
+                    <li className="text-gray-700">• Empower</li>
+                    <li className="text-gray-700">• Facilitate</li>
+                    <li className="text-gray-700">• Support</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4">Our Vision</h3>
+                  <ul className="space-y-2">
+                    <li className="text-gray-700">• Lead</li>
+                    <li className="text-gray-700">• Bridge</li>
+                    <li className="text-gray-700">• Empower</li>
+                    <li className="text-gray-700">• Elevate</li>
+                  </ul>
+                </div>
+              </div>
             </div>
+            
             <div className="rounded-3xl overflow-hidden relative">
               <img 
                 src="/about-office.png" 
@@ -109,45 +133,6 @@ export const AboutPage = () => {
                   Apply Now
                 </Button>
               </div>
-            </div>
-          </div>
-
-          {/* Mission & Vision - Below Who We Are */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-            <div>
-              <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6">Our Mission</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <span className="text-gray-700 text-base">• Prepare</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-gray-700 text-base">• Empower</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-gray-700 text-base">• Facilitate</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-gray-700 text-base">• Support</span>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6">Our Vision</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <span className="text-gray-700 text-base">• Lead</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-gray-700 text-base">• Bridge</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-gray-700 text-base">• Empower</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-gray-700 text-base">• Elevate</span>
-                </li>
-              </ul>
             </div>
           </div>
         </div>
