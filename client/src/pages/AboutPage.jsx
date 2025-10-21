@@ -141,14 +141,14 @@ export const AboutPage = () => {
       {/* Features Section */}
       <section className="w-full py-16 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-[#E8F7FB] rounded-3xl p-8 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div>
               <img 
                 src="/icon-certification.png" 
                 alt="Certification Icon" 
-                className="w-14 h-14 mx-auto mb-5"
+                className="w-14 h-14 mb-5"
               />
-              <h3 className="text-gray-900 font-bold text-base mb-3 leading-snug">
+              <h3 className="text-gray-900 font-bold text-base mb-3 leading-tight">
                 International Certification & Licensing Support
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -156,13 +156,13 @@ export const AboutPage = () => {
               </p>
             </div>
 
-            <div className="bg-[#E8F7FB] rounded-3xl p-8 text-center">
+            <div>
               <img 
                 src="/icon-job-process.png" 
                 alt="Job Process Icon" 
-                className="w-14 h-14 mx-auto mb-5"
+                className="w-14 h-14 mb-5"
               />
-              <h3 className="text-gray-900 font-bold text-base mb-3 leading-snug">
+              <h3 className="text-gray-900 font-bold text-base mb-3 leading-tight">
                 Streamlined Job Application Process
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -170,13 +170,13 @@ export const AboutPage = () => {
               </p>
             </div>
 
-            <div className="bg-[#E8F7FB] rounded-3xl p-8 text-center">
+            <div>
               <img 
                 src="/icon-placement.png" 
                 alt="Placement Icon" 
-                className="w-14 h-14 mx-auto mb-5"
+                className="w-14 h-14 mb-5"
               />
-              <h3 className="text-gray-900 font-bold text-base mb-3 leading-snug">
+              <h3 className="text-gray-900 font-bold text-base mb-3 leading-tight">
                 Guaranteed Job Placement Pathways
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -184,13 +184,13 @@ export const AboutPage = () => {
               </p>
             </div>
 
-            <div className="bg-[#E8F7FB] rounded-3xl p-8 text-center">
+            <div>
               <img 
                 src="/icon-support.png" 
                 alt="Support Icon" 
-                className="w-14 h-14 mx-auto mb-5"
+                className="w-14 h-14 mb-5"
               />
-              <h3 className="text-gray-900 font-bold text-base mb-3 leading-snug">
+              <h3 className="text-gray-900 font-bold text-base mb-3 leading-tight">
                 End-to-End Support & Cultural Readiness
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
