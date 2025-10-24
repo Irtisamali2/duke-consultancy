@@ -57,8 +57,8 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
   try {
     const {
       first_name, last_name, father_husband_name, marital_status, gender, religion,
-      date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expiry_date,
-      passport_number, passport_issue_date, passport_expiry_date, email_address,
+      date_of_birth, place_of_birth, province, country, cnic,
+      passport_number, email_address,
       tel_off_no, tel_res_no, mobile_no, present_address, present_street, present_postal_code,
       permanent_address, permanent_street, permanent_postal_code
     } = req.body;
@@ -66,15 +66,15 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
     await db.query(
       `UPDATE healthcare_profiles SET 
        first_name = ?, last_name = ?, father_husband_name = ?, marital_status = ?, gender = ?, religion = ?,
-       date_of_birth = ?, place_of_birth = ?, province = ?, country = ?, cnic = ?, cnic_issue_date = ?, cnic_expiry_date = ?,
-       passport_number = ?, passport_issue_date = ?, passport_expiry_date = ?, email_address = ?,
+       date_of_birth = ?, place_of_birth = ?, province = ?, country = ?, cnic = ?,
+       passport_number = ?, email_address = ?,
        tel_off_no = ?, tel_res_no = ?, mobile_no = ?, present_address = ?, present_street = ?, present_postal_code = ?,
        permanent_address = ?, permanent_street = ?, permanent_postal_code = ?
        WHERE candidate_id = ?`,
       [
         first_name, last_name, father_husband_name, marital_status, gender, religion,
-        date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expiry_date,
-        passport_number, passport_issue_date, passport_expiry_date, email_address,
+        date_of_birth, place_of_birth, province, country, cnic,
+        passport_number, email_address,
         tel_off_no, tel_res_no, mobile_no, present_address, present_street, present_postal_code,
         permanent_address, permanent_street, permanent_postal_code, req.candidateId
       ]
@@ -169,8 +169,6 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
       'INSERT INTO applications (candidate_id, job_id, applied_date, status) VALUES (?, ?, NOW(), ?)',
       [req.candidateId, job_id || null, 'pending']
     );
-
-    await db.query('UPDATE candidates SET status = ? WHERE id = ?', ['applied', req.candidateId]);
 
     res.json({ success: true, message: 'Application submitted successfully' });
   } catch (error) {
