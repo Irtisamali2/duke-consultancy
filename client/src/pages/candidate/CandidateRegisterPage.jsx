@@ -46,7 +46,7 @@ export default function CandidateRegisterPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg max-w-5xl w-full grid md:grid-cols-2 overflow-hidden">
         <div className="bg-gradient-to-br from-[#E6F7FB] to-white p-12 flex items-center justify-center">
-          <img src="/attached_assets/Candidate Register_1761069145978.png" alt="Register Illustration" className="max-w-full" />
+          <img src="/login-illustration.png" alt="Register Illustration" className="max-w-full" />
         </div>
 
         <div className="p-12">

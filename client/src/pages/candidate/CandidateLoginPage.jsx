@@ -81,7 +81,7 @@ export default function CandidateLoginPage() {
         </div>
 
         <div className="bg-gradient-to-br from-[#E6F7FB] to-white p-12 flex items-center justify-center">
-          <img src="/attached_assets/Candidate Login_1761069145977.png" alt="Login Illustration" className="max-w-full" />
+          <img src="/login-illustration.png" alt="Login Illustration" className="max-w-full" />
         </div>
       </div>
     </div>

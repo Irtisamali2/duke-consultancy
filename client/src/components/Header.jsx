@@ -1,6 +1,9 @@
+import { useLocation } from 'wouter';
 import { Button } from './ui/button';
 
 export const Header = ({ currentPage = 'home' }) => {
+  const [, setLocation] = useLocation();
+  
   return (
     <header className="w-full bg-white py-4 px-6 lg:px-20 border-b">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -32,7 +35,10 @@ export const Header = ({ currentPage = 'home' }) => {
             Contact Us
           </a>
         </nav>
-        <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-6">
+        <Button 
+          onClick={() => setLocation('/candidate/register')}
+          className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-6"
+        >
           Get Registered
         </Button>
       </div>
