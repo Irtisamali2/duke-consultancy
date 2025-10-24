@@ -5,6 +5,9 @@ import db from '../db.js';
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
+// Configuration: Maximum applications allowed per candidate (can be changed to 2-3 later)
+const MAX_APPLICATIONS_PER_CANDIDATE = 1;
+
 const requireCandidateAuth = (req, res, next) => {
   try {
     const token = req.cookies.candidate_token;
@@ -164,6 +167,22 @@ router.put('/candidate/profile/documents', requireCandidateAuth, async (req, res
 router.post('/candidate/submit-application', requireCandidateAuth, async (req, res) => {
   try {
     const { job_id } = req.body;
+
+    // Check how many applications this candidate has already submitted
+    const [existingApplications] = await db.query(
+      'SELECT COUNT(*) as count FROM applications WHERE candidate_id = ?',
+      [req.candidateId]
+    );
+
+    const applicationCount = existingApplications[0].count;
+
+    // Enforce application limit
+    if (applicationCount >= MAX_APPLICATIONS_PER_CANDIDATE) {
+      return res.status(400).json({ 
+        success: false, 
+        message: `You have already submitted ${applicationCount} application${applicationCount > 1 ? 's' : ''}. Only ${MAX_APPLICATIONS_PER_CANDIDATE} application${MAX_APPLICATIONS_PER_CANDIDATE > 1 ? 's are' : ' is'} allowed per candidate.`
+      });
+    }
 
     await db.query(
       'INSERT INTO applications (candidate_id, job_id, applied_date, status) VALUES (?, ?, NOW(), ?)',

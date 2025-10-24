@@ -151,15 +151,24 @@ export default function CandidateProfileFormPage() {
         body: JSON.stringify(documents)
       });
       
-      await fetch('/api/candidate/submit-application', {
+      const appResponse = await fetch('/api/candidate/submit-application', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
       });
       
+      const appData = await appResponse.json();
+      
+      if (!appResponse.ok) {
+        alert(appData.message || 'Failed to submit application');
+        return;
+      }
+      
+      alert('Application submitted successfully!');
       setLocation('/candidate/dashboard');
     } catch (error) {
       console.error('Failed to submit:', error);
+      alert('An error occurred while submitting your application. Please try again.');
     }
   };
 
