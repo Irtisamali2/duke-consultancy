@@ -75,4 +75,28 @@ router.put('/applications/:id', requireAuth, async (req, res) => {
   }
 });
 
+router.patch('/applications/:id/status', requireAuth, async (req, res) => {
+  try {
+    const { status } = req.body;
+    
+    await db.query(
+      'UPDATE applications SET status = ? WHERE id = ?',
+      [status, req.params.id]
+    );
+    
+    res.json({ success: true, message: 'Status updated successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/applications/:id', requireAuth, async (req, res) => {
+  try {
+    await db.query('DELETE FROM applications WHERE id = ?', [req.params.id]);
+    res.json({ success: true, message: 'Application deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 export default router;
