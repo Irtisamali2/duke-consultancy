@@ -14,9 +14,46 @@ export default function CandidateRegisterPage() {
   });
   const [error, setError] = useState('');
 
+  const validateName = (name) => {
+    return /^[a-zA-Z\s]+$/.test(name);
+  };
+
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePhone = (phone) => {
+    return /^\+\d{1,4}\d{6,14}$/.test(phone);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!validateName(formData.firstName)) {
+      setError('First name should only contain letters');
+      return;
+    }
+
+    if (!validateName(formData.lastName)) {
+      setError('Last name should only contain letters');
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    if (!validatePhone(formData.phone)) {
+      setError('Phone number must include country code (e.g., +923001234567)');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
@@ -97,12 +134,15 @@ export default function CandidateRegisterPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
               <input
                 type="tel"
-                placeholder="+923************6"
+                placeholder="+92 300 1234567"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                 required
+                pattern="\+\d{1,4}\d{6,14}"
+                title="Include country code (e.g., +923001234567)"
               />
+              <p className="text-xs text-gray-500 mt-1">Include country code (e.g., +92 for Pakistan)</p>
             </div>
 
             <div className="mb-4">

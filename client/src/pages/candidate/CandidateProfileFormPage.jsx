@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '../../components/ui/button';
+import { countries, tradeOptions } from '../../utils/countries';
 
 export default function CandidateProfileFormPage() {
   const [, setLocation] = useLocation();
@@ -222,38 +223,42 @@ export default function CandidateProfileFormPage() {
                 <h2 className="text-xl font-bold mb-6">Trade Information</h2>
                 <div className="grid gap-6">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Trade Applied For</label>
+                    <label className="block text-sm font-medium mb-2">Trade Applied For *</label>
                     <select
                       value={tradeData.trade_applied_for}
                       onChange={(e) => setTradeData({ ...tradeData, trade_applied_for: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      required
                     >
                       <option value="">Select Trade</option>
-                      <option value="Registered Nurse">Registered Nurse</option>
-                      <option value="Medical Doctor">Medical Doctor</option>
-                      <option value="Physiotherapist">Physiotherapist</option>
-                      <option value="Pharmacist">Pharmacist</option>
-                      <option value="Lab Technician">Lab Technician</option>
-                      <option value="Radiographer">Radiographer</option>
+                      {tradeOptions.map(trade => (
+                        <option key={trade} value={trade}>{trade}</option>
+                      ))}
                     </select>
                   </div>
                   <div className="grid grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium mb-2">Availability To Join</label>
-                      <input
-                        type="text"
-                        placeholder="Immediately"
+                      <label className="block text-sm font-medium mb-2">Availability To Join *</label>
+                      <select
                         value={tradeData.availability_to_join}
                         onChange={(e) => setTradeData({ ...tradeData, availability_to_join: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                      />
+                        required
+                      >
+                        <option value="">Select</option>
+                        <option value="Immediately">Immediately</option>
+                        <option value="Within 1 month">Within 1 month</option>
+                        <option value="Within 3 months">Within 3 months</option>
+                        <option value="Within 6 months">Within 6 months</option>
+                      </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">Willingness To Relocate (Yes/No)</label>
+                      <label className="block text-sm font-medium mb-2">Willingness To Relocate (Yes/No) *</label>
                       <select
                         value={tradeData.willingness_to_relocate}
                         onChange={(e) => setTradeData({ ...tradeData, willingness_to_relocate: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                        required
                       >
                         <option value="">Select</option>
                         <option value="Yes">Yes</option>
@@ -269,19 +274,20 @@ export default function CandidateProfileFormPage() {
               <div>
                 <h2 className="text-xl font-bold mb-6">Personal Information</h2>
                 <div className="grid grid-cols-2 gap-4">
-                  <div><label className="block text-sm font-medium mb-2">First Name</label><input type="text" value={personalData.first_name} onChange={(e) => setPersonalData({ ...personalData, first_name: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Last Name</label><input type="text" value={personalData.last_name} onChange={(e) => setPersonalData({ ...personalData, last_name: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Father's/Husband's Name</label><input type="text" value={personalData.father_husband_name} onChange={(e) => setPersonalData({ ...personalData, father_husband_name: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Marital Status</label><input type="text" value={personalData.marital_status} onChange={(e) => setPersonalData({ ...personalData, marital_status: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Gender</label><input type="text" value={personalData.gender} onChange={(e) => setPersonalData({ ...personalData, gender: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Religion</label><input type="text" value={personalData.religion} onChange={(e) => setPersonalData({ ...personalData, religion: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Date Of Birth</label><input type="date" value={personalData.date_of_birth} onChange={(e) => setPersonalData({ ...personalData, date_of_birth: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
+                  <div><label className="block text-sm font-medium mb-2">First Name *</label><input type="text" value={personalData.first_name} onChange={(e) => setPersonalData({ ...personalData, first_name: e.target.value })} pattern="[a-zA-Z\s]+" title="Only letters allowed" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
+                  <div><label className="block text-sm font-medium mb-2">Last Name *</label><input type="text" value={personalData.last_name} onChange={(e) => setPersonalData({ ...personalData, last_name: e.target.value })} pattern="[a-zA-Z\s]+" title="Only letters allowed" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
+                  <div><label className="block text-sm font-medium mb-2">Father's/Husband's Name *</label><input type="text" value={personalData.father_husband_name} onChange={(e) => setPersonalData({ ...personalData, father_husband_name: e.target.value })} pattern="[a-zA-Z\s]+" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
+                  <div><label className="block text-sm font-medium mb-2">Marital Status *</label><select value={personalData.marital_status} onChange={(e) => setPersonalData({ ...personalData, marital_status: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required><option value="">Select</option><option value="Single">Single</option><option value="Married">Married</option><option value="Divorced">Divorced</option><option value="Widowed">Widowed</option></select></div>
+                  <div><label className="block text-sm font-medium mb-2">Gender *</label><select value={personalData.gender} onChange={(e) => setPersonalData({ ...personalData, gender: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required><option value="">Select</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
+                  <div><label className="block text-sm font-medium mb-2">Religion</label><select value={personalData.religion} onChange={(e) => setPersonalData({ ...personalData, religion: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"><option value="">Select</option><option value="Islam">Islam</option><option value="Christianity">Christianity</option><option value="Hinduism">Hinduism</option><option value="Buddhism">Buddhism</option><option value="Other">Other</option></select></div>
+                  <div><label className="block text-sm font-medium mb-2">Date Of Birth *</label><input type="date" value={personalData.date_of_birth} onChange={(e) => setPersonalData({ ...personalData, date_of_birth: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
                   <div><label className="block text-sm font-medium mb-2">Place Of Birth</label><input type="text" value={personalData.place_of_birth} onChange={(e) => setPersonalData({ ...personalData, place_of_birth: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
                   <div><label className="block text-sm font-medium mb-2">Province</label><input type="text" value={personalData.province} onChange={(e) => setPersonalData({ ...personalData, province: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Country</label><input type="text" value={personalData.country} onChange={(e) => setPersonalData({ ...personalData, country: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">CNIC</label><input type="text" value={personalData.cnic} onChange={(e) => setPersonalData({ ...personalData, cnic: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Passport Number</label><input type="text" value={personalData.passport_number} onChange={(e) => setPersonalData({ ...personalData, passport_number: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Mobile No</label><input type="text" value={personalData.mobile_no} onChange={(e) => setPersonalData({ ...personalData, mobile_no: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
+                  <div><label className="block text-sm font-medium mb-2">Country *</label><select value={personalData.country} onChange={(e) => setPersonalData({ ...personalData, country: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required><option value="">Select Country</option>{countries.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}</select></div>
+                  <div><label className="block text-sm font-medium mb-2">CNIC</label><input type="text" value={personalData.cnic} onChange={(e) => setPersonalData({ ...personalData, cnic: e.target.value })} placeholder="12345-1234567-1" pattern="\d{5}-\d{7}-\d{1}" title="Format: 12345-1234567-1" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
+                  <div><label className="block text-sm font-medium mb-2">Passport Number *</label><input type="text" value={personalData.passport_number} onChange={(e) => setPersonalData({ ...personalData, passport_number: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
+                  <div><label className="block text-sm font-medium mb-2">Mobile No *</label><input type="tel" value={personalData.mobile_no} onChange={(e) => setPersonalData({ ...personalData, mobile_no: e.target.value })} placeholder="+92 300 1234567" pattern="\+\d{1,4}\d{6,14}" title="Include country code" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
+                  <div><label className="block text-sm font-medium mb-2">Email Address *</label><input type="email" value={personalData.email_address} onChange={(e) => setPersonalData({ ...personalData, email_address: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
                 </div>
               </div>
             )}

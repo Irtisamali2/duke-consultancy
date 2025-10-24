@@ -98,7 +98,13 @@ export default function CandidateDashboardPage() {
         <div className="bg-[#E6F7FB] rounded-lg p-6 mb-6 flex items-center justify-between">
           <div>
             <Button 
-              onClick={() => setLocation('/candidate/profile')}
+              onClick={() => {
+                if (applications.length === 0) {
+                  setLocation('/candidate/profile');
+                } else {
+                  alert('You have already submitted an application. You can view/edit it from your profile.');
+                }
+              }}
               className="bg-[#0B7A9F] hover:bg-[#096685] text-white rounded-full px-8"
             >
               Apply Now
