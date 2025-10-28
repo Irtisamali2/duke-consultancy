@@ -4,6 +4,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { TestimonialCarousel } from '../components/TestimonialCarousel';
+import { BlogCarousel } from '../components/BlogCarousel';
 
 const FAQItem = ({ question, answer, isOpen, onClick }) => {
   return (
@@ -341,6 +342,19 @@ export const AboutPage = () => {
           </div>
 
           <TestimonialCarousel />
+        </div>
+      </section>
+
+      {/* Expert Advice Section */}
+      <section className="w-full py-10 sm:py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
+          <div className="text-center mb-8 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2C5F6F]">
+              Expert Health Advice and Updates
+            </h2>
+          </div>
+
+          <BlogCarousel />
         </div>
       </section>
 
