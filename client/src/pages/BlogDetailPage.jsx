@@ -79,37 +79,37 @@ export default function BlogDetailPage() {
       <Header />
       
       <main className="flex-1">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="mb-8">
-            <div className="inline-flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-sm mb-6">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="mb-6 sm:mb-8">
+            <div className="inline-flex items-center gap-2 bg-white px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-sm mb-4 sm:mb-6">
               <span className="text-[#00A6CE]">🏠</span>
-              <button onClick={() => setLocation('/blogs')} className="text-sm text-gray-600 hover:text-[#00A6CE]">
+              <button onClick={() => setLocation('/blogs')} className="text-xs sm:text-sm text-gray-600 hover:text-[#00A6CE]">
                 Rated #1 choice for job searching
               </button>
             </div>
           </div>
 
-          <article className="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <article className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-6 sm:p-8 md:p-12 mb-8 sm:mb-12">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
               {blog.title}
             </h1>
             
-            <div className="flex flex-wrap items-center gap-4 mb-8">
-              <span className="bg-[#E6F7FB] text-[#00A6CE] px-4 py-2 rounded-full text-sm font-medium">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-6 sm:mb-8">
+              <span className="bg-[#E6F7FB] text-[#00A6CE] px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium">
                 {blog.category || 'General'}
               </span>
-              <span className="text-gray-600">by {blog.author || 'Duke Team'}</span>
-              <span className="text-gray-500">{formatDate(blog.published_date)}</span>
+              <span className="text-gray-600 text-xs sm:text-base">by {blog.author || 'Duke Team'}</span>
+              <span className="text-gray-500 text-xs sm:text-base">{formatDate(blog.published_date)}</span>
             </div>
 
             {blog.excerpt && (
-              <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+              <p className="text-sm sm:text-base lg:text-lg text-gray-700 mb-6 sm:mb-8 leading-relaxed">
                 {blog.excerpt}
               </p>
             )}
 
             {blog.featured_image && (
-              <div className="mb-8 rounded-xl overflow-hidden">
+              <div className="mb-6 sm:mb-8 rounded-lg sm:rounded-xl overflow-hidden">
                 <img
                   src={blog.featured_image}
                   alt={blog.title}
@@ -119,22 +119,22 @@ export default function BlogDetailPage() {
             )}
 
             <div 
-              className="prose prose-lg max-w-none
+              className="prose prose-sm sm:prose-base lg:prose-lg max-w-none
                 prose-headings:font-bold prose-headings:text-gray-900
-                prose-h2:text-3xl prose-h2:mb-4 prose-h2:mt-8
-                prose-h3:text-2xl prose-h3:mb-3 prose-h3:mt-6
-                prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4
-                prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-4
-                prose-li:text-gray-700 prose-li:mb-2
+                prose-h2:text-xl sm:prose-h2:text-2xl lg:prose-h2:text-3xl prose-h2:mb-3 sm:prose-h2:mb-4 prose-h2:mt-6 sm:prose-h2:mt-8
+                prose-h3:text-lg sm:prose-h3:text-xl lg:prose-h3:text-2xl prose-h3:mb-2 sm:prose-h3:mb-3 prose-h3:mt-4 sm:prose-h3:mt-6
+                prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-3 sm:prose-p:mb-4
+                prose-ul:list-disc prose-ul:pl-4 sm:prose-ul:pl-6 prose-ul:mb-3 sm:prose-ul:mb-4
+                prose-li:text-gray-700 prose-li:mb-1 sm:prose-li:mb-2
                 prose-strong:text-gray-900 prose-strong:font-semibold
-                prose-img:rounded-xl prose-img:my-8"
+                prose-img:rounded-lg sm:prose-img:rounded-xl prose-img:my-4 sm:prose-img:my-8"
               dangerouslySetInnerHTML={renderContent(blog.content)}
             />
           </article>
 
           {relatedBlogs.length > 0 && (
-            <section className="mb-12">
-              <h2 className="text-3xl font-bold text-center mb-8">Related blogs</h2>
+            <section className="mb-8 sm:mb-12">
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">Related blogs</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {relatedBlogs.map((relatedBlog) => (
