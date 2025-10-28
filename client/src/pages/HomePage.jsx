@@ -6,6 +6,7 @@ import { Star, ArrowRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { TestimonialCarousel } from "@/components/TestimonialCarousel";
+import { BlogCarousel } from "@/components/BlogCarousel";
 
 export const HomePage = () => {
   const [, setLocation] = useLocation();
@@ -362,67 +363,7 @@ export const HomePage = () => {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-              <img
-                src="/pexels-tima-miroshnichenko-8376309 1_1760620436958.png"
-                alt="Blog post"
-                className="w-full h-48 object-cover"
-              />
-              <CardContent className="p-6 space-y-3">
-                <p className="text-sm text-gray-500">Jun 12, 2023 - Health Tips</p>
-                <h3 className="text-lg font-semibold text-[#2C5F6F]">
-                  How to Prepare for International Health Exams
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  Essential tips for healthcare professionals preparing for international licensing exams.
-                </p>
-                <Button variant="link" className="text-[#00A6CE] p-0 h-auto">
-                  Read More →
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-              <img
-                src="/Image (6)_1760620436963.png"
-                alt="Blog post"
-                className="w-full h-48 object-cover"
-              />
-              <CardContent className="p-6 space-y-3">
-                <p className="text-sm text-gray-500">Jun 10, 2023 - Career</p>
-                <h3 className="text-lg font-semibold text-[#2C5F6F]">
-                  Top 5 Countries for Healthcare Professionals
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  Discover the best destinations for healthcare professionals seeking international opportunities.
-                </p>
-                <Button variant="link" className="text-[#00A6CE] p-0 h-auto">
-                  Read More →
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-              <img
-                src="/pexels-tima-miroshnichenko-8376309 1_1760620436958.png"
-                alt="Blog post"
-                className="w-full h-48 object-cover"
-              />
-              <CardContent className="p-6 space-y-3">
-                <p className="text-sm text-gray-500">Jun 08, 2023 - Documentation</p>
-                <h3 className="text-lg font-semibold text-[#2C5F6F]">
-                  Breaking Down Healthcare Visa Requirements
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  A comprehensive guide to understanding visa requirements for healthcare workers.
-                </p>
-                <Button variant="link" className="text-[#00A6CE] p-0 h-auto">
-                  Read More →
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          <BlogCarousel />
         </div>
       </section>
 
