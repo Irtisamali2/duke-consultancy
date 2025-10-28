@@ -135,31 +135,31 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-8">
                   <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Register Online</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
                     we know your home is more than just a place to live, that's why we're committed to providing the best home loan
                   </p>
                 </div>
-                <div className="relative h-[420px] sm:h-[480px] w-full overflow-visible">
-                  {/* Background Circle - Much larger */}
+                <div className="relative flex justify-center items-center min-h-[320px] overflow-visible">
+                  {/* Background Circle - Behind everything, on the left */}
                   <img
                     src="/Ellipse 1328 (2)_1760621468329.png"
                     alt=""
-                    className="absolute -left-8 sm:-left-4 top-0 w-[360px] sm:w-[420px] h-auto opacity-40"
+                    className="absolute -left-32 top-1/2 -translate-y-1/2 w-[420px] h-auto z-0"
                   />
-                  {/* Number - Larger and positioned over circle */}
-                  <div className="absolute left-2 sm:left-6 top-12 sm:top-16 text-[140px] sm:text-[160px] font-bold text-gray-200/80 leading-none z-10">01</div>
-                  {/* White Card - Narrower, better positioned */}
-                  <div className="absolute right-0 sm:right-2 top-24 sm:top-32 bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-[340px] sm:w-[360px] z-20">
-                    <h4 className="text-lg sm:text-xl font-semibold text-gray-900 mb-6 sm:mb-8 text-center">Register Online</h4>
-                    <div className="space-y-3.5 sm:space-y-4">
-                      <div className="h-2.5 sm:h-3 bg-gray-200 rounded-full"></div>
-                      <div className="h-2.5 sm:h-3 bg-gray-200 rounded-full"></div>
-                      <div className="h-2.5 sm:h-3 bg-gray-200 rounded-full"></div>
+                  {/* Number - On top of circle, on the left */}
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[120px] font-bold text-gray-200/60 leading-none z-10">01</div>
+                  {/* White Card - Full width, centered, on top */}
+                  <div className="relative bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-full max-w-[397px] z-20">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-6 text-center">Register Online</h4>
+                    <div className="space-y-3.5">
+                      <div className="h-2.5 bg-gray-200 rounded-full"></div>
+                      <div className="h-2.5 bg-gray-200 rounded-full"></div>
+                      <div className="h-2.5 bg-gray-200 rounded-full"></div>
                     </div>
-                    <div className="mt-8 sm:mt-10 flex justify-center">
-                      <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-10 sm:px-12 py-3 sm:py-3.5 rounded-full text-sm sm:text-base font-medium">
+                    <div className="mt-8 flex justify-center">
+                      <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-10 py-3 rounded-full text-sm font-medium">
                         Sign up
                       </Button>
                     </div>
@@ -204,24 +204,24 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-8">
                   <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Browse Jobs</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
-                <div className="relative h-[380px] sm:h-[420px] w-full overflow-visible">
-                  {/* Background Circle - Much larger */}
+                <div className="relative flex justify-center items-center min-h-[280px] overflow-visible">
+                  {/* Background Circle - Behind everything, on the left */}
                   <img
                     src="/Ellipse 1328 (1)_1760621468329.png"
                     alt=""
-                    className="absolute -left-8 sm:-left-4 top-0 w-[360px] sm:w-[420px] h-auto opacity-40"
+                    className="absolute -left-32 top-1/2 -translate-y-1/2 w-[420px] h-auto z-0"
                   />
-                  {/* Number - Larger and positioned over circle */}
-                  <div className="absolute left-2 sm:left-6 top-12 sm:top-16 text-[140px] sm:text-[160px] font-bold text-gray-200/80 leading-none z-10">02</div>
-                  {/* White Card */}
-                  <div className="absolute right-0 sm:right-2 top-24 sm:top-32 bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-[340px] sm:w-[360px] z-20">
-                    <h4 className="text-lg sm:text-xl font-semibold text-gray-900 mb-6 sm:mb-8 text-center">Search</h4>
+                  {/* Number - On top of circle, on the left */}
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[120px] font-bold text-gray-200/60 leading-none z-10">02</div>
+                  {/* White Card - Full width, centered, on top */}
+                  <div className="relative bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-full max-w-[397px] z-20">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-6 text-center">Search</h4>
                     <div className="relative">
                       <input
                         type="text"
@@ -280,23 +280,23 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-8">
                   <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Apply & Track</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
                     It's about you and your family, having a comfortable payment, exceptional service and a lender.
                   </p>
                 </div>
-                <div className="relative h-[380px] sm:h-[420px] w-full overflow-visible">
-                  {/* Background Circle - Much larger */}
+                <div className="relative flex justify-center items-center min-h-[260px] overflow-visible">
+                  {/* Background Circle - Behind everything, on the left */}
                   <img
                     src="/Ellipse 1328_1760621468330.png"
                     alt=""
-                    className="absolute -left-8 sm:-left-4 top-0 w-[360px] sm:w-[420px] h-auto opacity-40"
+                    className="absolute -left-32 top-1/2 -translate-y-1/2 w-[420px] h-auto z-0"
                   />
-                  {/* Number - Larger and positioned over circle */}
-                  <div className="absolute left-2 sm:left-6 top-12 sm:top-16 text-[140px] sm:text-[160px] font-bold text-gray-200/80 leading-none z-10">03</div>
-                  {/* White Card */}
-                  <div className="absolute right-0 sm:right-2 top-24 sm:top-32 bg-white rounded-3xl shadow-2xl p-10 sm:p-12 w-[340px] sm:w-[360px] z-20 flex justify-center gap-6">
+                  {/* Number - On top of circle, on the left */}
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[120px] font-bold text-gray-200/60 leading-none z-10">03</div>
+                  {/* White Card - Full width, centered, on top */}
+                  <div className="relative bg-white rounded-3xl shadow-2xl p-10 sm:p-12 w-full max-w-[397px] z-20 flex justify-center gap-6">
                     <div className="text-4xl sm:text-5xl">😮</div>
                     <div className="text-4xl sm:text-5xl">😠</div>
                     <div className="text-4xl sm:text-5xl">❤️</div>
@@ -332,24 +332,24 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-8">
                   <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Screening & Interviews</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
-                <div className="relative h-[380px] sm:h-[420px] w-full overflow-visible">
-                  {/* Background Circle - Much larger */}
+                <div className="relative flex justify-center items-center min-h-[280px] overflow-visible">
+                  {/* Background Circle - Behind everything, on the left */}
                   <img
                     src="/Ellipse 1328 (2)_1760621468329.png"
                     alt=""
-                    className="absolute -left-8 sm:-left-4 top-0 w-[360px] sm:w-[420px] h-auto opacity-40"
+                    className="absolute -left-32 top-1/2 -translate-y-1/2 w-[420px] h-auto z-0"
                   />
-                  {/* Number - Larger and positioned over circle */}
-                  <div className="absolute left-2 sm:left-6 top-12 sm:top-16 text-[140px] sm:text-[160px] font-bold text-gray-200/80 leading-none z-10">04</div>
-                  {/* White Card */}
-                  <div className="absolute right-0 sm:right-2 top-24 sm:top-32 bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-[340px] sm:w-[360px] z-20">
-                    <h4 className="text-lg sm:text-xl font-semibold text-gray-900 mb-6 sm:mb-8 text-center">Search</h4>
+                  {/* Number - On top of circle, on the left */}
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[120px] font-bold text-gray-200/60 leading-none z-10">04</div>
+                  {/* White Card - Full width, centered, on top */}
+                  <div className="relative bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-full max-w-[397px] z-20">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-6 text-center">Search</h4>
                     <div className="relative">
                       <input
                         type="text"
