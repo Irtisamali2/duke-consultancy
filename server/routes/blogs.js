@@ -10,6 +10,13 @@ const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
+function generateSlug(title) {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 // Public endpoint - get published blogs
 router.get('/blogs/published', async (req, res) => {
   try {
@@ -41,15 +48,15 @@ router.get('/blogs', requireAuth, async (req, res) => {
   }
 });
 
-// Public endpoint - get single published blog
-router.get('/blogs/:id', async (req, res) => {
+// Public endpoint - get single published blog by slug
+router.get('/blogs/:slug', async (req, res) => {
   try {
     const [rows] = await db.query(`
       SELECT b.*, a.name as author_name 
       FROM blogs b 
       LEFT JOIN admins a ON b.created_by = a.id 
-      WHERE b.id = ? AND b.status = 'published'
-    `, [req.params.id]);
+      WHERE b.slug = ? AND b.status = 'published'
+    `, [req.params.slug]);
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Blog not found' });
     }
@@ -76,6 +83,7 @@ router.post('/blogs', requireAuth, async (req, res) => {
   try {
     const { title, content, excerpt, featured_image, author, category, categories, tags, status } = req.body;
     
+    const slug = generateSlug(title);
     const publishedDate = status === 'published' ? new Date() : null;
     const now = new Date();
     
@@ -84,9 +92,9 @@ router.post('/blogs', requireAuth, async (req, res) => {
     const tagsValue = tags || '';
     
     const [result] = await db.query(
-      `INSERT INTO blogs (title, content, excerpt, featured_image, author, category, categories, tags, status, created_by, published_date, modified_at, modified_by, modified_by_type) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'admin')`,
-      [title, content, excerpt, featured_image, author, category || '', categoriesValue, tagsValue, status || 'draft', req.admin.id, publishedDate, now, req.admin.id]
+      `INSERT INTO blogs (title, slug, content, excerpt, featured_image, author, category, categories, tags, status, created_by, published_date, modified_at, modified_by, modified_by_type) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'admin')`,
+      [title, slug, content, excerpt, featured_image, author, category || '', categoriesValue, tagsValue, status || 'draft', req.admin.id, publishedDate, now, req.admin.id]
     );
     
     res.json({ success: true, message: 'Blog created successfully', id: result.insertId });
@@ -99,6 +107,7 @@ router.put('/blogs/:id', requireAuth, async (req, res) => {
   try {
     const { title, content, excerpt, featured_image, author, category, categories, tags, status } = req.body;
     
+    const slug = generateSlug(title);
     const [currentRows] = await db.query('SELECT status FROM blogs WHERE id = ?', [req.params.id]);
     const currentStatus = currentRows[0]?.status;
     
@@ -111,13 +120,13 @@ router.put('/blogs/:id', requireAuth, async (req, res) => {
     
     if (publishedDate !== undefined) {
       await db.query(
-        `UPDATE blogs SET title = ?, content = ?, excerpt = ?, featured_image = ?, author = ?, category = ?, categories = ?, tags = ?, status = ?, published_date = ?, modified_at = ?, modified_by = ?, modified_by_type = 'admin' WHERE id = ?`,
-        [title, content, excerpt, featured_image, author, category || '', categoriesValue, tagsValue, status, publishedDate, now, req.admin.id, req.params.id]
+        `UPDATE blogs SET title = ?, slug = ?, content = ?, excerpt = ?, featured_image = ?, author = ?, category = ?, categories = ?, tags = ?, status = ?, published_date = ?, modified_at = ?, modified_by = ?, modified_by_type = 'admin' WHERE id = ?`,
+        [title, slug, content, excerpt, featured_image, author, category || '', categoriesValue, tagsValue, status, publishedDate, now, req.admin.id, req.params.id]
       );
     } else {
       await db.query(
-        `UPDATE blogs SET title = ?, content = ?, excerpt = ?, featured_image = ?, author = ?, category = ?, categories = ?, tags = ?, status = ?, modified_at = ?, modified_by = ?, modified_by_type = 'admin' WHERE id = ?`,
-        [title, content, excerpt, featured_image, author, category || '', categoriesValue, tagsValue, status, now, req.admin.id, req.params.id]
+        `UPDATE blogs SET title = ?, slug = ?, content = ?, excerpt = ?, featured_image = ?, author = ?, category = ?, categories = ?, tags = ?, status = ?, modified_at = ?, modified_by = ?, modified_by_type = 'admin' WHERE id = ?`,
+        [title, slug, content, excerpt, featured_image, author, category || '', categoriesValue, tagsValue, status, now, req.admin.id, req.params.id]
       );
     }
     

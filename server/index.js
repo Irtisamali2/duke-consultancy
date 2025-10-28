@@ -13,6 +13,7 @@ import { updateJobsForMultiselect } from "./migrations/update-jobs-multiselect.j
 import { updateProfilesForMultiselect } from "./migrations/update-profiles-multiselect.js";
 import { migrateProfileImageAndJobDates } from "./migrations/add-profile-image-job-dates.js";
 import { fixCandidateStatusEnum } from "./migrations/fix-candidate-status-enum.js";
+import { addBlogSlug } from "./migrations/add-blog-slug.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -66,6 +67,7 @@ app.use((req, res, next) => {
   await updateProfilesForMultiselect();
   await migrateProfileImageAndJobDates();
   await fixCandidateStatusEnum();
+  await addBlogSlug();
   
   const server = await registerRoutes(app);
 
