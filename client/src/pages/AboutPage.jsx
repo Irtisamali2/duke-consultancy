@@ -83,7 +83,8 @@ export const AboutPage = () => {
       <section className="w-full py-10 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
-            <div>
+            {/* Text Content - Order 1 on both mobile and desktop */}
+            <div className="order-1">
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">Who We Are</h2>
               <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-3 sm:mb-4">
                 At Duke Consultancy, we open doors to global careers and connect healthcare professionals to jobs.
@@ -97,32 +98,10 @@ export const AboutPage = () => {
               <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8">
                 With us, it's a placement with a pathway to purpose, growth, and global impact.
               </p>
-
-              {/* Mission & Vision within left column */}
-              <div className="grid grid-cols-2 gap-4 sm:gap-8 mt-8 sm:mt-12">
-                <div>
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Our Mission</h3>
-                  <ul className="space-y-1.5 sm:space-y-2">
-                    <li className="text-gray-700 text-sm sm:text-base">• Prepare</li>
-                    <li className="text-gray-700 text-sm sm:text-base">• Empower</li>
-                    <li className="text-gray-700 text-sm sm:text-base">• Facilitate</li>
-                    <li className="text-gray-700 text-sm sm:text-base">• Support</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Our Vision</h3>
-                  <ul className="space-y-1.5 sm:space-y-2">
-                    <li className="text-gray-700 text-sm sm:text-base">• Lead</li>
-                    <li className="text-gray-700 text-sm sm:text-base">• Bridge</li>
-                    <li className="text-gray-700 text-sm sm:text-base">• Empower</li>
-                    <li className="text-gray-700 text-sm sm:text-base">• Elevate</li>
-                  </ul>
-                </div>
-              </div>
             </div>
             
-            <div className="rounded-2xl sm:rounded-3xl overflow-hidden relative">
+            {/* Image - Order 2 on both mobile and desktop */}
+            <div className="rounded-2xl sm:rounded-3xl overflow-hidden relative order-2">
               <img 
                 src="/about-office.png" 
                 alt="Team working" 
@@ -133,6 +112,29 @@ export const AboutPage = () => {
                   Apply Now
                 </Button>
               </div>
+            </div>
+          </div>
+
+          {/* Mission & Vision - Full width below, stacked vertically on mobile */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 mt-8 sm:mt-12">
+            <div>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Our Mission</h3>
+              <ul className="space-y-1.5 sm:space-y-2">
+                <li className="text-gray-700 text-sm sm:text-base">• Prepare</li>
+                <li className="text-gray-700 text-sm sm:text-base">• Empower</li>
+                <li className="text-gray-700 text-sm sm:text-base">• Facilitate</li>
+                <li className="text-gray-700 text-sm sm:text-base">• Support</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Our Vision</h3>
+              <ul className="space-y-1.5 sm:space-y-2">
+                <li className="text-gray-700 text-sm sm:text-base">• Lead</li>
+                <li className="text-gray-700 text-sm sm:text-base">• Bridge</li>
+                <li className="text-gray-700 text-sm sm:text-base">• Empower</li>
+                <li className="text-gray-700 text-sm sm:text-base">• Elevate</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -205,14 +207,16 @@ export const AboutPage = () => {
       <section className="w-full py-10 sm:py-16 lg:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
-            <div className="rounded-2xl sm:rounded-3xl overflow-hidden">
+            {/* Image - Order 2 on mobile, Order 1 on desktop */}
+            <div className="rounded-2xl sm:rounded-3xl overflow-hidden order-2 lg:order-1">
               <img 
                 src="/about-nurses.png" 
                 alt="Healthcare professionals" 
                 className="w-full h-full object-cover"
               />
             </div>
-            <div>
+            {/* Text - Order 1 on mobile, Order 2 on desktop */}
+            <div className="order-1 lg:order-2">
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
                 Comprehensive Career Development & Skill Enhancement
               </h2>
@@ -237,26 +241,26 @@ export const AboutPage = () => {
       <section className="w-full py-10 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
           <div className="bg-[#00A6CE] rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              <div className="bg-[#3D7A8A] rounded-xl sm:rounded-2xl p-4 sm:p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              <div className="bg-[#3D7A8A] rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
                 <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-3">10K+</h3>
                 <p className="text-white text-xs sm:text-sm leading-relaxed">
                   Nurses and healthcare professionals supported in building global careers.
                 </p>
               </div>
-              <div className="p-4 sm:p-6">
+              <div className="p-4 sm:p-6 text-center">
                 <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-3">2,650+</h3>
                 <p className="text-white text-xs sm:text-sm leading-relaxed">
                   Candidates placed successfully with trusted international employers.
                 </p>
               </div>
-              <div className="p-4 sm:p-6">
+              <div className="p-4 sm:p-6 text-center">
                 <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-3">15+</h3>
                 <p className="text-white text-xs sm:text-sm leading-relaxed">
                   Years of combined expertise in healthcare recruitment and training.
                 </p>
               </div>
-              <div className="p-4 sm:p-6">
+              <div className="p-4 sm:p-6 text-center">
                 <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-3">100%</h3>
                 <p className="text-white text-xs sm:text-sm leading-relaxed">
                   Commitment to ethical, transparent, and candidate-first recruitment.
