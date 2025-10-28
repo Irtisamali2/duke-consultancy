@@ -135,15 +135,23 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="space-y-3 mb-8">
+                <div className="space-y-3 mb-6">
                   <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Register Online</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
                     we know your home is more than just a place to live, that's why we're committed to providing the best home loan
                   </p>
                 </div>
-                <div className="relative">
-                  <div className="text-[100px] sm:text-[120px] font-bold text-gray-100 leading-none mb-6">01</div>
-                  <div className="bg-white rounded-2xl shadow-xl p-6 max-w-[300px] mx-auto">
+                <div className="relative h-[350px] sm:h-[400px]">
+                  {/* Background Circle */}
+                  <img
+                    src="/Ellipse 1328 (2)_1760621468329.png"
+                    alt=""
+                    className="absolute left-0 top-0 w-[280px] sm:w-[320px] h-auto opacity-50"
+                  />
+                  {/* Number */}
+                  <div className="absolute left-0 top-8 text-[100px] sm:text-[120px] font-bold text-gray-200 leading-none z-10">01</div>
+                  {/* White Card - positioned to overlap circle */}
+                  <div className="absolute right-0 top-16 bg-white rounded-2xl shadow-2xl p-6 w-[280px] sm:w-[300px] z-20">
                     <h4 className="text-base font-semibold text-gray-900 mb-5 text-center">Register Online</h4>
                     <div className="space-y-3">
                       <div className="h-2 bg-gray-200 rounded-full"></div>
@@ -196,15 +204,23 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="space-y-3 mb-8">
+                <div className="space-y-3 mb-6">
                   <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Browse Jobs</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
-                <div className="relative">
-                  <div className="text-[100px] sm:text-[120px] font-bold text-gray-100 leading-none mb-6">02</div>
-                  <div className="bg-white rounded-2xl shadow-xl p-6 max-w-[300px] mx-auto">
+                <div className="relative h-[300px] sm:h-[350px]">
+                  {/* Background Circle */}
+                  <img
+                    src="/Ellipse 1328 (1)_1760621468329.png"
+                    alt=""
+                    className="absolute left-0 top-0 w-[280px] sm:w-[320px] h-auto opacity-50"
+                  />
+                  {/* Number */}
+                  <div className="absolute left-0 top-8 text-[100px] sm:text-[120px] font-bold text-gray-200 leading-none z-10">02</div>
+                  {/* White Card */}
+                  <div className="absolute right-0 top-16 bg-white rounded-2xl shadow-2xl p-6 w-[280px] sm:w-[300px] z-20">
                     <h4 className="text-base font-normal text-gray-900 mb-4 text-center">Search</h4>
                     <div className="relative">
                       <input
@@ -264,15 +280,23 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="space-y-3 mb-8">
+                <div className="space-y-3 mb-6">
                   <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Apply & Track</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
                     It's about you and your family, having a comfortable payment, exceptional service and a lender.
                   </p>
                 </div>
-                <div className="relative">
-                  <div className="text-[100px] sm:text-[120px] font-bold text-gray-100 leading-none mb-6">03</div>
-                  <div className="bg-white rounded-2xl shadow-xl p-8 max-w-[280px] mx-auto flex justify-center gap-4">
+                <div className="relative h-[300px] sm:h-[350px]">
+                  {/* Background Circle */}
+                  <img
+                    src="/Ellipse 1328_1760621468330.png"
+                    alt=""
+                    className="absolute left-0 top-0 w-[280px] sm:w-[320px] h-auto opacity-50"
+                  />
+                  {/* Number */}
+                  <div className="absolute left-0 top-8 text-[100px] sm:text-[120px] font-bold text-gray-200 leading-none z-10">03</div>
+                  {/* White Card */}
+                  <div className="absolute right-0 top-20 bg-white rounded-2xl shadow-2xl p-8 w-[280px] sm:w-[300px] z-20 flex justify-center gap-4">
                     <div className="text-4xl">😮</div>
                     <div className="text-4xl">😠</div>
                     <div className="text-4xl">❤️</div>
@@ -308,15 +332,23 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="space-y-3 mb-8">
+                <div className="space-y-3 mb-6">
                   <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Screening & Interviews</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
-                <div className="relative">
-                  <div className="text-[100px] sm:text-[120px] font-bold text-gray-100 leading-none mb-6">04</div>
-                  <div className="bg-white rounded-2xl shadow-xl p-6 max-w-[300px] mx-auto">
+                <div className="relative h-[300px] sm:h-[350px]">
+                  {/* Background Circle */}
+                  <img
+                    src="/Ellipse 1328 (2)_1760621468329.png"
+                    alt=""
+                    className="absolute left-0 top-0 w-[280px] sm:w-[320px] h-auto opacity-50"
+                  />
+                  {/* Number */}
+                  <div className="absolute left-0 top-8 text-[100px] sm:text-[120px] font-bold text-gray-200 leading-none z-10">04</div>
+                  {/* White Card */}
+                  <div className="absolute right-0 top-16 bg-white rounded-2xl shadow-2xl p-6 w-[280px] sm:w-[300px] z-20">
                     <h4 className="text-base font-normal text-gray-900 mb-4 text-center">Search</h4>
                     <div className="relative">
                       <input
