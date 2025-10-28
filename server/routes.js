@@ -13,6 +13,7 @@ import candidateAuthRoutes from "./routes/candidate-auth.js";
 import candidateProfileRoutes from "./routes/candidate-profile.js";
 import emailSettingsRoutes from "./routes/email-settings.js";
 import passwordResetRoutes from "./routes/password-reset.js";
+import bulkEmailRoutes from "./routes/bulk-email.js";
 
 export async function registerRoutes(app) {
   // Database test routes
@@ -32,6 +33,7 @@ export async function registerRoutes(app) {
   app.use('/api', blogsRoutes);
   app.use('/api', statsRoutes);
   app.use('/api', emailSettingsRoutes);
+  app.use('/api', bulkEmailRoutes);
   
   // Candidate routes
   app.use('/api', candidateProfileRoutes);

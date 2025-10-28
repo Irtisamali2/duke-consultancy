@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import AdminLayout from '../../components/AdminLayout';
+import BulkEmailModal from '../../components/BulkEmailModal';
 
 export default function ApplicationsPage() {
   const [, setLocation] = useLocation();
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState('all');
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [showBulkEmail, setShowBulkEmail] = useState(false);
 
   useEffect(() => {
     fetchApplications();
@@ -65,9 +68,25 @@ export default function ApplicationsPage() {
     }
   };
 
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filteredApplications.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredApplications.map(app => app.id));
+    }
+  };
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
+
   const filteredApplications = applications.filter(app => {
     return filter === 'all' || app.status === filter;
   });
+
+  const selectedApplications = applications.filter(app => selectedIds.includes(app.id));
 
   const stats = {
     all: applications.length,
@@ -80,7 +99,27 @@ export default function ApplicationsPage() {
   return (
     <AdminLayout>
       <div className="p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Applications Management</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">Applications Management</h1>
+          
+          {selectedIds.length > 0 && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-600">{selectedIds.length} selected</span>
+              <button
+                onClick={() => setShowBulkEmail(true)}
+                className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-4 py-2 rounded-lg text-sm font-medium"
+              >
+                Send Bulk Email
+              </button>
+              <button
+                onClick={() => setSelectedIds([])}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium"
+              >
+                Clear Selection
+              </button>
+            </div>
+          )}
+        </div>
 
         <div className="bg-white rounded-lg shadow">
           <div className="p-6 border-b border-gray-200">
@@ -122,6 +161,14 @@ export default function ApplicationsPage() {
             <table className="w-full">
               <thead className="bg-[#E8F4F8]">
                 <tr>
+                  <th className="px-6 py-3 text-left">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.length === filteredApplications.length && filteredApplications.length > 0}
+                      onChange={toggleSelectAll}
+                      className="w-4 h-4 text-[#00A6CE] focus:ring-[#00A6CE] rounded"
+                    />
+                  </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Email</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Phone</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Job</th>
@@ -133,6 +180,14 @@ export default function ApplicationsPage() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredApplications.map((app) => (
                   <tr key={app.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(app.id)}
+                        onChange={() => toggleSelect(app.id)}
+                        className="w-4 h-4 text-[#00A6CE] focus:ring-[#00A6CE] rounded"
+                      />
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{app.email}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{app.mobile_no || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{app.job_title || 'General Application'}</td>
@@ -186,6 +241,16 @@ export default function ApplicationsPage() {
           </div>
         </div>
       </div>
+
+      {showBulkEmail && (
+        <BulkEmailModal
+          applications={selectedApplications}
+          onClose={() => {
+            setShowBulkEmail(false);
+            setSelectedIds([]);
+          }}
+        />
+      )}
     </AdminLayout>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useRoute } from 'wouter';
 import AdminLayout from '../../components/AdminLayout';
 import { Button } from '../../components/ui/button';
+import EmailEditor from '../../components/EmailEditor';
 
 export default function EmailTemplateEditPage() {
   const [, params] = useRoute('/admin/email-templates/edit/:id');
@@ -102,19 +103,12 @@ export default function EmailTemplateEditPage() {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email Body (HTML) *</label>
-              <textarea
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email Body *</label>
+              <EmailEditor
                 value={template.body}
-                onChange={(e) => setTemplate({ ...template, body: e.target.value })}
-                required
-                rows={15}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] font-mono text-sm"
+                onChange={(value) => setTemplate({ ...template, body: value })}
+                placeholder="Edit your email template... Use the Insert Shortcode button to add dynamic fields."
               />
-            </div>
-
-            <div className="mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4">
-              <p className="text-sm text-yellow-700 mb-2"><strong>Available Variables for this template:</strong></p>
-              <p className="text-xs text-yellow-600">{template.variables}</p>
             </div>
 
             <div className="flex justify-end gap-4">

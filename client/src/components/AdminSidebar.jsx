@@ -10,6 +10,8 @@ export default function AdminSidebar({ admin, onLogout }) {
     { path: '/admin/blogs', label: 'Blogs', icon: '📰' },
     { path: '/admin/email-settings', label: 'Email Settings', icon: '📧' },
     { path: '/admin/email-templates', label: 'Email Templates', icon: '✉️' },
+    { path: '/admin/email-logs', label: 'Email Logs', icon: '📋' },
+    { path: '/admin/email-inbox', label: 'Email Inbox', icon: '📬' },
     { path: '/admin/profile', label: 'My Profile', icon: '👤' },
   ];
 

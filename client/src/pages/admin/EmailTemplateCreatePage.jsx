@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import AdminLayout from '../../components/AdminLayout';
 import { Button } from '../../components/ui/button';
+import EmailEditor from '../../components/EmailEditor';
 
 export default function EmailTemplateCreatePage() {
   const [, setLocation] = useLocation();
@@ -45,6 +46,7 @@ export default function EmailTemplateCreatePage() {
     { value: 'verified', label: 'Application Verified', desc: 'Sent when admin verifies application' },
     { value: 'approved', label: 'Application Approved', desc: 'Sent when admin approves application' },
     { value: 'rejected', label: 'Application Rejected', desc: 'Sent when admin rejects application' },
+    { value: 'reminder', label: 'Reminder Email', desc: 'Reminder/follow-up emails to candidates' },
     { value: 'password_reset', label: 'Password Reset', desc: 'Sent for password reset requests' },
     { value: 'custom', label: 'Custom Template', desc: 'Custom email template for manual sending' }
   ];
@@ -142,27 +144,12 @@ export default function EmailTemplateCreatePage() {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email Body (HTML) *</label>
-              <textarea
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email Body *</label>
+              <EmailEditor
                 value={formData.body}
-                onChange={(e) => setFormData({ ...formData, body: e.target.value })}
-                required
-                rows={20}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] font-mono text-sm"
+                onChange={(value) => setFormData({ ...formData, body: value })}
+                placeholder="Compose your email template here... Use the Insert Shortcode button to add dynamic fields."
               />
-            </div>
-
-            <div className="mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4">
-              <p className="text-sm text-yellow-700 mb-2"><strong>Available Variables:</strong></p>
-              <div className="grid grid-cols-2 gap-2 text-xs text-yellow-600">
-                <div>• {'{{candidate_name}}'} - Candidate's name</div>
-                <div>• {'{{application_id}}'} - Application ID</div>
-                <div>• {'{{trade}}'} - Applied trade/profession</div>
-                <div>• {'{{submitted_date}}'} - Submission date</div>
-                <div>• {'{{updated_date}}'} - Update date</div>
-                <div>• {'{{remarks}}'} - Admin remarks</div>
-                <div>• {'{{reset_link}}'} - Password reset link</div>
-              </div>
             </div>
 
             <div className="flex justify-end gap-4">
