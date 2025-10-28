@@ -63,7 +63,7 @@ export default function BlogsListPage() {
                 <div
                   key={blog.id}
                   className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-                  onClick={() => setLocation(`/blogs/${blog.id}`)}
+                  onClick={() => setLocation(`/blogs/${blog.slug}`)}
                 >
                   <div className="aspect-[4/3] overflow-hidden">
                     <img

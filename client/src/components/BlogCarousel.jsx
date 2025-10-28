@@ -73,7 +73,7 @@ export const BlogCarousel = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         <div 
           className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-          onClick={() => setLocation(`/blogs/${currentBlog.id}`)}
+          onClick={() => setLocation(`/blogs/${currentBlog.slug}`)}
         >
           <div className="h-64 overflow-hidden">
             <img
@@ -99,7 +99,7 @@ export const BlogCarousel = () => {
         {blogs.length > 1 && (
           <div 
             className="hidden lg:block bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
-            onClick={() => setLocation(`/blogs/${nextBlog.id}`)}
+            onClick={() => setLocation(`/blogs/${nextBlog.slug}`)}
           >
             <div className="h-64 overflow-hidden">
               <img

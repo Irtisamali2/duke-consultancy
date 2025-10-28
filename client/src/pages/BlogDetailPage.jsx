@@ -5,22 +5,22 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 
 export default function BlogDetailPage() {
-  const [match, params] = useRoute('/blogs/:id');
+  const [match, params] = useRoute('/blogs/:slug');
   const [, setLocation] = useLocation();
   const [blog, setBlog] = useState(null);
   const [relatedBlogs, setRelatedBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (match && params.id) {
-      fetchBlog(params.id);
-      fetchRelatedBlogs(params.id);
+    if (match && params.slug) {
+      fetchBlog(params.slug);
+      fetchRelatedBlogs(params.slug);
     }
   }, [match, params]);
 
-  const fetchBlog = async (id) => {
+  const fetchBlog = async (slug) => {
     try {
-      const response = await fetch(`/api/blogs/${id}`);
+      const response = await fetch(`/api/blogs/${slug}`);
       const data = await response.json();
       if (data.success) {
         setBlog(data.blog);
@@ -32,12 +32,12 @@ export default function BlogDetailPage() {
     }
   };
 
-  const fetchRelatedBlogs = async (currentId) => {
+  const fetchRelatedBlogs = async (currentSlug) => {
     try {
       const response = await fetch('/api/blogs/published');
       const data = await response.json();
       if (data.success) {
-        const filtered = data.blogs.filter(b => b.id !== parseInt(currentId)).slice(0, 4);
+        const filtered = data.blogs.filter(b => b.slug !== currentSlug).slice(0, 4);
         setRelatedBlogs(filtered);
       }
     } catch (error) {
@@ -142,7 +142,7 @@ export default function BlogDetailPage() {
                     key={relatedBlog.id}
                     className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
                     onClick={() => {
-                      setLocation(`/blogs/${relatedBlog.id}`);
+                      setLocation(`/blogs/${relatedBlog.slug}`);
                       window.scrollTo(0, 0);
                     }}
                   >
