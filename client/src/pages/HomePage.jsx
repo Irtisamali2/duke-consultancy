@@ -16,42 +16,13 @@ export const HomePage = () => {
       <Header currentPage="home" />
 
       {/* Hero Section */}
-      <section className="w-full bg-white pt-8 sm:pt-12 pb-12 sm:pb-20">
+      <section className="w-full bg-white pt-6 sm:pt-12 pb-10 sm:pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-center">
-            {/* Text Content - Order 2 on mobile, Order 1 on desktop */}
-            <div className="space-y-4 sm:space-y-8 order-2 lg:order-1">
-              <div className="inline-flex items-center gap-2 text-[#00A6CE]">
-                <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
-                <span className="text-xs sm:text-base font-medium">#1 Choice for Global Healthcare Job Placement</span>
-              </div>
-              
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                <span className="text-black">Empowering Healthcare Professionals for Global </span>
-                <span className="text-[#2C5F6F]">Career Success</span>
-              </h1>
-              
-              <p className="text-gray-600 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl">
-                We meticulously prepare healthcare workers for successful international placements through world-class training, ethical recruitment, and dedicated career guidance.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Button 
-                  onClick={() => setLocation('/candidate/register')}
-                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 sm:px-10 py-5 sm:py-6 rounded-full text-sm sm:text-base font-medium"
-                >
-                  Apply Now
-                </Button>
-                <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-8 sm:px-10 py-5 sm:py-6 rounded-full text-sm sm:text-base font-medium flex items-center gap-2 justify-center">
-                  Learn More
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Image - Order 1 on mobile, Order 2 on desktop */}
-            <div className="relative order-1 lg:order-2">
-              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl">
+          {/* Mobile Layout */}
+          <div className="lg:hidden flex flex-col">
+            {/* Image with badges */}
+            <div className="relative mb-8">
+              <div className="relative rounded-2xl overflow-hidden">
                 <img
                   src="/Mask group (1)_1760620861162.png"
                   alt="Healthcare Professional"
@@ -59,22 +30,115 @@ export const HomePage = () => {
                 />
                 
                 {/* Top right badge - 10K+ */}
-                <div className="absolute top-3 right-3 sm:top-6 sm:right-6 bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-4 shadow-lg text-right">
-                  <div className="text-2xl sm:text-4xl font-bold text-[#00A6CE]">10K+</div>
-                  <div className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">Assign Jobs To<br/>Nurses</div>
+                <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+                  <div className="text-2xl font-bold text-[#00A6CE]">10K+</div>
+                  <div className="text-xs text-gray-600 whitespace-nowrap">Assign Jobs To<br/>Nurses</div>
                 </div>
               </div>
               
               {/* Bottom left badge - Candidates */}
-              <div className="absolute -bottom-6 sm:-bottom-8 left-2 sm:left-4 bg-white rounded-xl sm:rounded-2xl px-3 py-3 sm:px-6 sm:py-5 shadow-2xl flex items-center gap-2 sm:gap-4">
-                <div className="flex -space-x-2 sm:-space-x-3">
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-gray-300 border-2 sm:border-3 border-white"></div>
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-gray-400 border-2 sm:border-3 border-white"></div>
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-gray-500 border-2 sm:border-3 border-white"></div>
+              <div className="absolute -bottom-4 left-4 bg-white rounded-xl px-4 py-3 shadow-2xl flex items-center gap-3">
+                <div className="flex -space-x-2">
+                  <div className="w-8 h-8 rounded-full bg-gray-300 border-2 border-white"></div>
+                  <div className="w-8 h-8 rounded-full bg-gray-400 border-2 border-white"></div>
+                  <div className="w-8 h-8 rounded-full bg-gray-500 border-2 border-white"></div>
                 </div>
                 <div>
-                  <div className="text-xl sm:text-3xl font-bold text-[#00A6CE]">2,650+</div>
-                  <div className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">Candidate have trusted us</div>
+                  <div className="text-xl font-bold text-[#00A6CE]">2,650+</div>
+                  <div className="text-xs text-gray-600">Candidate have trusted us</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Text Content */}
+            <div className="space-y-4 mt-4">
+              <div className="inline-flex items-center gap-2 text-[#00A6CE]">
+                <Star className="w-4 h-4 fill-current" />
+                <span className="text-xs font-medium">#1 Choice for Global Healthcare Job Placement</span>
+              </div>
+              
+              <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
+                <span className="text-black">Empowering Healthcare Professionals for Global </span>
+                <span className="text-[#2C5F6F]">Career Success</span>
+              </h1>
+              
+              <p className="text-gray-600 text-sm leading-relaxed">
+                We meticulously prepare healthcare workers for successful international placements through world-class training, ethical recruitment, and dedicated career guidance.
+              </p>
+              
+              <div className="flex flex-col gap-3 pt-2">
+                <Button 
+                  onClick={() => setLocation('/candidate/register')}
+                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-5 rounded-full text-sm font-medium w-full"
+                >
+                  Apply Now
+                </Button>
+                <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-8 py-5 rounded-full text-sm font-medium flex items-center gap-2 justify-center w-full">
+                  Learn More
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden lg:grid grid-cols-2 gap-16 items-center">
+            {/* Text Content */}
+            <div className="space-y-8">
+              <div className="inline-flex items-center gap-2 text-[#00A6CE]">
+                <Star className="w-5 h-5 fill-current" />
+                <span className="text-base font-medium">#1 Choice for Global Healthcare Job Placement</span>
+              </div>
+              
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
+                <span className="text-black">Empowering Healthcare Professionals for Global </span>
+                <span className="text-[#2C5F6F]">Career Success</span>
+              </h1>
+              
+              <p className="text-gray-600 text-lg leading-relaxed max-w-xl">
+                We meticulously prepare healthcare workers for successful international placements through world-class training, ethical recruitment, and dedicated career guidance.
+              </p>
+              
+              <div className="flex gap-4">
+                <Button 
+                  onClick={() => setLocation('/candidate/register')}
+                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-10 py-6 rounded-full text-base font-medium"
+                >
+                  Apply Now
+                </Button>
+                <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-10 py-6 rounded-full text-base font-medium flex items-center gap-2">
+                  Learn More
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Image */}
+            <div className="relative">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+                <img
+                  src="/Mask group (1)_1760620861162.png"
+                  alt="Healthcare Professional"
+                  className="w-full h-auto"
+                />
+                
+                {/* Top right badge - 10K+ */}
+                <div className="absolute top-6 right-6 bg-white/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-lg text-right">
+                  <div className="text-4xl font-bold text-[#00A6CE]">10K+</div>
+                  <div className="text-sm text-gray-600 mt-1">Assign Jobs To<br/>Nurses</div>
+                </div>
+              </div>
+              
+              {/* Bottom left badge - Candidates */}
+              <div className="absolute -bottom-8 left-4 bg-white rounded-2xl px-6 py-5 shadow-2xl flex items-center gap-4">
+                <div className="flex -space-x-3">
+                  <div className="w-12 h-12 rounded-full bg-gray-300 border-3 border-white"></div>
+                  <div className="w-12 h-12 rounded-full bg-gray-400 border-3 border-white"></div>
+                  <div className="w-12 h-12 rounded-full bg-gray-500 border-3 border-white"></div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-[#00A6CE]">2,650+</div>
+                  <div className="text-sm text-gray-600 whitespace-nowrap">Candidate have trusted us</div>
                 </div>
               </div>
             </div>
@@ -135,23 +199,19 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="space-y-3 mb-6">
-                  <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Register Online</h3>
+                <div className="space-y-2 mb-6">
+                  <h3 className="text-lg font-semibold text-[#00A6CE]">Register Online</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
                     we know your home is more than just a place to live, that's why we're committed to providing the best home loan
                   </p>
                 </div>
-                <div className="relative h-[350px] sm:h-[400px]">
-                  {/* Background Circle */}
-                  <img
-                    src="/Ellipse 1328 (2)_1760621468329.png"
-                    alt=""
-                    className="absolute left-0 top-0 w-[280px] sm:w-[320px] h-auto opacity-50"
-                  />
+                <div className="relative h-[320px]">
+                  {/* Gradient Background Circle */}
+                  <div className="absolute left-0 top-0 w-[240px] h-[240px] rounded-full bg-gradient-to-br from-[#E0F4F8] to-[#B8E4ED] opacity-40"></div>
                   {/* Number */}
-                  <div className="absolute left-0 top-8 text-[100px] sm:text-[120px] font-bold text-gray-200 leading-none z-10">01</div>
-                  {/* White Card - positioned to overlap circle */}
-                  <div className="absolute right-0 top-16 bg-white rounded-2xl shadow-2xl p-6 w-[280px] sm:w-[300px] z-20">
+                  <div className="absolute left-2 top-12 text-[100px] font-bold text-gray-200 leading-none z-10">01</div>
+                  {/* White Card */}
+                  <div className="absolute left-12 top-24 bg-white rounded-2xl shadow-2xl p-6 w-[280px] z-20">
                     <h4 className="text-base font-semibold text-gray-900 mb-5 text-center">Register Online</h4>
                     <div className="space-y-3">
                       <div className="h-2 bg-gray-200 rounded-full"></div>
@@ -204,23 +264,19 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="space-y-3 mb-6">
-                  <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Browse Jobs</h3>
+                <div className="space-y-2 mb-6">
+                  <h3 className="text-lg font-semibold text-[#00A6CE]">Browse Jobs</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
-                <div className="relative h-[300px] sm:h-[350px]">
-                  {/* Background Circle */}
-                  <img
-                    src="/Ellipse 1328 (1)_1760621468329.png"
-                    alt=""
-                    className="absolute left-0 top-0 w-[280px] sm:w-[320px] h-auto opacity-50"
-                  />
+                <div className="relative h-[300px]">
+                  {/* Gradient Background Circle */}
+                  <div className="absolute left-0 top-0 w-[240px] h-[240px] rounded-full bg-gradient-to-br from-[#E0F4F8] to-[#B8E4ED] opacity-40"></div>
                   {/* Number */}
-                  <div className="absolute left-0 top-8 text-[100px] sm:text-[120px] font-bold text-gray-200 leading-none z-10">02</div>
+                  <div className="absolute left-2 top-12 text-[100px] font-bold text-gray-200 leading-none z-10">02</div>
                   {/* White Card */}
-                  <div className="absolute right-0 top-16 bg-white rounded-2xl shadow-2xl p-6 w-[280px] sm:w-[300px] z-20">
+                  <div className="absolute left-12 top-24 bg-white rounded-2xl shadow-2xl p-6 w-[280px] z-20">
                     <h4 className="text-base font-normal text-gray-900 mb-4 text-center">Search</h4>
                     <div className="relative">
                       <input
@@ -280,23 +336,19 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="space-y-3 mb-6">
-                  <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Apply & Track</h3>
+                <div className="space-y-2 mb-6">
+                  <h3 className="text-lg font-semibold text-[#00A6CE]">Apply & Track</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
                     It's about you and your family, having a comfortable payment, exceptional service and a lender.
                   </p>
                 </div>
-                <div className="relative h-[300px] sm:h-[350px]">
-                  {/* Background Circle */}
-                  <img
-                    src="/Ellipse 1328_1760621468330.png"
-                    alt=""
-                    className="absolute left-0 top-0 w-[280px] sm:w-[320px] h-auto opacity-50"
-                  />
+                <div className="relative h-[300px]">
+                  {/* Gradient Background Circle */}
+                  <div className="absolute left-0 top-0 w-[240px] h-[240px] rounded-full bg-gradient-to-br from-[#D4F1F9] to-[#A8DDE9] opacity-40"></div>
                   {/* Number */}
-                  <div className="absolute left-0 top-8 text-[100px] sm:text-[120px] font-bold text-gray-200 leading-none z-10">03</div>
+                  <div className="absolute left-2 top-12 text-[100px] font-bold text-gray-200 leading-none z-10">03</div>
                   {/* White Card */}
-                  <div className="absolute right-0 top-20 bg-white rounded-2xl shadow-2xl p-8 w-[280px] sm:w-[300px] z-20 flex justify-center gap-4">
+                  <div className="absolute left-12 top-28 bg-white rounded-2xl shadow-2xl p-8 w-[280px] z-20 flex justify-center gap-4">
                     <div className="text-4xl">😮</div>
                     <div className="text-4xl">😠</div>
                     <div className="text-4xl">❤️</div>
@@ -332,23 +384,19 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="space-y-3 mb-6">
-                  <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Screening & Interviews</h3>
+                <div className="space-y-2 mb-6">
+                  <h3 className="text-lg font-semibold text-[#00A6CE]">Screening & Interviews</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
-                <div className="relative h-[300px] sm:h-[350px]">
-                  {/* Background Circle */}
-                  <img
-                    src="/Ellipse 1328 (2)_1760621468329.png"
-                    alt=""
-                    className="absolute left-0 top-0 w-[280px] sm:w-[320px] h-auto opacity-50"
-                  />
+                <div className="relative h-[300px]">
+                  {/* Gradient Background Circle */}
+                  <div className="absolute left-0 top-0 w-[240px] h-[240px] rounded-full bg-gradient-to-br from-[#E0F4F8] to-[#B8E4ED] opacity-40"></div>
                   {/* Number */}
-                  <div className="absolute left-0 top-8 text-[100px] sm:text-[120px] font-bold text-gray-200 leading-none z-10">04</div>
+                  <div className="absolute left-2 top-12 text-[100px] font-bold text-gray-200 leading-none z-10">04</div>
                   {/* White Card */}
-                  <div className="absolute right-0 top-16 bg-white rounded-2xl shadow-2xl p-6 w-[280px] sm:w-[300px] z-20">
+                  <div className="absolute left-12 top-24 bg-white rounded-2xl shadow-2xl p-6 w-[280px] z-20">
                     <h4 className="text-base font-normal text-gray-900 mb-4 text-center">Search</h4>
                     <div className="relative">
                       <input
