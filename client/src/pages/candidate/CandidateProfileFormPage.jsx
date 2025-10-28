@@ -487,51 +487,6 @@ export default function CandidateProfileFormPage() {
                     </button>
                   </div>
                 </div>
-
-                <div className="border-t pt-6">
-                  <h3 className="text-lg font-semibold mb-4">Change Password</h3>
-                  <div className="grid gap-4 max-w-md">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Current Password *</label>
-                      <input
-                        type="password"
-                        value={passwordData.currentPassword}
-                        onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                        placeholder="••••••••••"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">New Password *</label>
-                      <input
-                        type="password"
-                        value={passwordData.newPassword}
-                        onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                        placeholder="••••••••••"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Confirm New Password *</label>
-                      <input
-                        type="password"
-                        value={passwordData.confirmPassword}
-                        onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                        placeholder="••••••••••"
-                      />
-                    </div>
-                    <div>
-                      <button
-                        onClick={handlePasswordSubmit}
-                        className="bg-[#0B7A9F] hover:bg-[#096685] text-white px-6 py-2 rounded-lg"
-                      >
-                        Update Password
-                      </button>
-                    </div>
-                  </div>
-                </div>
               </div>
             )}
 
@@ -580,56 +535,90 @@ export default function CandidateProfileFormPage() {
                   <div className="border-t pt-4">
                     <h3 className="text-lg font-semibold mb-3">Country Preferences *</h3>
                     <p className="text-sm text-gray-600 mb-3">
-                      Select your preferred {selectedJob ? `${selectedJob.max_countries_selectable === 1 ? 'country' : 'countries'}` : 'countries'} 
-                      {selectedJob && ` (max ${selectedJob.max_countries_selectable})`}
+                      {selectedJob ? `Select up to ${selectedJob.max_countries_selectable} ${selectedJob.max_countries_selectable === 1 ? 'country' : 'countries'}` : 'Select your preferred countries'}
                     </p>
                     
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-4">
-                      {availableCountries.map(countryName => (
-                        <label key={countryName} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
-                          <input
-                            type="checkbox"
-                            checked={tradeData.countries_preference.includes(countryName)}
-                            onChange={() => toggleCountryPreference(countryName)}
-                            className="w-4 h-4 text-[#00A6CE] focus:ring-[#00A6CE] rounded"
-                          />
-                          <span className="text-sm text-gray-700">{countryName}</span>
-                        </label>
-                      ))}
-                    </div>
-                    
-                    <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
-                      <p className="text-xs text-blue-800">
-                        <strong>Selected ({tradeData.countries_preference.length}):</strong> {tradeData.countries_preference.join(', ') || 'None'}
-                      </p>
+                    <div className="space-y-3">
+                      <select
+                        onChange={(e) => {
+                          const country = e.target.value;
+                          if (country && !tradeData.countries_preference.includes(country)) {
+                            toggleCountryPreference(country);
+                          }
+                          e.target.value = '';
+                        }}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      >
+                        <option value="">Add a country...</option>
+                        {availableCountries.filter(c => !tradeData.countries_preference.includes(c)).map(countryName => (
+                          <option key={countryName} value={countryName}>{countryName}</option>
+                        ))}
+                      </select>
+                      
+                      {tradeData.countries_preference.length > 0 && (
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium text-gray-700">Selected Countries:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {tradeData.countries_preference.map(country => (
+                              <div key={country} className="flex items-center gap-2 bg-[#00A6CE] text-white px-3 py-1 rounded-full">
+                                <span className="text-sm">{country}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => toggleCountryPreference(country)}
+                                  className="hover:bg-white hover:text-[#00A6CE] rounded-full w-5 h-5 flex items-center justify-center"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                   
                   <div className="border-t pt-4">
                     <h3 className="text-lg font-semibold mb-3">Trade / Specialization Preferences *</h3>
                     <p className="text-sm text-gray-600 mb-3">
-                      Select your preferred {selectedJob ? `${selectedJob.max_trades_selectable === 1 ? 'trade' : 'trades'}` : 'trades'} 
-                      {selectedJob && ` (max ${selectedJob.max_trades_selectable})`}
+                      {selectedJob ? `Select up to ${selectedJob.max_trades_selectable} ${selectedJob.max_trades_selectable === 1 ? 'trade' : 'trades'}` : 'Select your preferred trades'}
                     </p>
                     
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-4">
-                      {availableTrades.map(trade => (
-                        <label key={trade} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
-                          <input
-                            type="checkbox"
-                            checked={tradeData.trades_preference.includes(trade)}
-                            onChange={() => toggleTradePreference(trade)}
-                            className="w-4 h-4 text-[#00A6CE] focus:ring-[#00A6CE] rounded"
-                          />
-                          <span className="text-sm text-gray-700">{trade}</span>
-                        </label>
-                      ))}
-                    </div>
-                    
-                    <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
-                      <p className="text-xs text-blue-800">
-                        <strong>Selected ({tradeData.trades_preference.length}):</strong> {tradeData.trades_preference.join(', ') || 'None'}
-                      </p>
+                    <div className="space-y-3">
+                      <select
+                        onChange={(e) => {
+                          const trade = e.target.value;
+                          if (trade && !tradeData.trades_preference.includes(trade)) {
+                            toggleTradePreference(trade);
+                          }
+                          e.target.value = '';
+                        }}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      >
+                        <option value="">Add a trade...</option>
+                        {availableTrades.filter(t => !tradeData.trades_preference.includes(t)).map(trade => (
+                          <option key={trade} value={trade}>{trade}</option>
+                        ))}
+                      </select>
+                      
+                      {tradeData.trades_preference.length > 0 && (
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium text-gray-700">Selected Trades:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {tradeData.trades_preference.map(trade => (
+                              <div key={trade} className="flex items-center gap-2 bg-[#00A6CE] text-white px-3 py-1 rounded-full">
+                                <span className="text-sm">{trade}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => toggleTradePreference(trade)}
+                                  className="hover:bg-white hover:text-[#00A6CE] rounded-full w-5 h-5 flex items-center justify-center"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-6">
