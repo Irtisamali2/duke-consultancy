@@ -95,9 +95,10 @@ export const BlogCarousel = () => {
           </div>
         </div>
 
+        {/* Second blog - hidden on mobile, shown on desktop */}
         {blogs.length > 1 && (
           <div 
-            className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+            className="hidden lg:block bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
             onClick={() => setLocation(`/blogs/${nextBlog.id}`)}
           >
             <div className="h-64 overflow-hidden">

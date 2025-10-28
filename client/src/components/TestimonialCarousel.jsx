@@ -60,7 +60,8 @@ export const TestimonialCarousel = () => {
           </div>
         </div>
 
-        <div className="bg-[#D6EEF5] rounded-3xl overflow-hidden flex flex-col lg:flex-row">
+        {/* Second testimonial - hidden on mobile, shown on desktop */}
+        <div className="hidden lg:flex bg-[#D6EEF5] rounded-3xl overflow-hidden flex-col lg:flex-row">
           <div className="lg:w-56 lg:flex-shrink-0">
             <img
               src={nextTestimonial.image}

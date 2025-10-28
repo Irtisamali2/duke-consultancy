@@ -297,24 +297,24 @@ export const HomePage = () => {
             </div>
 
             {/* Job Placement Abroad Card - Order 2 on mobile */}
-            <div className="bg-gray-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3 sm:space-y-4 order-2 lg:order-3">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
-                <img src="/Icon Badge (2)_1760620436959.png" alt="Job Placement" className="w-6 h-6 sm:w-8 sm:h-8" />
+            <div className="bg-gray-50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 space-y-2 sm:space-y-3 lg:space-y-4 order-2 lg:order-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
+                <img src="/Icon Badge (2)_1760620436959.png" alt="Job Placement" className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-black">Job Placement Abroad</h3>
+              <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-black">Job Placement Abroad</h3>
               <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                 From the UK and Europe to the Middle East, we facilitate international placements, offering candidates opportunities to expand their careers globally.
               </p>
             </div>
 
             {/* Application & Visa Support Card - Order 3 on mobile */}
-            <div className="bg-gray-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 space-y-3 sm:space-y-4 order-3 lg:order-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
+            <div className="bg-gray-50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 space-y-2 sm:space-y-3 lg:space-y-4 order-3 lg:order-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-[#00A6CE]" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
                 </svg>
               </div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-black">Application & Visa Support</h3>
+              <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-black">Application & Visa Support</h3>
               <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                 Our team assists with paperwork, compliance, visa filing, and documentation, making the relocation process smooth and hassle-free.
               </p>
