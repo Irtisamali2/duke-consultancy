@@ -76,27 +76,45 @@ export default function EmailLogsPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <button
                           onClick={() => {
+                            // Create modal DOM elements safely to prevent XSS
                             const modal = document.createElement('div');
                             modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
-                            modal.innerHTML = `
-                              <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6">
-                                <div class="flex justify-between items-center mb-4">
-                                  <h2 class="text-xl font-bold">Email Details</h2>
-                                  <button onclick="this.closest('.fixed').remove()" class="text-gray-500 hover:text-gray-700">✕</button>
-                                </div>
-                                <div class="mb-4">
-                                  <strong>To:</strong> ${log.recipient_email}<br>
-                                  <strong>Subject:</strong> ${log.subject}<br>
-                                  <strong>Date:</strong> ${new Date(log.sent_at).toLocaleString()}<br>
-                                  <strong>Status:</strong> ${log.status}
-                                  ${log.error_message ? `<br><strong>Error:</strong> <span class="text-red-600">${log.error_message}</span>` : ''}
-                                </div>
-                                <div class="border-t pt-4">
-                                  <strong class="block mb-2">Email Body:</strong>
-                                  <div class="border rounded p-4 bg-gray-50">${log.body}</div>
-                                </div>
-                              </div>
-                            `;
+                            
+                            const modalContent = document.createElement('div');
+                            modalContent.className = 'bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6';
+                            
+                            const header = document.createElement('div');
+                            header.className = 'flex justify-between items-center mb-4';
+                            header.innerHTML = '<h2 class="text-xl font-bold">Email Details</h2>';
+                            
+                            const closeBtn = document.createElement('button');
+                            closeBtn.textContent = '✕';
+                            closeBtn.className = 'text-gray-500 hover:text-gray-700';
+                            closeBtn.onclick = () => modal.remove();
+                            header.appendChild(closeBtn);
+                            
+                            const details = document.createElement('div');
+                            details.className = 'mb-4';
+                            const detailsText = document.createTextNode(`To: ${log.recipient_email}\nSubject: ${log.subject}\nDate: ${new Date(log.sent_at).toLocaleString()}\nStatus: ${log.status}`);
+                            details.appendChild(detailsText);
+                            
+                            const bodySection = document.createElement('div');
+                            bodySection.className = 'border-t pt-4';
+                            const bodyLabel = document.createElement('strong');
+                            bodyLabel.className = 'block mb-2';
+                            bodyLabel.textContent = 'Email Body:';
+                            
+                            const bodyPreview = document.createElement('div');
+                            bodyPreview.className = 'border rounded p-4 bg-gray-50 max-h-96 overflow-auto';
+                            bodyPreview.textContent = log.body; // Display as text to prevent XSS
+                            
+                            bodySection.appendChild(bodyLabel);
+                            bodySection.appendChild(bodyPreview);
+                            
+                            modalContent.appendChild(header);
+                            modalContent.appendChild(details);
+                            modalContent.appendChild(bodySection);
+                            modal.appendChild(modalContent);
                             document.body.appendChild(modal);
                           }}
                           className="text-[#00A6CE] hover:text-[#0090B5]"

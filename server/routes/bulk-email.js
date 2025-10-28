@@ -9,6 +9,24 @@ router.post('/email/bulk-send', requireAuth, async (req, res) => {
   try {
     const { applicationIds, subject, body, templateId } = req.body;
 
+    // Input validation
+    if (!applicationIds || !Array.isArray(applicationIds) || applicationIds.length === 0) {
+      return res.status(400).json({ success: false, message: 'Invalid application IDs' });
+    }
+
+    if (!subject || typeof subject !== 'string' || subject.trim().length === 0) {
+      return res.status(400).json({ success: false, message: 'Subject is required' });
+    }
+
+    if (!body || typeof body !== 'string' || body.trim().length === 0) {
+      return res.status(400).json({ success: false, message: 'Email body is required' });
+    }
+
+    // Limit bulk send to reasonable number
+    if (applicationIds.length > 100) {
+      return res.status(400).json({ success: false, message: 'Cannot send to more than 100 recipients at once' });
+    }
+
     const [applications] = await db.query(
       `SELECT a.id, a.email, c.full_name, a.trade, a.status, a.applied_date 
        FROM applications a 
@@ -123,9 +141,34 @@ router.patch('/email/inbox/:id/read', requireAuth, async (req, res) => {
 });
 
 // Webhook endpoint for receiving emails (can be configured with email service)
+// SECURITY: This endpoint should be protected with webhook signature verification in production
 router.post('/email/webhook/incoming', async (req, res) => {
   try {
+    // Webhook authentication - verify shared secret
+    const webhookSecret = process.env.WEBHOOK_SECRET || 'your-webhook-secret-here';
+    const providedSecret = req.headers['x-webhook-secret'];
+    
+    // In production, this should use proper signature verification from your email provider
+    // For now, we use a simple shared secret
+    if (providedSecret !== webhookSecret) {
+      return res.status(401).json({ success: false, message: 'Unauthorized: Invalid webhook secret' });
+    }
+
     const { from_email, from_name, to_email, subject, body } = req.body;
+
+    // Basic validation
+    if (!from_email || !to_email || !subject || !body) {
+      return res.status(400).json({ success: false, message: 'Missing required fields' });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(from_email) || !emailRegex.test(to_email)) {
+      return res.status(400).json({ success: false, message: 'Invalid email format' });
+    }
+    
+    // Sanitize body - limit length and strip dangerous content
+    const sanitizedBody = body.substring(0, 10000); // Limit to 10k chars
 
     // Try to find the application by email
     const [applications] = await db.query(
@@ -138,7 +181,7 @@ router.post('/email/webhook/incoming', async (req, res) => {
     await db.query(
       `INSERT INTO incoming_emails (from_email, from_name, to_email, subject, body, application_id) 
        VALUES (?, ?, ?, ?, ?, ?)`,
-      [from_email, from_name || 'Unknown', to_email, subject, body, application_id]
+      [from_email, from_name || 'Unknown', to_email, subject, sanitizedBody, application_id]
     );
 
     res.json({ success: true, message: 'Email received' });

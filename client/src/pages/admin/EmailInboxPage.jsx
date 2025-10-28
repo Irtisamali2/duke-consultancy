@@ -99,32 +99,61 @@ export default function EmailInboxPage() {
                             if (!email.is_read) {
                               markAsRead(email.id);
                             }
+                            
+                            // Create modal DOM elements safely to prevent XSS
                             const modal = document.createElement('div');
                             modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
-                            modal.innerHTML = `
-                              <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6">
-                                <div class="flex justify-between items-center mb-4">
-                                  <h2 class="text-xl font-bold">Email from ${email.from_name || email.from_email}</h2>
-                                  <button onclick="this.closest('.fixed').remove()" class="text-gray-500 hover:text-gray-700">✕</button>
-                                </div>
-                                <div class="mb-4 text-sm">
-                                  <strong>From:</strong> ${email.from_email}<br>
-                                  <strong>To:</strong> ${email.to_email}<br>
-                                  <strong>Subject:</strong> ${email.subject}<br>
-                                  <strong>Date:</strong> ${new Date(email.received_at).toLocaleString()}
-                                </div>
-                                <div class="border-t pt-4">
-                                  <strong class="block mb-2">Message:</strong>
-                                  <div class="border rounded p-4 bg-gray-50 whitespace-pre-wrap">${email.body}</div>
-                                </div>
-                                <div class="border-t pt-4 mt-4">
-                                  <a href="mailto:${email.from_email}?subject=Re: ${email.subject}" 
-                                     class="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-4 py-2 rounded inline-block">
-                                    Reply via Email Client
-                                  </a>
-                                </div>
-                              </div>
-                            `;
+                            
+                            const modalContent = document.createElement('div');
+                            modalContent.className = 'bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6';
+                            
+                            const header = document.createElement('div');
+                            header.className = 'flex justify-between items-center mb-4';
+                            const title = document.createElement('h2');
+                            title.className = 'text-xl font-bold';
+                            title.textContent = `Email from ${email.from_name || email.from_email}`;
+                            
+                            const closeBtn = document.createElement('button');
+                            closeBtn.textContent = '✕';
+                            closeBtn.className = 'text-gray-500 hover:text-gray-700';
+                            closeBtn.onclick = () => modal.remove();
+                            
+                            header.appendChild(title);
+                            header.appendChild(closeBtn);
+                            
+                            const details = document.createElement('div');
+                            details.className = 'mb-4 text-sm';
+                            const detailsText = document.createTextNode(
+                              `From: ${email.from_email}\nTo: ${email.to_email}\nSubject: ${email.subject}\nDate: ${new Date(email.received_at).toLocaleString()}`
+                            );
+                            details.appendChild(detailsText);
+                            
+                            const bodySection = document.createElement('div');
+                            bodySection.className = 'border-t pt-4';
+                            const bodyLabel = document.createElement('strong');
+                            bodyLabel.className = 'block mb-2';
+                            bodyLabel.textContent = 'Message:';
+                            
+                            const bodyContent = document.createElement('div');
+                            bodyContent.className = 'border rounded p-4 bg-gray-50 whitespace-pre-wrap';
+                            bodyContent.textContent = email.body; // Display as text to prevent XSS
+                            
+                            bodySection.appendChild(bodyLabel);
+                            bodySection.appendChild(bodyContent);
+                            
+                            const replySection = document.createElement('div');
+                            replySection.className = 'border-t pt-4 mt-4';
+                            const replyLink = document.createElement('a');
+                            replyLink.href = `mailto:${email.from_email}?subject=Re: ${email.subject}`;
+                            replyLink.className = 'bg-[#00A6CE] hover:bg-[#0090B5] text-white px-4 py-2 rounded inline-block';
+                            replyLink.textContent = 'Reply via Email Client';
+                            replySection.appendChild(replyLink);
+                            
+                            modalContent.appendChild(header);
+                            modalContent.appendChild(details);
+                            modalContent.appendChild(bodySection);
+                            modalContent.appendChild(replySection);
+                            modal.appendChild(modalContent);
                             document.body.appendChild(modal);
                           }}
                           className="text-[#00A6CE] hover:text-[#0090B5]"
