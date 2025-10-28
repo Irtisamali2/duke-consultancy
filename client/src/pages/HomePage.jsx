@@ -19,8 +19,8 @@ export const HomePage = () => {
       <section className="w-full bg-white pt-8 sm:pt-12 pb-12 sm:pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-center">
-            {/* Text Content - Order 2 on mobile, Order 1 on desktop */}
-            <div className="space-y-4 sm:space-y-8 order-2 lg:order-1">
+            {/* Text Content - Order 1 on both mobile and desktop */}
+            <div className="space-y-4 sm:space-y-8 order-1">
               <div className="inline-flex items-center gap-2 text-[#00A6CE]">
                 <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
                 <span className="text-xs sm:text-base font-medium">#1 Choice for Global Healthcare Job Placement</span>
@@ -35,22 +35,22 @@ export const HomePage = () => {
                 We meticulously prepare healthcare workers for successful international placements through world-class training, ethical recruitment, and dedicated career guidance.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="flex flex-row gap-3 sm:gap-4">
                 <Button 
                   onClick={() => setLocation('/candidate/register')}
-                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 sm:px-10 py-5 sm:py-6 rounded-full text-sm sm:text-base font-medium"
+                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-6 sm:px-10 py-5 sm:py-6 rounded-full text-sm sm:text-base font-medium flex-1 sm:flex-initial"
                 >
                   Apply Now
                 </Button>
-                <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-8 sm:px-10 py-5 sm:py-6 rounded-full text-sm sm:text-base font-medium flex items-center gap-2 justify-center">
+                <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-6 sm:px-10 py-5 sm:py-6 rounded-full text-sm sm:text-base font-medium flex items-center gap-2 justify-center flex-1 sm:flex-initial">
                   Learn More
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </div>
             </div>
 
-            {/* Image - Order 1 on mobile, Order 2 on desktop */}
-            <div className="relative order-1 lg:order-2">
+            {/* Image - Order 2 on both mobile and desktop */}
+            <div className="relative order-2">
               <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl">
                 <img
                   src="/Mask group (1)_1760620861162.png"
