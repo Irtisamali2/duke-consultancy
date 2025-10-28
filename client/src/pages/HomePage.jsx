@@ -18,7 +18,7 @@ export const HomePage = () => {
       {/* Hero Section */}
       <section className="w-full bg-white pt-8 sm:pt-12 md:pt-16 pb-12 sm:pb-20 md:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16 items-center">
             {/* Text Content - Order 1 on both mobile and desktop */}
             <div className="space-y-4 sm:space-y-6 md:space-y-7 lg:space-y-8 order-1">
               <div className="inline-flex items-center gap-2 text-[#00A6CE]">
@@ -38,11 +38,11 @@ export const HomePage = () => {
               <div className="flex flex-row gap-3 sm:gap-4 md:gap-4">
                 <Button 
                   onClick={() => setLocation('/candidate/register')}
-                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-6 sm:px-8 md:px-10 py-5 sm:py-5 md:py-6 rounded-full text-sm sm:text-base font-medium flex-1 sm:flex-initial"
+                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-6 sm:px-8 md:px-10 py-5 sm:py-5 md:py-6 rounded-full text-sm sm:text-base font-medium flex-1 sm:flex-initial md:w-auto"
                 >
                   Apply Now
                 </Button>
-                <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-6 sm:px-8 md:px-10 py-5 sm:py-5 md:py-6 rounded-full text-sm sm:text-base font-medium flex items-center gap-2 justify-center flex-1 sm:flex-initial">
+                <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-6 sm:px-8 md:px-10 py-5 sm:py-5 md:py-6 rounded-full text-sm sm:text-base font-medium flex items-center gap-2 justify-center flex-1 sm:flex-initial md:w-auto">
                   Learn More
                   <ArrowRight className="w-4 h-4" />
                 </Button>
@@ -85,7 +85,7 @@ export const HomePage = () => {
       {/* Building Global Healthcare Section */}
       <section className="w-full py-10 sm:py-16 md:py-20 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-14 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-14 items-center">
             {/* Image - Order 2 on mobile, Order 1 on desktop */}
             <div className="order-2 lg:order-1">
               <img

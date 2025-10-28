@@ -49,7 +49,7 @@ export default function ContactPage() {
       {/* Contact Form & Info Section */}
       <section className="w-full py-10 sm:py-16 md:py-18 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
             {/* Contact Form */}
             <div className="bg-[#E8F7FB] rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-9 lg:p-10">
               <form onSubmit={handleSubmit}>
