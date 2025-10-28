@@ -29,33 +29,33 @@ export default function ContactPage() {
       <Header currentPage="contact" />
 
       {/* Hero Section */}
-      <section className="w-full py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-[#37AFCD]/40 to-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-4 sm:mb-6">
-            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#00A6CE]" fill="currentColor" viewBox="0 0 20 20">
+      <section className="w-full py-12 sm:py-16 md:py-18 lg:py-20 bg-gradient-to-b from-[#37AFCD]/40 to-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-12 text-center">
+          <div className="inline-flex items-center gap-2 bg-white px-3 sm:px-4 md:px-4 py-1.5 sm:py-2 md:py-2 rounded-full mb-4 sm:mb-6 md:mb-6">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 md:h-5 text-[#00A6CE]" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
-            <span className="text-[#00A6CE] text-xs sm:text-sm font-medium">Rated #1 choice for job searching</span>
+            <span className="text-[#00A6CE] text-xs sm:text-sm md:text-sm font-medium">Rated #1 choice for job searching</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 md:mb-6">
             Get in touch with us
           </h1>
-          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">
+          <p className="text-sm sm:text-base md:text-base text-gray-600 max-w-2xl mx-auto px-4">
             Whether you have a question, need support, or want to learn more about how Duke can help you, we're here to assist you.
           </p>
         </div>
       </section>
 
       {/* Contact Form & Info Section */}
-      <section className="w-full py-10 sm:py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+      <section className="w-full py-10 sm:py-16 md:py-18 lg:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
             {/* Contact Form */}
-            <div className="bg-[#E8F7FB] rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10">
+            <div className="bg-[#E8F7FB] rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-9 lg:p-10">
               <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6 mb-4 sm:mb-5 md:mb-6">
                   <div>
-                    <label className="block text-gray-700 text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">
+                    <label className="block text-gray-700 text-xs sm:text-sm md:text-sm font-medium mb-1.5 sm:mb-2 md:mb-2">
                       First Name
                     </label>
                     <input
@@ -64,11 +64,11 @@ export default function ContactPage() {
                       value={formData.firstName}
                       onChange={handleChange}
                       placeholder="First Name"
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-white border-none focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-xs sm:text-sm"
+                      className="w-full px-3 sm:px-4 md:px-4 py-2.5 sm:py-3 md:py-3 rounded-lg bg-white border-none focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-xs sm:text-sm md:text-sm"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">
+                    <label className="block text-gray-700 text-xs sm:text-sm md:text-sm font-medium mb-1.5 sm:mb-2 md:mb-2">
                       Last Name
                     </label>
                     <input
@@ -77,14 +77,14 @@ export default function ContactPage() {
                       value={formData.lastName}
                       onChange={handleChange}
                       placeholder="Last Name"
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-white border-none focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-xs sm:text-sm"
+                      className="w-full px-3 sm:px-4 md:px-4 py-2.5 sm:py-3 md:py-3 rounded-lg bg-white border-none focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-xs sm:text-sm md:text-sm"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6 mb-4 sm:mb-5 md:mb-6">
                   <div>
-                    <label className="block text-gray-700 text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">
+                    <label className="block text-gray-700 text-xs sm:text-sm md:text-sm font-medium mb-1.5 sm:mb-2 md:mb-2">
                       Email
                     </label>
                     <input
@@ -93,11 +93,11 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Email"
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-white border-none focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-xs sm:text-sm"
+                      className="w-full px-3 sm:px-4 md:px-4 py-2.5 sm:py-3 md:py-3 rounded-lg bg-white border-none focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-xs sm:text-sm md:text-sm"
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">
+                    <label className="block text-gray-700 text-xs sm:text-sm md:text-sm font-medium mb-1.5 sm:mb-2 md:mb-2">
                       Phone
                     </label>
                     <input
@@ -106,13 +106,13 @@ export default function ContactPage() {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="Phone"
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-white border-none focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-xs sm:text-sm"
+                      className="w-full px-3 sm:px-4 md:px-4 py-2.5 sm:py-3 md:py-3 rounded-lg bg-white border-none focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-xs sm:text-sm md:text-sm"
                     />
                   </div>
                 </div>
 
-                <div className="mb-4 sm:mb-6">
-                  <label className="block text-gray-700 text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">
+                <div className="mb-4 sm:mb-5 md:mb-6">
+                  <label className="block text-gray-700 text-xs sm:text-sm md:text-sm font-medium mb-1.5 sm:mb-2 md:mb-2">
                     Message
                   </label>
                   <textarea
@@ -121,7 +121,7 @@ export default function ContactPage() {
                     onChange={handleChange}
                     placeholder="Type Your Message here"
                     rows="6"
-                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-white border-none focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-xs sm:text-sm resize-none"
+                    className="w-full px-3 sm:px-4 md:px-4 py-2.5 sm:py-3 md:py-3 rounded-lg bg-white border-none focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-xs sm:text-sm md:text-sm resize-none"
                   />
                 </div>
 
