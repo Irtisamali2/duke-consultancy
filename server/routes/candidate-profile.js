@@ -1,5 +1,6 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import db from '../db.js';
 import emailService from '../services/emailService.js';
 
@@ -37,6 +38,82 @@ router.get('/candidate/profile', requireCandidateAuth, async (req, res) => {
       experience,
       documents: documents[0] || {}
     });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.put('/candidate/profile/account', requireCandidateAuth, async (req, res) => {
+  try {
+    const { firstName, lastName, email, phone } = req.body;
+
+    // Validation
+    if (!firstName || !lastName || !email || !phone) {
+      return res.status(400).json({ success: false, message: 'All fields are required' });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ success: false, message: 'Invalid email format' });
+    }
+
+    // Check if email is already used by another candidate
+    const [existingEmail] = await db.query(
+      'SELECT id FROM candidates WHERE email = ? AND id != ?',
+      [email, req.candidateId]
+    );
+
+    if (existingEmail.length > 0) {
+      return res.status(400).json({ success: false, message: 'Email is already in use by another account' });
+    }
+
+    // Update candidate account information
+    await db.query(
+      'UPDATE candidates SET firstName = ?, lastName = ?, email = ?, phone = ? WHERE id = ?',
+      [firstName, lastName, email, phone, req.candidateId]
+    );
+
+    res.json({ success: true, message: 'Account information updated successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.put('/candidate/profile/password', requireCandidateAuth, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    // Validation
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Current password and new password are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'New password must be at least 6 characters long' });
+    }
+
+    // Get current password hash from database
+    const [candidates] = await db.query('SELECT password FROM candidates WHERE id = ?', [req.candidateId]);
+
+    if (candidates.length === 0) {
+      return res.status(404).json({ success: false, message: 'Candidate not found' });
+    }
+
+    // Verify current password
+    const isPasswordValid = await bcrypt.compare(currentPassword, candidates[0].password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password
+    await db.query('UPDATE candidates SET password = ? WHERE id = ?', [hashedPassword, req.candidateId]);
+
+    res.json({ success: true, message: 'Password updated successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

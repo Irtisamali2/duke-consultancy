@@ -5,9 +5,23 @@ import { countries, tradeOptions } from '../../utils/countries';
 
 export default function CandidateProfileFormPage() {
   const [, setLocation] = useLocation();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [candidate, setCandidate] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState({ type: '', text: '' });
+  
+  const [accountData, setAccountData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: ''
+  });
+  
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
   
   const [tradeData, setTradeData] = useState({
     trade_applied_for: '',
@@ -52,6 +66,12 @@ export default function CandidateProfileFormPage() {
       const data = await response.json();
       if (data.success) {
         setCandidate(data.candidate);
+        setAccountData({
+          firstName: data.candidate.firstName || '',
+          lastName: data.candidate.lastName || '',
+          email: data.candidate.email || '',
+          phone: data.candidate.phone || ''
+        });
         await fetchProfile();
       } else {
         setLocation('/candidate/login');
@@ -82,6 +102,61 @@ export default function CandidateProfileFormPage() {
       }
     } catch (error) {
       console.error('Failed to fetch profile:', error);
+    }
+  };
+
+  const handleAccountSubmit = async () => {
+    try {
+      setMessage({ type: '', text: '' });
+      const response = await fetch('/api/candidate/profile/account', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(accountData)
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setMessage({ type: 'success', text: 'Account information updated successfully!' });
+        setCandidate({ ...candidate, ...accountData });
+        setTimeout(() => setCurrentStep(1), 1000);
+      } else {
+        setMessage({ type: 'error', text: data.message || 'Failed to update account information' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'An error occurred while updating your account' });
+    }
+  };
+
+  const handlePasswordSubmit = async () => {
+    try {
+      setMessage({ type: '', text: '' });
+      
+      if (passwordData.newPassword.length < 6) {
+        setMessage({ type: 'error', text: 'Password must be at least 6 characters long' });
+        return;
+      }
+      
+      if (passwordData.newPassword !== passwordData.confirmPassword) {
+        setMessage({ type: 'error', text: 'Passwords do not match' });
+        return;
+      }
+      
+      const response = await fetch('/api/candidate/profile/password', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword
+        })
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setMessage({ type: 'success', text: 'Password updated successfully!' });
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      } else {
+        setMessage({ type: 'error', text: data.message || 'Failed to update password' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'An error occurred while updating your password' });
     }
   };
 
@@ -183,6 +258,7 @@ export default function CandidateProfileFormPage() {
   }
 
   const steps = [
+    { number: 0, label: 'Account Settings' },
     { number: 1, label: 'Trade Information' },
     { number: 2, label: 'Personal Information' },
     { number: 3, label: 'Professional Details' },
@@ -232,6 +308,118 @@ export default function CandidateProfileFormPage() {
                 </div>
               ))}
             </div>
+
+            {message.text && (
+              <div className={`mb-4 p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+                {message.text}
+              </div>
+            )}
+
+            {currentStep === 0 && (
+              <div>
+                <h2 className="text-xl font-bold mb-6">Account Settings</h2>
+                
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold mb-4">Account Information</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">First Name *</label>
+                      <input
+                        type="text"
+                        value={accountData.firstName}
+                        onChange={(e) => setAccountData({ ...accountData, firstName: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Last Name *</label>
+                      <input
+                        type="text"
+                        value={accountData.lastName}
+                        onChange={(e) => setAccountData({ ...accountData, lastName: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Email Address *</label>
+                      <input
+                        type="email"
+                        value={accountData.email}
+                        onChange={(e) => setAccountData({ ...accountData, email: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Phone Number *</label>
+                      <input
+                        type="tel"
+                        value={accountData.phone}
+                        onChange={(e) => setAccountData({ ...accountData, phone: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                        required
+                        placeholder="+92 300 1234567"
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <button
+                      onClick={handleAccountSubmit}
+                      className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-6 py-2 rounded-lg"
+                    >
+                      Save Account Information
+                    </button>
+                  </div>
+                </div>
+
+                <div className="border-t pt-6">
+                  <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+                  <div className="grid gap-4 max-w-md">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Current Password *</label>
+                      <input
+                        type="password"
+                        value={passwordData.currentPassword}
+                        onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                        placeholder="••••••••••"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">New Password *</label>
+                      <input
+                        type="password"
+                        value={passwordData.newPassword}
+                        onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                        placeholder="••••••••••"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Confirm New Password *</label>
+                      <input
+                        type="password"
+                        value={passwordData.confirmPassword}
+                        onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                        placeholder="••••••••••"
+                      />
+                    </div>
+                    <div>
+                      <button
+                        onClick={handlePasswordSubmit}
+                        className="bg-[#0B7A9F] hover:bg-[#096685] text-white px-6 py-2 rounded-lg"
+                      >
+                        Update Password
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {currentStep === 1 && (
               <div>
@@ -397,18 +585,22 @@ export default function CandidateProfileFormPage() {
 
             <div className="flex justify-between mt-8">
               <Button
-                onClick={() => currentStep > 1 ? setCurrentStep(currentStep - 1) : setLocation('/candidate/dashboard')}
+                onClick={() => currentStep > 0 ? setCurrentStep(currentStep - 1) : setLocation('/candidate/dashboard')}
                 className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 rounded-full px-8"
               >
-                Back To Dashboard
+                {currentStep === 0 ? 'Back To Dashboard' : 'Previous'}
               </Button>
               <div className="flex gap-4">
-                <Button className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 rounded-full px-8">
+                <Button 
+                  onClick={() => setLocation('/candidate/dashboard')}
+                  className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 rounded-full px-8"
+                >
                   Save & Close
                 </Button>
                 <Button
                   onClick={() => {
-                    if (currentStep === 1) handleTradeSubmit();
+                    if (currentStep === 0) setCurrentStep(1);
+                    else if (currentStep === 1) handleTradeSubmit();
                     else if (currentStep === 2) handlePersonalSubmit();
                     else if (currentStep === 3) setCurrentStep(4);
                     else if (currentStep === 4) setCurrentStep(5);
