@@ -19,7 +19,8 @@ export const HomePage = () => {
       <section className="w-full bg-white pt-8 sm:pt-12 pb-12 sm:pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-center">
-            <div className="space-y-4 sm:space-y-8">
+            {/* Text Content - Order 2 on mobile, Order 1 on desktop */}
+            <div className="space-y-4 sm:space-y-8 order-2 lg:order-1">
               <div className="inline-flex items-center gap-2 text-[#00A6CE]">
                 <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
                 <span className="text-xs sm:text-base font-medium">#1 Choice for Global Healthcare Job Placement</span>
@@ -48,7 +49,8 @@ export const HomePage = () => {
               </div>
             </div>
 
-            <div className="relative mt-8 lg:mt-0">
+            {/* Image - Order 1 on mobile, Order 2 on desktop */}
+            <div className="relative order-1 lg:order-2">
               <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl">
                 <img
                   src="/Mask group (1)_1760620861162.png"
@@ -84,7 +86,8 @@ export const HomePage = () => {
       <section className="w-full py-10 sm:py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
-            <div>
+            {/* Image - Order 2 on mobile, Order 1 on desktop */}
+            <div className="order-2 lg:order-1">
               <img
                 src="/Image (6)_1760620436963.png"
                 alt="Healthcare Team"
@@ -92,7 +95,8 @@ export const HomePage = () => {
               />
             </div>
 
-            <div className="space-y-4 sm:space-y-6">
+            {/* Text - Order 1 on mobile, Order 2 on desktop */}
+            <div className="space-y-4 sm:space-y-6 order-1 lg:order-2">
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2C5F6F]">
                 Building Global Healthcare Career Pathways
               </h2>
