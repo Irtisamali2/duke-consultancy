@@ -83,8 +83,8 @@ export const AboutPage = () => {
       <section className="w-full py-10 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
-            {/* Text Content - Order 1 on both mobile and desktop */}
-            <div className="order-1">
+            {/* Text Content */}
+            <div>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">Who We Are</h2>
               <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-3 sm:mb-4">
                 At Duke Consultancy, we open doors to global careers and connect healthcare professionals to jobs.
@@ -98,10 +98,33 @@ export const AboutPage = () => {
               <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-6 sm:mb-8">
                 With us, it's a placement with a pathway to purpose, growth, and global impact.
               </p>
+
+              {/* Mission & Vision - 2 columns side-by-side on ALL screen sizes including mobile */}
+              <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8 lg:mb-0">
+                <div>
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Our Mission</h3>
+                  <ul className="space-y-1 sm:space-y-1.5">
+                    <li className="text-gray-700 text-xs sm:text-sm lg:text-base">• Prepare</li>
+                    <li className="text-gray-700 text-xs sm:text-sm lg:text-base">• Empower</li>
+                    <li className="text-gray-700 text-xs sm:text-sm lg:text-base">• Facilitate</li>
+                    <li className="text-gray-700 text-xs sm:text-sm lg:text-base">• Support</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Our Vision</h3>
+                  <ul className="space-y-1 sm:space-y-1.5">
+                    <li className="text-gray-700 text-xs sm:text-sm lg:text-base">• Lead</li>
+                    <li className="text-gray-700 text-xs sm:text-sm lg:text-base">• Bridge</li>
+                    <li className="text-gray-700 text-xs sm:text-sm lg:text-base">• Empower</li>
+                    <li className="text-gray-700 text-xs sm:text-sm lg:text-base">• Elevate</li>
+                  </ul>
+                </div>
+              </div>
             </div>
             
-            {/* Image - Order 2 on both mobile and desktop */}
-            <div className="rounded-2xl sm:rounded-3xl overflow-hidden relative order-2">
+            {/* Image with Apply Now button - shows on desktop, hidden on mobile in this position */}
+            <div className="hidden lg:block rounded-2xl sm:rounded-3xl overflow-hidden relative">
               <img 
                 src="/about-office.png" 
                 alt="Team working" 
@@ -115,26 +138,17 @@ export const AboutPage = () => {
             </div>
           </div>
 
-          {/* Mission & Vision - Full width below, stacked vertically on mobile */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 mt-8 sm:mt-12">
-            <div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Our Mission</h3>
-              <ul className="space-y-1.5 sm:space-y-2">
-                <li className="text-gray-700 text-sm sm:text-base">• Prepare</li>
-                <li className="text-gray-700 text-sm sm:text-base">• Empower</li>
-                <li className="text-gray-700 text-sm sm:text-base">• Facilitate</li>
-                <li className="text-gray-700 text-sm sm:text-base">• Support</li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Our Vision</h3>
-              <ul className="space-y-1.5 sm:space-y-2">
-                <li className="text-gray-700 text-sm sm:text-base">• Lead</li>
-                <li className="text-gray-700 text-sm sm:text-base">• Bridge</li>
-                <li className="text-gray-700 text-sm sm:text-base">• Empower</li>
-                <li className="text-gray-700 text-sm sm:text-base">• Elevate</li>
-              </ul>
+          {/* Image for mobile - shows AFTER text and Mission/Vision on mobile only */}
+          <div className="lg:hidden mt-6 rounded-2xl overflow-hidden relative">
+            <img 
+              src="/about-office.png" 
+              alt="Team working" 
+              className="w-full h-auto object-cover"
+            />
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+              <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-6 py-2.5 rounded-full text-sm font-semibold">
+                Apply Now
+              </Button>
             </div>
           </div>
         </div>
@@ -143,7 +157,7 @@ export const AboutPage = () => {
       {/* Features Section */}
       <section className="w-full py-10 sm:py-16 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-8 lg:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-6">
             <div className="space-y-3 sm:space-y-4">
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center">
                 <img 
