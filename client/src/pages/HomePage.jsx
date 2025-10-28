@@ -120,12 +120,12 @@ export const HomePage = () => {
       {/* How it Works Section */}
       <section className="w-full py-10 sm:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
-          <div className="text-left lg:text-center mb-8 sm:mb-10 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">
+          <div className="text-center mb-8 sm:mb-10 lg:mb-16">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">
               <span className="text-black">How it </span>
               <span className="text-[#00A6CE]">works</span>
             </h2>
-            <p className="text-gray-600 max-w-3xl lg:mx-auto text-xs sm:text-sm">
+            <p className="text-gray-600 max-w-3xl mx-auto text-sm sm:text-base leading-relaxed px-2">
               We make the recruitment process simple, transparent, and stress-free. Our step-by-step approach ensures that every candidate moves smoothly from registration to placement.
             </p>
           </div>
@@ -133,27 +133,25 @@ export const HomePage = () => {
           <div className="space-y-12 sm:space-y-16 lg:space-y-28">
             {/* Step 01 - Register Online */}
             <div className="relative">
-              {/* Mobile Layout - Stack vertically */}
+              {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="relative mb-6">
-                  <div className="text-[60px] sm:text-[80px] font-bold text-gray-200 leading-none">01</div>
-                </div>
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-8">
                   <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Register Online</h3>
-                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+                  <p className="text-gray-600 text-sm leading-relaxed">
                     we know your home is more than just a place to live, that's why we're committed to providing the best home loan
                   </p>
                 </div>
                 <div className="relative">
-                  <div className="bg-white rounded-xl shadow-lg p-5 max-w-[280px]">
-                    <h4 className="text-sm font-medium text-gray-800 mb-4 text-center">Register Online</h4>
-                    <div className="space-y-2">
-                      <div className="h-1.5 bg-gray-200 rounded-full"></div>
-                      <div className="h-1.5 bg-gray-200 rounded-full"></div>
-                      <div className="h-1.5 bg-gray-200 rounded-full"></div>
+                  <div className="text-[100px] sm:text-[120px] font-bold text-gray-100 leading-none mb-6">01</div>
+                  <div className="bg-white rounded-2xl shadow-xl p-6 max-w-[300px] mx-auto">
+                    <h4 className="text-base font-semibold text-gray-900 mb-5 text-center">Register Online</h4>
+                    <div className="space-y-3">
+                      <div className="h-2 bg-gray-200 rounded-full"></div>
+                      <div className="h-2 bg-gray-200 rounded-full"></div>
+                      <div className="h-2 bg-gray-200 rounded-full"></div>
                     </div>
-                    <div className="mt-4 flex justify-center">
-                      <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-6 py-1.5 rounded-full text-sm font-medium">
+                    <div className="mt-6 flex justify-center">
+                      <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-2 rounded-full text-sm font-medium">
                         Sign up
                       </Button>
                     </div>
@@ -198,26 +196,24 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="relative mb-6">
-                  <div className="text-[60px] sm:text-[80px] font-bold text-gray-200 leading-none">02</div>
-                </div>
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-8">
                   <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Browse Jobs</h3>
-                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+                  <p className="text-gray-600 text-sm leading-relaxed">
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
                 <div className="relative">
-                  <div className="bg-white rounded-xl shadow-lg p-5 max-w-[280px]">
-                    <h4 className="text-sm font-normal text-gray-800 mb-4 text-center">Search</h4>
+                  <div className="text-[100px] sm:text-[120px] font-bold text-gray-100 leading-none mb-6">02</div>
+                  <div className="bg-white rounded-2xl shadow-xl p-6 max-w-[300px] mx-auto">
+                    <h4 className="text-base font-normal text-gray-900 mb-4 text-center">Search</h4>
                     <div className="relative">
                       <input
                         type="text"
                         placeholder="Search services"
-                        className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-md text-sm placeholder-gray-400"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-400"
                         readOnly
                       />
-                      <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
                         <div className="w-px h-5 bg-gray-300"></div>
                         <svg className="w-4 h-4 text-[#00A6CE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -268,20 +264,18 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="relative mb-6">
-                  <div className="text-[60px] sm:text-[80px] font-bold text-gray-200 leading-none">03</div>
-                </div>
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-8">
                   <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Apply & Track</h3>
-                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+                  <p className="text-gray-600 text-sm leading-relaxed">
                     It's about you and your family, having a comfortable payment, exceptional service and a lender.
                   </p>
                 </div>
                 <div className="relative">
-                  <div className="bg-white rounded-xl shadow-lg p-6 max-w-[260px] flex justify-center gap-3">
-                    <div className="text-3xl">😮</div>
-                    <div className="text-3xl">😠</div>
-                    <div className="text-3xl">❤️</div>
+                  <div className="text-[100px] sm:text-[120px] font-bold text-gray-100 leading-none mb-6">03</div>
+                  <div className="bg-white rounded-2xl shadow-xl p-8 max-w-[280px] mx-auto flex justify-center gap-4">
+                    <div className="text-4xl">😮</div>
+                    <div className="text-4xl">😠</div>
+                    <div className="text-4xl">❤️</div>
                   </div>
                 </div>
               </div>
@@ -314,26 +308,24 @@ export const HomePage = () => {
             <div className="relative">
               {/* Mobile Layout */}
               <div className="lg:hidden">
-                <div className="relative mb-6">
-                  <div className="text-[60px] sm:text-[80px] font-bold text-gray-200 leading-none">04</div>
-                </div>
-                <div className="space-y-3 mb-6">
+                <div className="space-y-3 mb-8">
                   <h3 className="text-base sm:text-lg font-semibold text-[#00A6CE]">Screening & Interviews</h3>
-                  <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+                  <p className="text-gray-600 text-sm leading-relaxed">
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
                 <div className="relative">
-                  <div className="bg-white rounded-xl shadow-lg p-5 max-w-[280px]">
-                    <h4 className="text-sm font-normal text-gray-800 mb-4 text-center">Search</h4>
+                  <div className="text-[100px] sm:text-[120px] font-bold text-gray-100 leading-none mb-6">04</div>
+                  <div className="bg-white rounded-2xl shadow-xl p-6 max-w-[300px] mx-auto">
+                    <h4 className="text-base font-normal text-gray-900 mb-4 text-center">Search</h4>
                     <div className="relative">
                       <input
                         type="text"
                         placeholder="Search services"
-                        className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-md text-sm placeholder-gray-400"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-400"
                         readOnly
                       />
-                      <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
                         <div className="w-px h-5 bg-gray-300"></div>
                         <svg className="w-4 h-4 text-[#00A6CE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
