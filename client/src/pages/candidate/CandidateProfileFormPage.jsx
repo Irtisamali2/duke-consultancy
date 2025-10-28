@@ -11,6 +11,8 @@ export default function CandidateProfileFormPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [jobs, setJobs] = useState([]);
+  const [selectedJobId, setSelectedJobId] = useState('');
   
   const [accountData, setAccountData] = useState({
     firstName: '',
@@ -60,7 +62,20 @@ export default function CandidateProfileFormPage() {
 
   useEffect(() => {
     checkAuth();
+    fetchJobs();
   }, []);
+  
+  const fetchJobs = async () => {
+    try {
+      const response = await fetch('/api/jobs');
+      const data = await response.json();
+      if (data.success) {
+        setJobs(data.jobs.filter(j => j.status === 'active'));
+      }
+    } catch (error) {
+      console.error('Failed to fetch jobs:', error);
+    }
+  };
 
   const checkAuth = async () => {
     try {
@@ -237,7 +252,7 @@ export default function CandidateProfileFormPage() {
       const appResponse = await fetch('/api/candidate/submit-application', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
+        body: JSON.stringify({ job_id: selectedJobId || null })
       });
       
       const appData = await appResponse.json();
@@ -429,8 +444,33 @@ export default function CandidateProfileFormPage() {
 
             {currentStep === 1 && (
               <div>
-                <h2 className="text-xl font-bold mb-6">Trade Information</h2>
+                <h2 className="text-xl font-bold mb-6">Job Selection & Trade Information</h2>
                 <div className="grid gap-6">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <p className="text-sm text-blue-800">
+                      <strong>Optional:</strong> Select a specific job opening below, or leave it as "General Application" to be considered for multiple positions.
+                    </p>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Job Position</label>
+                    <select
+                      value={selectedJobId}
+                      onChange={(e) => setSelectedJobId(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                    >
+                      <option value="">General Application (No specific job)</option>
+                      {jobs.map(job => (
+                        <option key={job.id} value={job.id}>
+                          {job.title} - {job.location} ({job.country})
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">
+                      If you don't select a specific job, your application will be reviewed for all available opportunities.
+                    </p>
+                  </div>
+                  
                   <div>
                     <label className="block text-sm font-medium mb-2">Trade Applied For *</label>
                     <select
