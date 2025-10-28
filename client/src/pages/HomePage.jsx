@@ -141,25 +141,25 @@ export const HomePage = () => {
                     we know your home is more than just a place to live, that's why we're committed to providing the best home loan
                   </p>
                 </div>
-                <div className="relative h-[350px] sm:h-[400px]">
-                  {/* Background Circle */}
+                <div className="relative h-[420px] sm:h-[480px] w-full overflow-visible">
+                  {/* Background Circle - Much larger */}
                   <img
                     src="/Ellipse 1328 (2)_1760621468329.png"
                     alt=""
-                    className="absolute left-0 top-0 w-[280px] sm:w-[320px] h-auto opacity-50"
+                    className="absolute -left-8 sm:-left-4 top-0 w-[360px] sm:w-[420px] h-auto opacity-40"
                   />
-                  {/* Number */}
-                  <div className="absolute left-0 top-8 text-[100px] sm:text-[120px] font-bold text-gray-200 leading-none z-10">01</div>
-                  {/* White Card - positioned to overlap circle */}
-                  <div className="absolute right-0 top-16 bg-white rounded-2xl shadow-2xl p-6 w-[280px] sm:w-[300px] z-20">
-                    <h4 className="text-base font-semibold text-gray-900 mb-5 text-center">Register Online</h4>
-                    <div className="space-y-3">
-                      <div className="h-2 bg-gray-200 rounded-full"></div>
-                      <div className="h-2 bg-gray-200 rounded-full"></div>
-                      <div className="h-2 bg-gray-200 rounded-full"></div>
+                  {/* Number - Larger and positioned over circle */}
+                  <div className="absolute left-2 sm:left-6 top-12 sm:top-16 text-[140px] sm:text-[160px] font-bold text-gray-200/80 leading-none z-10">01</div>
+                  {/* White Card - Narrower, better positioned */}
+                  <div className="absolute right-0 sm:right-2 top-24 sm:top-32 bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-[340px] sm:w-[360px] z-20">
+                    <h4 className="text-lg sm:text-xl font-semibold text-gray-900 mb-6 sm:mb-8 text-center">Register Online</h4>
+                    <div className="space-y-3.5 sm:space-y-4">
+                      <div className="h-2.5 sm:h-3 bg-gray-200 rounded-full"></div>
+                      <div className="h-2.5 sm:h-3 bg-gray-200 rounded-full"></div>
+                      <div className="h-2.5 sm:h-3 bg-gray-200 rounded-full"></div>
                     </div>
-                    <div className="mt-6 flex justify-center">
-                      <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-2 rounded-full text-sm font-medium">
+                    <div className="mt-8 sm:mt-10 flex justify-center">
+                      <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-10 sm:px-12 py-3 sm:py-3.5 rounded-full text-sm sm:text-base font-medium">
                         Sign up
                       </Button>
                     </div>
@@ -210,23 +210,23 @@ export const HomePage = () => {
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
-                <div className="relative h-[300px] sm:h-[350px]">
-                  {/* Background Circle */}
+                <div className="relative h-[380px] sm:h-[420px] w-full overflow-visible">
+                  {/* Background Circle - Much larger */}
                   <img
                     src="/Ellipse 1328 (1)_1760621468329.png"
                     alt=""
-                    className="absolute left-0 top-0 w-[280px] sm:w-[320px] h-auto opacity-50"
+                    className="absolute -left-8 sm:-left-4 top-0 w-[360px] sm:w-[420px] h-auto opacity-40"
                   />
-                  {/* Number */}
-                  <div className="absolute left-0 top-8 text-[100px] sm:text-[120px] font-bold text-gray-200 leading-none z-10">02</div>
+                  {/* Number - Larger and positioned over circle */}
+                  <div className="absolute left-2 sm:left-6 top-12 sm:top-16 text-[140px] sm:text-[160px] font-bold text-gray-200/80 leading-none z-10">02</div>
                   {/* White Card */}
-                  <div className="absolute right-0 top-16 bg-white rounded-2xl shadow-2xl p-6 w-[280px] sm:w-[300px] z-20">
-                    <h4 className="text-base font-normal text-gray-900 mb-4 text-center">Search</h4>
+                  <div className="absolute right-0 sm:right-2 top-24 sm:top-32 bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-[340px] sm:w-[360px] z-20">
+                    <h4 className="text-lg sm:text-xl font-semibold text-gray-900 mb-6 sm:mb-8 text-center">Search</h4>
                     <div className="relative">
                       <input
                         type="text"
                         placeholder="Search services"
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-400"
+                        className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-400"
                         readOnly
                       />
                       <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
@@ -286,20 +286,20 @@ export const HomePage = () => {
                     It's about you and your family, having a comfortable payment, exceptional service and a lender.
                   </p>
                 </div>
-                <div className="relative h-[300px] sm:h-[350px]">
-                  {/* Background Circle */}
+                <div className="relative h-[380px] sm:h-[420px] w-full overflow-visible">
+                  {/* Background Circle - Much larger */}
                   <img
                     src="/Ellipse 1328_1760621468330.png"
                     alt=""
-                    className="absolute left-0 top-0 w-[280px] sm:w-[320px] h-auto opacity-50"
+                    className="absolute -left-8 sm:-left-4 top-0 w-[360px] sm:w-[420px] h-auto opacity-40"
                   />
-                  {/* Number */}
-                  <div className="absolute left-0 top-8 text-[100px] sm:text-[120px] font-bold text-gray-200 leading-none z-10">03</div>
+                  {/* Number - Larger and positioned over circle */}
+                  <div className="absolute left-2 sm:left-6 top-12 sm:top-16 text-[140px] sm:text-[160px] font-bold text-gray-200/80 leading-none z-10">03</div>
                   {/* White Card */}
-                  <div className="absolute right-0 top-20 bg-white rounded-2xl shadow-2xl p-8 w-[280px] sm:w-[300px] z-20 flex justify-center gap-4">
-                    <div className="text-4xl">😮</div>
-                    <div className="text-4xl">😠</div>
-                    <div className="text-4xl">❤️</div>
+                  <div className="absolute right-0 sm:right-2 top-24 sm:top-32 bg-white rounded-3xl shadow-2xl p-10 sm:p-12 w-[340px] sm:w-[360px] z-20 flex justify-center gap-6">
+                    <div className="text-4xl sm:text-5xl">😮</div>
+                    <div className="text-4xl sm:text-5xl">😠</div>
+                    <div className="text-4xl sm:text-5xl">❤️</div>
                   </div>
                 </div>
               </div>
@@ -338,23 +338,23 @@ export const HomePage = () => {
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
-                <div className="relative h-[300px] sm:h-[350px]">
-                  {/* Background Circle */}
+                <div className="relative h-[380px] sm:h-[420px] w-full overflow-visible">
+                  {/* Background Circle - Much larger */}
                   <img
                     src="/Ellipse 1328 (2)_1760621468329.png"
                     alt=""
-                    className="absolute left-0 top-0 w-[280px] sm:w-[320px] h-auto opacity-50"
+                    className="absolute -left-8 sm:-left-4 top-0 w-[360px] sm:w-[420px] h-auto opacity-40"
                   />
-                  {/* Number */}
-                  <div className="absolute left-0 top-8 text-[100px] sm:text-[120px] font-bold text-gray-200 leading-none z-10">04</div>
+                  {/* Number - Larger and positioned over circle */}
+                  <div className="absolute left-2 sm:left-6 top-12 sm:top-16 text-[140px] sm:text-[160px] font-bold text-gray-200/80 leading-none z-10">04</div>
                   {/* White Card */}
-                  <div className="absolute right-0 top-16 bg-white rounded-2xl shadow-2xl p-6 w-[280px] sm:w-[300px] z-20">
-                    <h4 className="text-base font-normal text-gray-900 mb-4 text-center">Search</h4>
+                  <div className="absolute right-0 sm:right-2 top-24 sm:top-32 bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-[340px] sm:w-[360px] z-20">
+                    <h4 className="text-lg sm:text-xl font-semibold text-gray-900 mb-6 sm:mb-8 text-center">Search</h4>
                     <div className="relative">
                       <input
                         type="text"
                         placeholder="Search services"
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-400"
+                        className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-400"
                         readOnly
                       />
                       <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
