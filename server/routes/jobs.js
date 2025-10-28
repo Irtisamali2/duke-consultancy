@@ -32,12 +32,31 @@ router.get('/jobs/:id', requireAuth, async (req, res) => {
 
 router.post('/jobs', requireAuth, async (req, res) => {
   try {
-    const { title, description, location, country, job_type, specialization, experience_required, salary_range, status } = req.body;
+    const { 
+      title, description, location, country, job_type, specialization, 
+      experience_required, salary_range, status,
+      countries, trades, max_countries_selectable, max_trades_selectable
+    } = req.body;
+    
+    const countriesJson = countries ? JSON.stringify(countries) : JSON.stringify([country]);
+    const tradesJson = trades ? JSON.stringify(trades) : JSON.stringify([specialization]);
     
     const [result] = await db.query(
-      `INSERT INTO jobs (title, description, location, country, job_type, specialization, experience_required, salary_range, status, created_by) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [title, description, location, country, job_type, specialization, experience_required, salary_range, status || 'active', req.admin.id]
+      `INSERT INTO jobs (
+        title, description, location, country, job_type, specialization, 
+        experience_required, salary_range, status, created_by,
+        countries, trades, max_countries_selectable, max_trades_selectable
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        title, description, location, 
+        countries && countries.length > 0 ? countries.join(', ') : country,
+        job_type, 
+        trades && trades.length > 0 ? trades.join(', ') : specialization,
+        experience_required, salary_range, status || 'active', req.admin.id,
+        countriesJson, tradesJson, 
+        max_countries_selectable || 1, 
+        max_trades_selectable || 1
+      ]
     );
     
     res.json({ success: true, message: 'Job created successfully', id: result.insertId });
@@ -48,12 +67,32 @@ router.post('/jobs', requireAuth, async (req, res) => {
 
 router.put('/jobs/:id', requireAuth, async (req, res) => {
   try {
-    const { title, description, location, country, job_type, specialization, experience_required, salary_range, status } = req.body;
+    const { 
+      title, description, location, country, job_type, specialization, 
+      experience_required, salary_range, status,
+      countries, trades, max_countries_selectable, max_trades_selectable
+    } = req.body;
+    
+    const countriesJson = countries ? JSON.stringify(countries) : JSON.stringify([country]);
+    const tradesJson = trades ? JSON.stringify(trades) : JSON.stringify([specialization]);
     
     await db.query(
-      `UPDATE jobs SET title = ?, description = ?, location = ?, country = ?, job_type = ?, 
-       specialization = ?, experience_required = ?, salary_range = ?, status = ? WHERE id = ?`,
-      [title, description, location, country, job_type, specialization, experience_required, salary_range, status, req.params.id]
+      `UPDATE jobs SET 
+        title = ?, description = ?, location = ?, country = ?, job_type = ?, 
+        specialization = ?, experience_required = ?, salary_range = ?, status = ?,
+        countries = ?, trades = ?, max_countries_selectable = ?, max_trades_selectable = ?
+      WHERE id = ?`,
+      [
+        title, description, location, 
+        countries && countries.length > 0 ? countries.join(', ') : country,
+        job_type, 
+        trades && trades.length > 0 ? trades.join(', ') : specialization,
+        experience_required, salary_range, status,
+        countriesJson, tradesJson, 
+        max_countries_selectable || 1, 
+        max_trades_selectable || 1,
+        req.params.id
+      ]
     );
     
     res.json({ success: true, message: 'Job updated successfully' });

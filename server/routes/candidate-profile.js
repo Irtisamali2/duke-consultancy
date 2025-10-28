@@ -121,11 +121,27 @@ router.put('/candidate/profile/password', requireCandidateAuth, async (req, res)
 
 router.put('/candidate/profile/trade', requireCandidateAuth, async (req, res) => {
   try {
-    const { trade_applied_for, availability_to_join, willingness_to_relocate } = req.body;
+    const { trade_applied_for, availability_to_join, willingness_to_relocate, countries_preference, trades_preference } = req.body;
 
+    const countriesJson = countries_preference ? JSON.stringify(countries_preference) : null;
+    const tradesJson = trades_preference ? JSON.stringify(trades_preference) : null;
+    
     await db.query(
-      'UPDATE healthcare_profiles SET trade_applied_for = ?, availability_to_join = ?, willingness_to_relocate = ? WHERE candidate_id = ?',
-      [trade_applied_for, availability_to_join, willingness_to_relocate, req.candidateId]
+      `UPDATE healthcare_profiles SET 
+        trade_applied_for = ?, 
+        availability_to_join = ?, 
+        willingness_to_relocate = ?,
+        countries_preference = ?,
+        trades_preference = ?
+      WHERE candidate_id = ?`,
+      [
+        trade_applied_for, 
+        availability_to_join, 
+        willingness_to_relocate,
+        countriesJson,
+        tradesJson,
+        req.candidateId
+      ]
     );
 
     res.json({ success: true, message: 'Trade information updated' });

@@ -5,6 +5,7 @@ import migrateRoutes from "./routes/migrate.js";
 import authRoutes from "./routes/auth.js";
 import fixAdminRoutes from "./routes/fix-admin.js";
 import jobsRoutes from "./routes/jobs.js";
+import tradesRoutes from "./routes/trades.js";
 import applicationsRoutes from "./routes/applications.js";
 import healthcareProfilesRoutes from "./routes/healthcare-profiles.js";
 import blogsRoutes from "./routes/blogs.js";
@@ -34,6 +35,7 @@ export async function registerRoutes(app) {
   
   // Admin CRUD routes
   app.use('/api', jobsRoutes);
+  app.use('/api', tradesRoutes);
   app.use('/api', applicationsRoutes);
   app.use('/api', healthcareProfilesRoutes);
   app.use('/api', blogsRoutes);
