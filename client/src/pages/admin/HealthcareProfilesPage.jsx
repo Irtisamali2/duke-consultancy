@@ -107,9 +107,17 @@ export default function HealthcareProfilesPage() {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-4 mb-4">
-                          <div className="w-16 h-16 rounded-full bg-[#B0E5F0] flex items-center justify-center text-2xl font-bold text-[#00A6CE]">
-                            {profile.first_name?.charAt(0)}{profile.last_name?.charAt(0)}
-                          </div>
+                          {profile.profile_image_url ? (
+                            <img 
+                              src={profile.profile_image_url} 
+                              alt={`${profile.first_name} ${profile.last_name}`}
+                              className="w-16 h-16 rounded-full object-cover border-2 border-[#00A6CE]"
+                            />
+                          ) : (
+                            <div className="w-16 h-16 rounded-full bg-[#B0E5F0] flex items-center justify-center text-2xl font-bold text-[#00A6CE]">
+                              {profile.first_name?.charAt(0)}{profile.last_name?.charAt(0)}
+                            </div>
+                          )}
                           <div>
                             <h3 className="text-xl font-semibold text-gray-900">
                               {profile.first_name} {profile.last_name}
@@ -151,6 +159,12 @@ export default function HealthcareProfilesPage() {
                       </div>
 
                       <div className="flex flex-col gap-2 ml-4">
+                        <Button
+                          onClick={() => setLocation(`/admin/healthcare-profiles/view/${profile.candidate_id}`)}
+                          className="bg-gray-600 hover:bg-gray-700 text-white"
+                        >
+                          View
+                        </Button>
                         <Button
                           onClick={() => setLocation(`/admin/healthcare-profiles/edit/${profile.candidate_id}`)}
                           className="bg-[#00A6CE] hover:bg-[#0090B5] text-white"

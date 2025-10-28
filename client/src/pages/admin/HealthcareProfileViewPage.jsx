@@ -4,11 +4,10 @@ import AdminLayout from '../../components/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 
-export default function HealthcareProfileEditPage() {
-  const [, params] = useRoute('/admin/healthcare-profiles/edit/:id');
+export default function HealthcareProfileViewPage() {
+  const [, params] = useRoute('/admin/healthcare-profiles/view/:id');
   const [, setLocation] = useLocation();
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   
   const [profile, setProfile] = useState({
@@ -113,8 +112,8 @@ export default function HealthcareProfileEditPage() {
         <div className="max-w-4xl mx-auto">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Edit Healthcare Profile</h1>
-              <p className="text-gray-600">View and edit candidate profile information</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">View Healthcare Profile</h1>
+              <p className="text-gray-600">View candidate profile information</p>
             </div>
             <Button
               onClick={() => setLocation('/admin/healthcare-profiles')}

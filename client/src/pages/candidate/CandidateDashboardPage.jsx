@@ -6,6 +6,7 @@ import CandidateSidebar from '../../components/CandidateSidebar';
 export default function CandidateDashboardPage() {
   const [, setLocation] = useLocation();
   const [candidate, setCandidate] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -21,6 +22,7 @@ export default function CandidateDashboardPage() {
 
       if (data.success) {
         setCandidate(data.candidate);
+        await fetchProfile();
         await fetchApplications();
       } else {
         setLocation('/candidate/login');
@@ -29,6 +31,18 @@ export default function CandidateDashboardPage() {
       setLocation('/candidate/login');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchProfile = async () => {
+    try {
+      const response = await fetch('/api/candidate/profile');
+      const data = await response.json();
+      if (data.success && data.profile) {
+        setProfile(data.profile);
+      }
+    } catch (error) {
+      console.error('Failed to fetch profile:', error);
     }
   };
 
@@ -65,6 +79,7 @@ export default function CandidateDashboardPage() {
     <div className="min-h-screen bg-gray-50 flex">
       <CandidateSidebar 
         candidate={candidate}
+        profileImage={profile?.profile_image_url}
         onLogout={handleLogout}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -91,7 +106,7 @@ export default function CandidateDashboardPage() {
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Ready to Apply?</h3>
             <p className="text-gray-600 text-sm mb-3">Browse available job opportunities and submit your application.</p>
             <Button 
-              onClick={() => window.location.href = '/'}
+              onClick={() => setLocation('/candidate/register-profile')}
               className="bg-[#0B7A9F] hover:bg-[#096685] text-white rounded-full px-8"
             >
               Browse Jobs

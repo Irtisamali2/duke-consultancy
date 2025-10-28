@@ -22,6 +22,7 @@ import ApplicationsPage from "@/pages/admin/ApplicationsPage";
 import ApplicationDetailsPage from "@/pages/admin/ApplicationDetailsPage";
 import HealthcareProfilesPage from "@/pages/admin/HealthcareProfilesPage";
 import HealthcareProfileEditPage from "@/pages/admin/HealthcareProfileEditPage";
+import HealthcareProfileViewPage from "@/pages/admin/HealthcareProfileViewPage";
 import CompanyProfilePage from "@/pages/admin/CompanyProfilePage";
 import SocialLinksPage from "@/pages/admin/SocialLinksPage";
 import TestimonialsPage from "@/pages/admin/TestimonialsPage";
@@ -79,6 +80,7 @@ function Router() {
       
       {/* Healthcare Profiles */}
       <Route path="/admin/healthcare-profiles" component={HealthcareProfilesPage} />
+      <Route path="/admin/healthcare-profiles/view/:id" component={HealthcareProfileViewPage} />
       <Route path="/admin/healthcare-profiles/edit/:id" component={HealthcareProfileEditPage} />
       
       {/* Company Settings */}

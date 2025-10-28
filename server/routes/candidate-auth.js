@@ -19,7 +19,7 @@ router.post('/candidate/register', async (req, res) => {
 
     const [result] = await db.query(
       'INSERT INTO candidates (email, password, status) VALUES (?, ?, ?)',
-      [email, hashedPassword, 'pending']
+      [email, hashedPassword, 'approved']
     );
 
     const candidateId = result.insertId;
@@ -57,6 +57,15 @@ router.post('/candidate/login', async (req, res) => {
 
     if (!isValidPassword) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+
+    // Block login for pending or rejected candidates
+    if (candidate.status === 'pending') {
+      return res.status(403).json({ success: false, message: 'Your account is pending approval. Please contact support.' });
+    }
+
+    if (candidate.status === 'rejected') {
+      return res.status(403).json({ success: false, message: 'Your account has been rejected. Please contact support for more information.' });
     }
 
     const token = jwt.sign({ id: candidate.id, email: candidate.email, type: 'candidate' }, JWT_SECRET, { expiresIn: '7d' });

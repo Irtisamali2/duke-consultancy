@@ -1,6 +1,6 @@
 import { useLocation } from 'wouter';
 
-export default function CandidateSidebar({ candidate, onLogout, isOpen, onClose }) {
+export default function CandidateSidebar({ candidate, profileImage, onLogout, isOpen, onClose }) {
   const [location, setLocation] = useLocation();
 
   const menuItems = [
@@ -33,11 +33,19 @@ export default function CandidateSidebar({ candidate, onLogout, isOpen, onClose 
         <img src="/Group_1760620436964.png" alt="Duke Consultancy Logo" className="h-10 mb-8" />
         
         <div className="flex items-center gap-3 mb-8 p-3 bg-[#E6F7FB] rounded-lg">
-          <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
-            <span className="text-sm font-medium">
-              {candidate?.firstName?.[0]}{candidate?.lastName?.[0]}
-            </span>
-          </div>
+          {profileImage ? (
+            <img 
+              src={profileImage} 
+              alt="Profile" 
+              className="w-10 h-10 rounded-full object-cover border-2 border-[#00A6CE]"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+              <span className="text-sm font-medium">
+                {candidate?.firstName?.[0]}{candidate?.lastName?.[0]}
+              </span>
+            </div>
+          )}
           <span className="font-medium text-sm">{candidate?.firstName} {candidate?.lastName}</span>
         </div>
 

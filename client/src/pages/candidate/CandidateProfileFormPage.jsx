@@ -452,6 +452,7 @@ export default function CandidateProfileFormPage() {
     <div className="min-h-screen bg-gray-50 flex">
       <CandidateSidebar 
         candidate={candidate}
+        profileImage={profileImagePreview}
         onLogout={handleLogout}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
