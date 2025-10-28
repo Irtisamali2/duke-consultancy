@@ -53,7 +53,10 @@ export default function CandidateLoginPage() {
             </div>
 
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-medium text-gray-700">Password</label>
+                <a href="#" onClick={(e) => { e.preventDefault(); alert('Password reset: Please contact admin or use /api/forgot-password/candidate endpoint'); }} className="text-xs text-[#00A6CE]">Forgot password?</a>
+              </div>
               <input
                 type="password"
                 placeholder="••••••••••"

@@ -58,6 +58,27 @@ Preferred communication style: Simple, everyday language.
 
 **Font Loading**: Multiple font families are loaded (Architects Daughter, DM Sans, Fira Code, Geist Mono, Poppins) suggesting a design that requires varied typography for different UI contexts.
 
+# Email Integration
+
+**Important Note**: This project uses a custom SMTP implementation instead of Replit's email integrations (Resend, SendGrid, etc.) as requested by the user. The custom solution provides more flexibility for admin configuration.
+
+## Email System Features
+- **Admin-Configurable SMTP**: Full SMTP settings configurable through admin panel (host, port, credentials)
+- **Email Templates**: Editable email templates for:
+  - Application received confirmation
+  - Application status changes (verified, approved, rejected)
+  - Password reset
+- **Automated Emails**: 
+  - Sent automatically when candidate submits application
+  - Sent automatically when admin changes application status
+- **Password Reset**: Backend infrastructure for password reset via email tokens (frontend UI to be completed)
+
+## Email Service Stack
+- **nodemailer**: SMTP client for sending emails
+- **Custom Email Service**: Located in `server/services/emailService.js`
+- **Database Storage**: SMTP settings and email templates stored in MySQL
+- **Template Variables**: Dynamic variable replacement in email content ({{candidate_name}}, {{application_id}}, etc.)
+
 # External Dependencies
 
 ## UI Component Libraries

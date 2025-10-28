@@ -12,6 +12,7 @@ import statsRoutes from "./routes/stats.js";
 import candidateAuthRoutes from "./routes/candidate-auth.js";
 import candidateProfileRoutes from "./routes/candidate-profile.js";
 import emailSettingsRoutes from "./routes/email-settings.js";
+import passwordResetRoutes from "./routes/password-reset.js";
 
 export async function registerRoutes(app) {
   // Database test routes
@@ -22,6 +23,7 @@ export async function registerRoutes(app) {
   // Authentication routes
   app.use('/api', authRoutes);
   app.use('/api', candidateAuthRoutes);
+  app.use('/api', passwordResetRoutes);
   
   // Admin CRUD routes
   app.use('/api', jobsRoutes);
