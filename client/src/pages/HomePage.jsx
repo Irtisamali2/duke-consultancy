@@ -16,14 +16,14 @@ export const HomePage = () => {
       <Header currentPage="home" />
 
       {/* Hero Section */}
-      <section className="w-full bg-white pt-8 sm:pt-12 pb-12 sm:pb-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-center">
+      <section className="w-full bg-white pt-8 sm:pt-12 md:pt-16 pb-12 sm:pb-20 md:pb-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16 items-center">
             {/* Text Content - Order 1 on both mobile and desktop */}
-            <div className="space-y-4 sm:space-y-8 order-1">
+            <div className="space-y-4 sm:space-y-6 md:space-y-7 lg:space-y-8 order-1">
               <div className="inline-flex items-center gap-2 text-[#00A6CE]">
-                <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
-                <span className="text-xs sm:text-base font-medium">#1 Choice for Global Healthcare Job Placement</span>
+                <Star className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 md:h-5 fill-current" />
+                <span className="text-xs sm:text-sm md:text-base font-medium">#1 Choice for Global Healthcare Job Placement</span>
               </div>
               
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
@@ -31,18 +31,18 @@ export const HomePage = () => {
                 <span className="text-[#2C5F6F]">Career Success</span>
               </h1>
               
-              <p className="text-gray-600 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl">
+              <p className="text-gray-600 text-sm sm:text-base md:text-lg lg:text-lg leading-relaxed max-w-xl">
                 We meticulously prepare healthcare workers for successful international placements through world-class training, ethical recruitment, and dedicated career guidance.
               </p>
               
-              <div className="flex flex-row gap-3 sm:gap-4">
+              <div className="flex flex-row gap-3 sm:gap-4 md:gap-4">
                 <Button 
                   onClick={() => setLocation('/candidate/register')}
-                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-6 sm:px-10 py-5 sm:py-6 rounded-full text-sm sm:text-base font-medium flex-1 sm:flex-initial"
+                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-6 sm:px-8 md:px-10 py-5 sm:py-5 md:py-6 rounded-full text-sm sm:text-base font-medium flex-1 sm:flex-initial"
                 >
                   Apply Now
                 </Button>
-                <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-6 sm:px-10 py-5 sm:py-6 rounded-full text-sm sm:text-base font-medium flex items-center gap-2 justify-center flex-1 sm:flex-initial">
+                <Button variant="outline" className="border-2 border-[#00A6CE] text-[#00A6CE] hover:bg-[#E8F7FB] px-6 sm:px-8 md:px-10 py-5 sm:py-5 md:py-6 rounded-full text-sm sm:text-base font-medium flex items-center gap-2 justify-center flex-1 sm:flex-initial">
                   Learn More
                   <ArrowRight className="w-4 h-4" />
                 </Button>
@@ -59,21 +59,21 @@ export const HomePage = () => {
                 />
                 
                 {/* Top right badge - 10K+ */}
-                <div className="absolute top-3 right-3 sm:top-6 sm:right-6 bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl px-3 py-2 sm:px-6 sm:py-4 shadow-lg text-right">
-                  <div className="text-2xl sm:text-4xl font-bold text-[#00A6CE]">10K+</div>
+                <div className="absolute top-3 right-3 sm:top-5 sm:right-5 md:top-6 md:right-6 bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl px-3 py-2 sm:px-5 sm:py-3 md:px-6 md:py-4 shadow-lg text-right">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#00A6CE]">10K+</div>
                   <div className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">Assign Jobs To<br/>Nurses</div>
                 </div>
               </div>
               
               {/* Bottom left badge - Candidates */}
-              <div className="absolute -bottom-6 sm:-bottom-8 left-2 sm:left-4 bg-white rounded-xl sm:rounded-2xl px-3 py-3 sm:px-6 sm:py-5 shadow-2xl flex items-center gap-2 sm:gap-4">
+              <div className="absolute -bottom-6 sm:-bottom-7 md:-bottom-8 left-2 sm:left-3 md:left-4 bg-white rounded-xl sm:rounded-2xl px-3 py-3 sm:px-5 sm:py-4 md:px-6 md:py-5 shadow-2xl flex items-center gap-2 sm:gap-3 md:gap-4">
                 <div className="flex -space-x-2 sm:-space-x-3">
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-gray-300 border-2 sm:border-3 border-white"></div>
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-gray-400 border-2 sm:border-3 border-white"></div>
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-gray-500 border-2 sm:border-3 border-white"></div>
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-gray-300 border-2 sm:border-3 border-white"></div>
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-gray-400 border-2 sm:border-3 border-white"></div>
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-gray-500 border-2 sm:border-3 border-white"></div>
                 </div>
                 <div>
-                  <div className="text-xl sm:text-3xl font-bold text-[#00A6CE]">2,650+</div>
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-[#00A6CE]">2,650+</div>
                   <div className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">Candidate have trusted us</div>
                 </div>
               </div>
@@ -83,9 +83,9 @@ export const HomePage = () => {
       </section>
 
       {/* Building Global Healthcare Section */}
-      <section className="w-full py-10 sm:py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
+      <section className="w-full py-10 sm:py-16 md:py-20 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-14 items-center">
             {/* Image - Order 2 on mobile, Order 1 on desktop */}
             <div className="order-2 lg:order-1">
               <img
@@ -96,20 +96,20 @@ export const HomePage = () => {
             </div>
 
             {/* Text - Order 1 on mobile, Order 2 on desktop */}
-            <div className="space-y-4 sm:space-y-6 order-1 lg:order-2">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2C5F6F]">
+            <div className="space-y-4 sm:space-y-5 md:space-y-6 order-1 lg:order-2">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-[#2C5F6F]">
                 Building Global Healthcare Career Pathways
               </h2>
               
-              <p className="text-gray-600 text-sm sm:text-base lg:text-lg leading-relaxed">
+              <p className="text-gray-600 text-sm sm:text-base md:text-lg lg:text-lg leading-relaxed">
                 Duke Consultancy is a healthcare recruitment and placement firm dedicated to bridging the gap between skilled professionals in Pakistan and healthcare institutions across Europe, the UK, and other international destinations.
               </p>
               
-              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+              <p className="text-gray-600 text-sm sm:text-base md:text-base leading-relaxed">
                 With years of experience and a trusted process, we ensure every candidate is guided through documentation, compliance, and visa procedures smoothly, so they can focus on their careers.
               </p>
 
-              <Button variant="link" className="text-[#00A6CE] text-sm sm:text-base p-0 h-auto">
+              <Button variant="link" className="text-[#00A6CE] text-sm sm:text-base md:text-base p-0 h-auto">
                 Read More →
               </Button>
             </div>
@@ -118,19 +118,19 @@ export const HomePage = () => {
       </section>
 
       {/* How it Works Section */}
-      <section className="w-full py-10 sm:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
-          <div className="text-center mb-8 sm:mb-10 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">
+      <section className="w-full py-10 sm:py-16 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-20">
+          <div className="text-center mb-8 sm:mb-10 md:mb-14 lg:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold mb-3 sm:mb-4">
               <span className="text-black">How it </span>
               <span className="text-[#00A6CE]">works</span>
             </h2>
-            <p className="text-gray-600 max-w-3xl mx-auto text-sm sm:text-base leading-relaxed px-2">
+            <p className="text-gray-600 max-w-3xl mx-auto text-sm sm:text-base md:text-base leading-relaxed px-2">
               We make the recruitment process simple, transparent, and stress-free. Our step-by-step approach ensures that every candidate moves smoothly from registration to placement.
             </p>
           </div>
 
-          <div className="space-y-12 sm:space-y-16 lg:space-y-28">
+          <div className="space-y-12 sm:space-y-14 md:space-y-20 lg:space-y-28">
             {/* Step 01 - Register Online */}
             <div className="relative">
               {/* Mobile Layout */}
@@ -408,9 +408,9 @@ export const HomePage = () => {
       </section>
 
       {/* Solutions Section */}
-      <section className="w-full py-10 sm:py-16 lg:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
-          <div className="text-center mb-8 sm:mb-16">
+      <section className="w-full py-10 sm:py-16 md:py-20 lg:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-20">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               <span className="text-black">Our Solutions for Your </span>
               <span className="text-[#00A6CE]">Nursing</span>
@@ -418,10 +418,10 @@ export const HomePage = () => {
             </h2>
           </div>
 
-          {/* Grid Layout - Single column on mobile, complex grid on desktop */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:auto-rows-fr">
-            {/* Healthcare Recruitment Card - Order 1 on mobile, spans 2 cols on desktop */}
-            <div className="bg-gray-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 flex flex-col gap-4 sm:gap-6 lg:col-span-2 order-1">
+          {/* Grid Layout - 1 column on mobile, 2 columns on tablet, complex grid on desktop */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-6 lg:auto-rows-fr">
+            {/* Healthcare Recruitment Card - Order 1 on mobile, spans 2 cols on tablet and desktop */}
+            <div className="bg-gray-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-8 flex flex-col gap-4 sm:gap-6 md:col-span-2 lg:col-span-2 order-1">
               <div className="space-y-3 sm:space-y-4">
                 <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
                   <img src="/Icon Badge_1760620436960.png" alt="Healthcare" className="w-6 h-6 sm:w-8 sm:h-8" />
@@ -464,8 +464,8 @@ export const HomePage = () => {
               </p>
             </div>
 
-            {/* Professional Training & Development - Order 4 on mobile, spans 2 rows on desktop */}
-            <div className="bg-gray-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 flex flex-col order-4 lg:order-2 lg:row-span-2">
+            {/* Professional Training & Development - Order 4 on mobile, spans 2 cols on tablet, spans 2 rows on desktop */}
+            <div className="bg-gray-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-8 flex flex-col order-4 md:col-span-2 md:order-4 lg:col-span-1 lg:order-2 lg:row-span-2">
               <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                 <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#E8F7FB] rounded-xl flex items-center justify-center">
                   <img src="/Icon Badge (1)_1760620436960.png" alt="Training" className="w-6 h-6 sm:w-8 sm:h-8" />
