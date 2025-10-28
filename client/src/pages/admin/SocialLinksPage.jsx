@@ -175,9 +175,22 @@ export default function SocialLinksPage() {
                         required
                         value={formData.icon_class}
                         onChange={(e) => setFormData({...formData, icon_class: e.target.value})}
-                        placeholder="facebook, linkedin, twitter"
+                        placeholder="e.g., facebook, linkedin, twitter"
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                       />
+                      <div className="mt-2 p-3 bg-blue-50 rounded-lg">
+                        <p className="text-xs font-medium text-blue-900 mb-1">💡 Available Icons:</p>
+                        <div className="flex flex-wrap gap-2 text-xs text-blue-700">
+                          <span className="bg-white px-2 py-1 rounded">facebook</span>
+                          <span className="bg-white px-2 py-1 rounded">twitter</span>
+                          <span className="bg-white px-2 py-1 rounded">instagram</span>
+                          <span className="bg-white px-2 py-1 rounded">linkedin</span>
+                          <span className="bg-white px-2 py-1 rounded">youtube</span>
+                          <span className="bg-white px-2 py-1 rounded">tiktok</span>
+                          <span className="bg-white px-2 py-1 rounded">whatsapp</span>
+                        </div>
+                        <p className="text-xs text-blue-600 mt-2">Simply type one of these names (lowercase) to use its icon</p>
+                      </div>
                     </div>
                     <div className="md:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
