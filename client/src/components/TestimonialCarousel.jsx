@@ -40,42 +40,42 @@ export const TestimonialCarousel = () => {
 
   return (
     <div className="relative">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-        <div className="bg-[#D6EEF5] rounded-3xl overflow-hidden flex flex-col lg:flex-row">
-          <div className="lg:w-56 lg:flex-shrink-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+        <div className="bg-[#D6EEF5] rounded-3xl overflow-hidden flex flex-col lg:flex-row h-auto lg:h-64">
+          <div className="lg:w-44 lg:flex-shrink-0">
             <img
               src={currentTestimonial.image}
               alt={currentTestimonial.name}
-              className="w-full h-64 lg:h-full object-cover"
+              className="w-full h-48 lg:h-full object-cover"
             />
           </div>
-          <div className="p-6 lg:p-8 flex flex-col justify-center flex-1">
-            <p className="text-gray-700 text-sm lg:text-base leading-relaxed mb-6">
+          <div className="p-4 lg:p-6 flex flex-col justify-center flex-1">
+            <p className="text-gray-700 text-xs sm:text-sm leading-relaxed mb-4">
               {currentTestimonial.text}
             </p>
             <div className="mt-auto">
-              <h4 className="text-[#00A6CE] font-bold text-lg mb-1">{currentTestimonial.name}</h4>
-              <p className="text-gray-600 text-sm font-medium">{currentTestimonial.role}</p>
+              <h4 className="text-[#00A6CE] font-bold text-base mb-0.5">{currentTestimonial.name}</h4>
+              <p className="text-gray-600 text-xs font-medium">{currentTestimonial.role}</p>
             </div>
           </div>
         </div>
 
         {/* Second testimonial - hidden on mobile, shown on desktop */}
-        <div className="hidden lg:flex bg-[#D6EEF5] rounded-3xl overflow-hidden flex-col lg:flex-row">
-          <div className="lg:w-56 lg:flex-shrink-0">
+        <div className="hidden lg:flex bg-[#D6EEF5] rounded-3xl overflow-hidden flex-col lg:flex-row h-auto lg:h-64">
+          <div className="lg:w-44 lg:flex-shrink-0">
             <img
               src={nextTestimonial.image}
               alt={nextTestimonial.name}
-              className="w-full h-64 lg:h-full object-cover"
+              className="w-full h-48 lg:h-full object-cover"
             />
           </div>
-          <div className="p-6 lg:p-8 flex flex-col justify-center flex-1">
-            <p className="text-gray-700 text-sm lg:text-base leading-relaxed mb-6">
+          <div className="p-4 lg:p-6 flex flex-col justify-center flex-1">
+            <p className="text-gray-700 text-xs sm:text-sm leading-relaxed mb-4">
               {nextTestimonial.text}
             </p>
             <div className="mt-auto">
-              <h4 className="text-[#00A6CE] font-bold text-lg mb-1">{nextTestimonial.name}</h4>
-              <p className="text-gray-600 text-sm font-medium">{nextTestimonial.role}</p>
+              <h4 className="text-[#00A6CE] font-bold text-base mb-0.5">{nextTestimonial.name}</h4>
+              <p className="text-gray-600 text-xs font-medium">{nextTestimonial.role}</p>
             </div>
           </div>
         </div>
