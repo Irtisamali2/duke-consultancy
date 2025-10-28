@@ -26,6 +26,8 @@ import CandidateLoginPage from "@/pages/candidate/CandidateLoginPage";
 import CandidateRegisterPage from "@/pages/candidate/CandidateRegisterPage";
 import CandidateProfileFormPage from "@/pages/candidate/CandidateProfileFormPage";
 import CandidateDashboardPage from "@/pages/candidate/CandidateDashboardPage";
+import CandidateForgotPasswordPage from "@/pages/candidate/CandidateForgotPasswordPage";
+import CandidateResetPasswordPage from "@/pages/candidate/CandidateResetPasswordPage";
 
 function Router() {
   return (
@@ -38,6 +40,8 @@ function Router() {
       {/* Candidate pages */}
       <Route path="/candidate/login" component={CandidateLoginPage} />
       <Route path="/candidate/register" component={CandidateRegisterPage} />
+      <Route path="/candidate/forgot-password" component={CandidateForgotPasswordPage} />
+      <Route path="/candidate/reset-password" component={CandidateResetPasswordPage} />
       <Route path="/candidate/dashboard" component={CandidateDashboardPage} />
       <Route path="/candidate/profile" component={CandidateProfileFormPage} />
       

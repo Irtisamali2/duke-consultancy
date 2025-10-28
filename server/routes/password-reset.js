@@ -13,7 +13,7 @@ router.post('/forgot-password/candidate', async (req, res) => {
     const [candidates] = await db.query('SELECT id, email FROM candidates WHERE email = ?', [email]);
     
     if (candidates.length === 0) {
-      return res.json({ success: true, message: 'If an account exists, you will receive a password reset email' });
+      return res.status(404).json({ success: false, message: 'No user exists with this email address' });
     }
 
     const token = crypto.randomBytes(32).toString('hex');
