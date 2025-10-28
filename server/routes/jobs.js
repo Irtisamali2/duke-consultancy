@@ -9,9 +9,15 @@ router.get('/jobs/public', async (req, res) => {
     const [rows] = await db.query(`
       SELECT id, title, description, location, country, job_type, specialization, 
              experience_required, salary_range, status, countries, trades, 
-             max_countries_selectable, max_trades_selectable, created_at
+             max_countries_selectable, max_trades_selectable, created_at, active_from, active_to
       FROM jobs 
       WHERE status = 'active'
+        AND (
+          (active_from IS NULL AND active_to IS NULL)
+          OR (active_from IS NULL AND CURDATE() <= active_to)
+          OR (active_to IS NULL AND CURDATE() >= active_from)
+          OR (CURDATE() BETWEEN active_from AND active_to)
+        )
       ORDER BY created_at DESC
     `);
     res.json({ success: true, jobs: rows });
@@ -25,9 +31,16 @@ router.get('/jobs/public/:id', async (req, res) => {
     const [rows] = await db.query(`
       SELECT id, title, description, location, country, job_type, specialization, 
              experience_required, salary_range, status, countries, trades, 
-             max_countries_selectable, max_trades_selectable, created_at
+             max_countries_selectable, max_trades_selectable, created_at, active_from, active_to
       FROM jobs 
-      WHERE id = ? AND status = 'active'
+      WHERE id = ? 
+        AND status = 'active'
+        AND (
+          (active_from IS NULL AND active_to IS NULL)
+          OR (active_from IS NULL AND CURDATE() <= active_to)
+          OR (active_to IS NULL AND CURDATE() >= active_from)
+          OR (CURDATE() BETWEEN active_from AND active_to)
+        )
     `, [req.params.id]);
     
     if (rows.length === 0) {
@@ -70,8 +83,19 @@ router.post('/jobs', requireAuth, async (req, res) => {
     const { 
       title, description, location, country, job_type, specialization, 
       experience_required, salary_range, status,
-      countries, trades, max_countries_selectable, max_trades_selectable
+      countries, trades, max_countries_selectable, max_trades_selectable,
+      active_from, active_to
     } = req.body;
+
+    // Validate date range
+    if (active_from && active_to && new Date(active_from) > new Date(active_to)) {
+      return res.status(400).json({ success: false, message: 'Active from date cannot be after active to date' });
+    }
+
+    // Prevent activating job if active_to date has passed
+    if (status === 'active' && active_to && new Date(active_to) < new Date()) {
+      return res.status(400).json({ success: false, message: 'Cannot set status to active: end date has passed' });
+    }
     
     const countriesJson = countries ? JSON.stringify(countries) : JSON.stringify([country]);
     const tradesJson = trades ? JSON.stringify(trades) : JSON.stringify([specialization]);
@@ -80,8 +104,9 @@ router.post('/jobs', requireAuth, async (req, res) => {
       `INSERT INTO jobs (
         title, description, location, country, job_type, specialization, 
         experience_required, salary_range, status, created_by,
-        countries, trades, max_countries_selectable, max_trades_selectable
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        countries, trades, max_countries_selectable, max_trades_selectable,
+        active_from, active_to
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title, description, location, 
         countries && countries.length > 0 ? countries.join(', ') : country,
@@ -90,7 +115,9 @@ router.post('/jobs', requireAuth, async (req, res) => {
         experience_required, salary_range, status || 'active', req.admin.id,
         countriesJson, tradesJson, 
         max_countries_selectable || 1, 
-        max_trades_selectable || 1
+        max_trades_selectable || 1,
+        active_from || null,
+        active_to || null
       ]
     );
     
@@ -105,8 +132,19 @@ router.put('/jobs/:id', requireAuth, async (req, res) => {
     const { 
       title, description, location, country, job_type, specialization, 
       experience_required, salary_range, status,
-      countries, trades, max_countries_selectable, max_trades_selectable
+      countries, trades, max_countries_selectable, max_trades_selectable,
+      active_from, active_to
     } = req.body;
+
+    // Validate date range
+    if (active_from && active_to && new Date(active_from) > new Date(active_to)) {
+      return res.status(400).json({ success: false, message: 'Active from date cannot be after active to date' });
+    }
+
+    // Prevent activating job if active_to date has passed
+    if (status === 'active' && active_to && new Date(active_to) < new Date()) {
+      return res.status(400).json({ success: false, message: 'Cannot set status to active: end date has passed' });
+    }
     
     const countriesJson = countries ? JSON.stringify(countries) : JSON.stringify([country]);
     const tradesJson = trades ? JSON.stringify(trades) : JSON.stringify([specialization]);
@@ -115,7 +153,8 @@ router.put('/jobs/:id', requireAuth, async (req, res) => {
       `UPDATE jobs SET 
         title = ?, description = ?, location = ?, country = ?, job_type = ?, 
         specialization = ?, experience_required = ?, salary_range = ?, status = ?,
-        countries = ?, trades = ?, max_countries_selectable = ?, max_trades_selectable = ?
+        countries = ?, trades = ?, max_countries_selectable = ?, max_trades_selectable = ?,
+        active_from = ?, active_to = ?
       WHERE id = ?`,
       [
         title, description, location, 
@@ -126,6 +165,8 @@ router.put('/jobs/:id', requireAuth, async (req, res) => {
         countriesJson, tradesJson, 
         max_countries_selectable || 1, 
         max_trades_selectable || 1,
+        active_from || null,
+        active_to || null,
         req.params.id
       ]
     );

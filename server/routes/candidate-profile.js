@@ -1,14 +1,49 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 import db from '../db.js';
 import emailService from '../services/emailService.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
-// Configuration: Maximum applications allowed per candidate (can be changed to 2-3 later)
-const MAX_APPLICATIONS_PER_CANDIDATE = 1;
+// Configure multer for profile image uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../uploads'));
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'profile-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const profileUpload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 2 * 1024 * 1024 // 2MB limit for profile images
+  },
+  fileFilter: function (req, file, cb) {
+    const allowedTypes = /jpeg|jpg|png/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed (jpeg, jpg, png)'));
+    }
+  }
+});
+
+// Note: One application per job per candidate (enforced by unique constraint)
 
 const requireCandidateAuth = (req, res, next) => {
   try {
@@ -258,23 +293,80 @@ router.put('/candidate/profile/documents', requireCandidateAuth, async (req, res
   }
 });
 
+router.post('/candidate/profile/image', requireCandidateAuth, profileUpload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
+
+    // Get existing profile image
+    const [profiles] = await db.query('SELECT profile_image_url FROM healthcare_profiles WHERE candidate_id = ?', [req.candidateId]);
+    const oldImageUrl = profiles[0]?.profile_image_url;
+
+    // Delete old profile image if exists
+    if (oldImageUrl) {
+      const oldImagePath = path.join(__dirname, '..', oldImageUrl);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+
+    // Update profile with new image URL
+    const imageUrl = `/uploads/${req.file.filename}`;
+    await db.query('UPDATE healthcare_profiles SET profile_image_url = ? WHERE candidate_id = ?', [imageUrl, req.candidateId]);
+
+    res.json({ success: true, message: 'Profile image uploaded successfully', imageUrl });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/candidate/profile/image', requireCandidateAuth, async (req, res) => {
+  try {
+    // Get existing profile image
+    const [profiles] = await db.query('SELECT profile_image_url FROM healthcare_profiles WHERE candidate_id = ?', [req.candidateId]);
+    const imageUrl = profiles[0]?.profile_image_url;
+
+    if (!imageUrl) {
+      return res.status(404).json({ success: false, message: 'No profile image found' });
+    }
+
+    // Delete image file
+    const imagePath = path.join(__dirname, '..', imageUrl);
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    }
+
+    // Remove from database
+    await db.query('UPDATE healthcare_profiles SET profile_image_url = NULL WHERE candidate_id = ?', [req.candidateId]);
+
+    res.json({ success: true, message: 'Profile image removed successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 router.post('/candidate/submit-application', requireCandidateAuth, async (req, res) => {
   try {
     const { job_id } = req.body;
 
-    // Check how many applications this candidate has already submitted
-    const [existingApplications] = await db.query(
-      'SELECT COUNT(*) as count FROM applications WHERE candidate_id = ?',
-      [req.candidateId]
-    );
-
-    const applicationCount = existingApplications[0].count;
-
-    // Enforce application limit
-    if (applicationCount >= MAX_APPLICATIONS_PER_CANDIDATE) {
+    if (!job_id) {
       return res.status(400).json({ 
         success: false, 
-        message: `You have already submitted ${applicationCount} application${applicationCount > 1 ? 's' : ''}. Only ${MAX_APPLICATIONS_PER_CANDIDATE} application${MAX_APPLICATIONS_PER_CANDIDATE > 1 ? 's are' : ' is'} allowed per candidate.`
+        message: 'Job ID is required'
+      });
+    }
+
+    // Check if candidate has already applied to this specific job
+    const [existingApp] = await db.query(
+      'SELECT id FROM applications WHERE candidate_id = ? AND job_id = ?',
+      [req.candidateId, job_id]
+    );
+
+    if (existingApp.length > 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'You have already submitted an application. You can view/edit it from your profile.'
       });
     }
 

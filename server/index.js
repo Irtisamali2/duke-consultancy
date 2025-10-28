@@ -11,6 +11,7 @@ import addCompanySettings from "./migrations/add-company-settings.js";
 import { ensureGeneralJob } from "./migrations/add-general-job.js";
 import { updateJobsForMultiselect } from "./migrations/update-jobs-multiselect.js";
 import { updateProfilesForMultiselect } from "./migrations/update-profiles-multiselect.js";
+import { migrateProfileImageAndJobDates } from "./migrations/add-profile-image-job-dates.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -62,6 +63,7 @@ app.use((req, res, next) => {
   await ensureGeneralJob();
   await updateJobsForMultiselect();
   await updateProfilesForMultiselect();
+  await migrateProfileImageAndJobDates();
   
   const server = await registerRoutes(app);
 

@@ -88,20 +88,15 @@ export default function CandidateDashboardPage() {
         <div className="flex-1 p-4 md:p-8 overflow-auto">
         <div className="bg-[#E6F7FB] rounded-lg p-6 mb-6 flex items-center justify-between">
           <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Ready to Apply?</h3>
+            <p className="text-gray-600 text-sm mb-3">Browse available job opportunities and submit your application.</p>
             <Button 
-              onClick={() => {
-                if (applications.length === 0) {
-                  setLocation('/candidate/profile');
-                } else {
-                  alert('You have already submitted an application. You can view/edit it from your profile.');
-                }
-              }}
+              onClick={() => window.location.href = '/'}
               className="bg-[#0B7A9F] hover:bg-[#096685] text-white rounded-full px-8"
             >
-              Apply Now
+              Browse Jobs
             </Button>
           </div>
-          <p className="text-gray-600 text-sm">Lorem ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
 
         <div className="bg-gradient-to-br from-[#00A6CE] to-[#0B7A9F] rounded-lg p-8 mb-6 text-white">
