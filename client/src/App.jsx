@@ -8,6 +8,8 @@ import NotFound from "@/pages/not-found";
 import { HomePage } from "@/pages/HomePage";
 import { AboutPage } from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
+import BlogsListPage from "@/pages/BlogsListPage";
+import BlogDetailPage from "@/pages/BlogDetailPage";
 import AdminLoginPage from "@/pages/AdminLoginPage";
 import AdminDashboardPage from "@/pages/AdminDashboardPage";
 import DatabaseTestPage from "@/pages/DatabaseTestPage";
@@ -40,6 +42,8 @@ function Router() {
       <Route path="/" component={HomePage} />
       <Route path="/about" component={AboutPage} />
       <Route path="/contact" component={ContactPage} />
+      <Route path="/blogs" component={BlogsListPage} />
+      <Route path="/blogs/:id" component={BlogDetailPage} />
       
       {/* Candidate pages */}
       <Route path="/candidate/login" component={CandidateLoginPage} />

@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { registerRoutes } from "./routes.js";
 import { setupVite, serveStatic, log } from "./vite.js";
+import { migrateBlogsTable } from "./migrations/migrate-blogs.js";
 
 const app = express();
 app.use(express.json());
@@ -39,6 +40,9 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Run database migrations
+  await migrateBlogsTable();
+  
   const server = await registerRoutes(app);
 
   app.use((err, _req, res, _next) => {
