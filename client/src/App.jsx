@@ -21,6 +21,8 @@ import ApplicationDetailsPage from "@/pages/admin/ApplicationDetailsPage";
 import EmailSettingsPage from "@/pages/admin/EmailSettingsPage";
 import EmailTemplatesPage from "@/pages/admin/EmailTemplatesPage";
 import EmailTemplateEditPage from "@/pages/admin/EmailTemplateEditPage";
+import EmailTemplateCreatePage from "@/pages/admin/EmailTemplateCreatePage";
+import EmailTemplateViewPage from "@/pages/admin/EmailTemplateViewPage";
 
 import CandidateLoginPage from "@/pages/candidate/CandidateLoginPage";
 import CandidateRegisterPage from "@/pages/candidate/CandidateRegisterPage";
@@ -66,7 +68,9 @@ function Router() {
       {/* Email Settings */}
       <Route path="/admin/email-settings" component={EmailSettingsPage} />
       <Route path="/admin/email-templates" component={EmailTemplatesPage} />
-      <Route path="/admin/email-templates/:id" component={EmailTemplateEditPage} />
+      <Route path="/admin/email-templates/new" component={EmailTemplateCreatePage} />
+      <Route path="/admin/email-templates/view/:id" component={EmailTemplateViewPage} />
+      <Route path="/admin/email-templates/edit/:id" component={EmailTemplateEditPage} />
       
       {/* Database test */}
       <Route path="/db-test" component={DatabaseTestPage} />

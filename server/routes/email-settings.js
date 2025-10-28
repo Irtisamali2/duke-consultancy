@@ -41,6 +41,24 @@ router.get('/email/templates', requireAuth, async (req, res) => {
   }
 });
 
+router.post('/email/templates', requireAuth, async (req, res) => {
+  try {
+    const { template_name, status_type, subject, body, description } = req.body;
+    
+    const template_key = status_type;
+    const variables = '{{candidate_name}}, {{application_id}}, {{trade}}, {{submitted_date}}, {{updated_date}}, {{remarks}}, {{reset_link}}';
+
+    await db.query(
+      'INSERT INTO email_templates (template_key, template_name, subject, body, variables, description) VALUES (?, ?, ?, ?, ?, ?)',
+      [template_key, template_name, subject, body, variables, description]
+    );
+
+    res.json({ success: true, message: 'Template created successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 router.get('/email/templates/:id', requireAuth, async (req, res) => {
   try {
     const [templates] = await db.query('SELECT * FROM email_templates WHERE id = ?', [req.params.id]);

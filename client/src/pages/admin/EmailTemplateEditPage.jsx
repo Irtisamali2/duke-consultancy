@@ -4,7 +4,7 @@ import AdminLayout from '../../components/AdminLayout';
 import { Button } from '../../components/ui/button';
 
 export default function EmailTemplateEditPage() {
-  const [, params] = useRoute('/admin/email-templates/:id');
+  const [, params] = useRoute('/admin/email-templates/edit/:id');
   const [, setLocation] = useLocation();
   const [template, setTemplate] = useState(null);
   const [loading, setLoading] = useState(true);
