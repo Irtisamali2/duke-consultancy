@@ -10,6 +10,7 @@ export default function HealthcareProfileEditPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [newPassword, setNewPassword] = useState('');
   
   const [profile, setProfile] = useState({
     candidate: {},
@@ -78,13 +79,15 @@ export default function HealthcareProfileEditPage() {
           status: profile.candidate.status,
           first_name: profile.profile.first_name,
           last_name: profile.profile.last_name,
-          mobile_no: profile.profile.mobile_no
+          mobile_no: profile.profile.mobile_no,
+          newPassword: newPassword || undefined
         })
       });
 
       const data = await response.json();
       if (data.success) {
         setMessage({ type: 'success', text: 'Profile updated successfully!' });
+        setNewPassword(''); // Clear password field
         setTimeout(() => setLocation('/admin/healthcare-profiles'), 1500);
       } else {
         setMessage({ type: 'error', text: data.message || 'Failed to update profile' });
@@ -191,6 +194,18 @@ export default function HealthcareProfileEditPage() {
                     value={profile.candidate.created_at ? new Date(profile.candidate.created_at).toLocaleDateString() : 'N/A'}
                     disabled
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    New Password (leave empty to keep current)
+                  </label>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Enter new password to change"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                   />
                 </div>
               </div>

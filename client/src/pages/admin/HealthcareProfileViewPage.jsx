@@ -43,58 +43,6 @@ export default function HealthcareProfileViewPage() {
     }
   };
 
-  const handleProfileChange = (field, value) => {
-    setProfile(prev => ({
-      ...prev,
-      profile: {
-        ...prev.profile,
-        [field]: value
-      }
-    }));
-  };
-
-  const handleCandidateChange = (field, value) => {
-    setProfile(prev => ({
-      ...prev,
-      candidate: {
-        ...prev.candidate,
-        [field]: value
-      }
-    }));
-  };
-
-  const handleSave = async () => {
-    setSaving(true);
-    setMessage({ type: '', text: '' });
-
-    try {
-      const response = await fetch(`/api/healthcare-profiles/${params.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          email: profile.candidate.email,
-          status: profile.candidate.status,
-          first_name: profile.profile.first_name,
-          last_name: profile.profile.last_name,
-          mobile_no: profile.profile.mobile_no
-        })
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setMessage({ type: 'success', text: 'Profile updated successfully!' });
-        setTimeout(() => setLocation('/admin/healthcare-profiles'), 1500);
-      } else {
-        setMessage({ type: 'error', text: data.message || 'Failed to update profile' });
-      }
-    } catch (error) {
-      console.error('Failed to save profile:', error);
-      setMessage({ type: 'error', text: 'An error occurred while saving' });
-    } finally {
-      setSaving(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -379,22 +327,6 @@ export default function HealthcareProfileViewPage() {
             </Card>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex gap-4">
-            <Button
-              onClick={handleSave}
-              disabled={saving}
-              className="bg-[#00A6CE] hover:bg-[#0090B5] text-white"
-            >
-              {saving ? 'Saving...' : 'Save Changes'}
-            </Button>
-            <Button
-              onClick={() => setLocation('/admin/healthcare-profiles')}
-              variant="outline"
-            >
-              Cancel
-            </Button>
-          </div>
         </div>
       </div>
     </AdminLayout>

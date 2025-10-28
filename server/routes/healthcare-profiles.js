@@ -1,6 +1,7 @@
 import express from 'express';
 import db from '../db.js';
 import { requireAuth } from '../middleware/auth.js';
+import bcrypt from 'bcryptjs';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -63,10 +64,10 @@ router.get('/healthcare-profiles/:id', requireAuth, async (req, res) => {
 router.put('/healthcare-profiles/:id', requireAuth, async (req, res) => {
   try {
     const candidateId = req.params.id;
-    const { email, status, first_name, last_name, mobile_no } = req.body;
+    const { email, status, first_name, last_name, mobile_no, newPassword } = req.body;
 
     // Update candidates table
-    if (email || status) {
+    if (email || status || newPassword) {
       const updates = [];
       const values = [];
 
@@ -77,6 +78,16 @@ router.put('/healthcare-profiles/:id', requireAuth, async (req, res) => {
       if (status) {
         updates.push('status = ?');
         values.push(status);
+      }
+      if (newPassword) {
+        // Validate password length
+        if (newPassword.length < 6) {
+          return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+        }
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        updates.push('password = ?');
+        values.push(hashedPassword);
       }
 
       if (updates.length > 0) {
