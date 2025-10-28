@@ -1,31 +1,38 @@
-import { useState } from 'react';
-
-const testimonials = [
-  {
-    id: 1,
-    name: "Dr. Ahmed Malik",
-    role: "Registered Nurse in London",
-    image: "/testimonial-doctor.jpg",
-    text: "The guidance I received from Duke Consultancy was exceptional. They helped me navigate the complex visa process and secure a position at a leading hospital in London. Highly recommended!"
-  },
-  {
-    id: 2,
-    name: "Ayesha Rahman",
-    role: "Healthcare Professional in Germany",
-    image: "/testimonial-nurse1.jpg",
-    text: "Duke Consultancy made my dream of working abroad a reality. Their team was professional, supportive, and guided me through every step of the application process."
-  },
-  {
-    id: 3,
-    name: "Zainab Hussain",
-    role: "Nurse Practitioner in UAE",
-    image: "/testimonial-nurse2.jpg",
-    text: "I'm grateful for the comprehensive support Duke Consultancy provided. From training to placement, they were with me every step of the way. Now I'm successfully working in Dubai!"
-  }
-];
+import { useState, useEffect } from 'react';
 
 export const TestimonialCarousel = () => {
+  const [testimonials, setTestimonials] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTestimonials();
+  }, []);
+
+  const fetchTestimonials = async () => {
+    try {
+      const response = await fetch('/api/testimonials');
+      const data = await response.json();
+      if (data.success && data.testimonials.length > 0) {
+        setTestimonials(data.testimonials);
+      } else {
+        // Fallback to default testimonials if none in database
+        setTestimonials([
+          {
+            id: 1,
+            name: "Dr. Ahmed Malik",
+            role: "Registered Nurse in London",
+            image_url: "/testimonial-doctor.jpg",
+            testimonial_text: "The guidance I received from Duke Consultancy was exceptional. They helped me navigate the complex visa process and secure a position at a leading hospital in London. Highly recommended!"
+          }
+        ]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch testimonials:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const goToNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
@@ -34,6 +41,10 @@ export const TestimonialCarousel = () => {
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length);
   };
+
+  if (loading || testimonials.length === 0) {
+    return null;
+  }
 
   const currentTestimonial = testimonials[currentIndex];
   const nextTestimonial = testimonials[(currentIndex + 1) % testimonials.length];
@@ -44,14 +55,14 @@ export const TestimonialCarousel = () => {
         <div className="bg-[#D6EEF5] rounded-3xl overflow-hidden flex flex-col lg:flex-row h-auto lg:h-64">
           <div className="lg:w-44 lg:flex-shrink-0">
             <img
-              src={currentTestimonial.image}
+              src={currentTestimonial.image_url || currentTestimonial.image}
               alt={currentTestimonial.name}
               className="w-full h-48 lg:h-full object-cover"
             />
           </div>
           <div className="p-4 lg:p-6 flex flex-col justify-center flex-1">
             <p className="text-gray-700 text-xs sm:text-sm leading-relaxed mb-4">
-              {currentTestimonial.text}
+              {currentTestimonial.testimonial_text || currentTestimonial.text}
             </p>
             <div className="mt-auto">
               <h4 className="text-[#00A6CE] font-bold text-base mb-0.5">{currentTestimonial.name}</h4>
@@ -64,14 +75,14 @@ export const TestimonialCarousel = () => {
         <div className="hidden lg:flex bg-[#D6EEF5] rounded-3xl overflow-hidden flex-col lg:flex-row h-auto lg:h-64">
           <div className="lg:w-44 lg:flex-shrink-0">
             <img
-              src={nextTestimonial.image}
+              src={nextTestimonial.image_url || nextTestimonial.image}
               alt={nextTestimonial.name}
               className="w-full h-48 lg:h-full object-cover"
             />
           </div>
           <div className="p-4 lg:p-6 flex flex-col justify-center flex-1">
             <p className="text-gray-700 text-xs sm:text-sm leading-relaxed mb-4">
-              {nextTestimonial.text}
+              {nextTestimonial.testimonial_text || nextTestimonial.text}
             </p>
             <div className="mt-auto">
               <h4 className="text-[#00A6CE] font-bold text-base mb-0.5">{nextTestimonial.name}</h4>

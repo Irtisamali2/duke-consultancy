@@ -81,11 +81,19 @@ router.post('/admin/testimonials', requireAuth, upload.single('image'), async (r
 // Update testimonial (admin only)
 router.put('/admin/testimonials/:id', requireAuth, upload.single('image'), async (req, res) => {
   try {
-    const { name, role, testimonial_text, display_order, status } = req.body;
-    let image_url = req.body.existing_image_url;
+    const { name, role, testimonial_text, display_order, status, existing_image_url } = req.body;
+    let image_url;
     
+    // If a new file is uploaded, use it
     if (req.file) {
       image_url = `/uploads/testimonials/${req.file.filename}`;
+    } else if (existing_image_url) {
+      // If no new file but existing_image_url provided, keep it
+      image_url = existing_image_url;
+    } else {
+      // Otherwise, fetch current image_url from database to preserve it
+      const [[current]] = await db.query('SELECT image_url FROM testimonials WHERE id = ?', [req.params.id]);
+      image_url = current?.image_url || null;
     }
 
     await db.query(

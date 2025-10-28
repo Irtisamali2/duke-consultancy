@@ -22,6 +22,10 @@ import ApplicationsPage from "@/pages/admin/ApplicationsPage";
 import ApplicationDetailsPage from "@/pages/admin/ApplicationDetailsPage";
 import HealthcareProfilesPage from "@/pages/admin/HealthcareProfilesPage";
 import HealthcareProfileEditPage from "@/pages/admin/HealthcareProfileEditPage";
+import CompanyProfilePage from "@/pages/admin/CompanyProfilePage";
+import SocialLinksPage from "@/pages/admin/SocialLinksPage";
+import TestimonialsPage from "@/pages/admin/TestimonialsPage";
+import ContactLeadsPage from "@/pages/admin/ContactLeadsPage";
 import EmailSettingsPage from "@/pages/admin/EmailSettingsPage";
 import EmailTemplatesPage from "@/pages/admin/EmailTemplatesPage";
 import EmailTemplateEditPage from "@/pages/admin/EmailTemplateEditPage";
@@ -76,6 +80,12 @@ function Router() {
       {/* Healthcare Profiles */}
       <Route path="/admin/healthcare-profiles" component={HealthcareProfilesPage} />
       <Route path="/admin/healthcare-profiles/edit/:id" component={HealthcareProfileEditPage} />
+      
+      {/* Company Settings */}
+      <Route path="/admin/company-profile" component={CompanyProfilePage} />
+      <Route path="/admin/social-links" component={SocialLinksPage} />
+      <Route path="/admin/testimonials" component={TestimonialsPage} />
+      <Route path="/admin/contact-leads" component={ContactLeadsPage} />
       
       {/* Email Settings */}
       <Route path="/admin/email-settings" component={EmailSettingsPage} />

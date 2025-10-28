@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { Button } from '../components/ui/button';
@@ -11,10 +11,72 @@ export default function ContactPage() {
     phone: '',
     message: ''
   });
+  const [contactInfo, setContactInfo] = useState({
+    company_phone: '1-800-478-4400',
+    company_email: 'info@dukeconsultancy.com',
+    company_address: '820 Ohio Road\nScotch Plains, NJ 07076'
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState({ type: '', text: '' });
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    fetchContactInfo();
+  }, []);
+
+  const fetchContactInfo = async () => {
+    try {
+      const response = await fetch('/api/company-settings');
+      const data = await response.json();
+      if (data.success && data.settings) {
+        setContactInfo(prev => ({
+          company_phone: data.settings.company_phone || prev.company_phone,
+          company_email: data.settings.company_email || prev.company_email,
+          company_address: data.settings.company_address || prev.company_address
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to fetch contact info:', error);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    setSubmitting(true);
+    setSubmitMessage({ type: '', text: '' });
+
+    try {
+      const response = await fetch('/api/contact-leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          phone: formData.phone,
+          message: formData.message
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setSubmitMessage({ 
+          type: 'success', 
+          text: 'Thank you! Your message has been sent successfully. We will get back to you soon.' 
+        });
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          message: ''
+        });
+      } else {
+        setSubmitMessage({ type: 'error', text: 'Failed to send message. Please try again.' });
+      }
+    } catch (error) {
+      setSubmitMessage({ type: 'error', text: 'An error occurred. Please try again later.' });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -52,6 +114,13 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
             {/* Contact Form */}
             <div className="bg-[#E8F7FB] rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-9 lg:p-10">
+              {submitMessage.text && (
+                <div className={`mb-6 p-4 rounded-lg ${
+                  submitMessage.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
+                }`}>
+                  {submitMessage.text}
+                </div>
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6 mb-4 sm:mb-5 md:mb-6">
                   <div>
@@ -127,9 +196,10 @@ export default function ContactPage() {
 
                 <Button 
                   type="submit"
-                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 sm:px-10 py-5 sm:py-6 rounded-full text-sm sm:text-base font-semibold w-full sm:w-auto"
+                  disabled={submitting}
+                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 sm:px-10 py-5 sm:py-6 rounded-full text-sm sm:text-base font-semibold w-full sm:w-auto disabled:opacity-50"
                 >
-                  Send Message
+                  {submitting ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>
             </div>
@@ -149,9 +219,8 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm leading-relaxed">
-                      820 Ohio Road<br />
-                      Scotch Plains, NJ 07076
+                    <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-line">
+                      {contactInfo.company_address}
                     </p>
                   </div>
                 </div>
@@ -163,7 +232,7 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm">1-800-478-4400</p>
+                    <p className="text-xs sm:text-sm">{contactInfo.company_phone}</p>
                   </div>
                 </div>
 
@@ -175,7 +244,7 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm">hello@dukeconsultancy.com</p>
+                    <p className="text-xs sm:text-sm">{contactInfo.company_email}</p>
                   </div>
                 </div>
 
