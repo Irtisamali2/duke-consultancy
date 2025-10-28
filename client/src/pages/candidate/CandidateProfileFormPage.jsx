@@ -368,12 +368,7 @@ export default function CandidateProfileFormPage() {
   }
 
   const steps = [
-    { number: 0, label: 'Account Settings' },
-    { number: 1, label: 'Trade Information' },
-    { number: 2, label: 'Personal Information' },
-    { number: 3, label: 'Professional Details' },
-    { number: 4, label: 'Education & Certifications' },
-    { number: 5, label: 'Document Uploads' }
+    { number: 0, label: 'Account Settings' }
   ];
 
   const handleLogout = async () => {
@@ -487,313 +482,62 @@ export default function CandidateProfileFormPage() {
                     </button>
                   </div>
                 </div>
-              </div>
-            )}
 
-            {currentStep === 1 && (
-              <div>
-                <h2 className="text-xl font-bold mb-6">Job Selection & Trade Information</h2>
-                <div className="grid gap-6">
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                    <p className="text-sm text-blue-800">
-                      <strong>Optional:</strong> Select a specific job opening below, or leave it as "General Application" to be considered for multiple positions.
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Job Position</label>
-                    <select
-                      value={selectedJobId}
-                      onChange={(e) => setSelectedJobId(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                    >
-                      <option value="">General Application (No specific job)</option>
-                      {jobs.map(job => (
-                        <option key={job.id} value={job.id}>
-                          {job.title} - {job.location} ({job.country})
-                        </option>
-                      ))}
-                    </select>
-                    <p className="text-xs text-gray-500 mt-1">
-                      If you don't select a specific job, your application will be reviewed for all available opportunities.
-                    </p>
-                  </div>
-                  
-                  {selectedJob && (
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                      <p className="text-sm text-yellow-800">
-                        <strong>Job Details:</strong><br />
-                        <strong>Location:</strong> {selectedJob.location}<br />
-                        <strong>Experience Required:</strong> {selectedJob.experience_required}<br />
-                        <strong>Salary Range:</strong> {selectedJob.salary_range}<br />
-                        <strong>Max Countries You Can Select:</strong> {selectedJob.max_countries_selectable}<br />
-                        <strong>Max Trades You Can Select:</strong> {selectedJob.max_trades_selectable}
-                      </p>
-                    </div>
-                  )}
-                  
-                  <div className="border-t pt-4">
-                    <h3 className="text-lg font-semibold mb-3">Country Preferences *</h3>
-                    <p className="text-sm text-gray-600 mb-3">
-                      {selectedJob ? `Select up to ${selectedJob.max_countries_selectable} ${selectedJob.max_countries_selectable === 1 ? 'country' : 'countries'}` : 'Select your preferred countries'}
-                    </p>
-                    
-                    <div className="space-y-3">
-                      <select
-                        onChange={(e) => {
-                          const country = e.target.value;
-                          if (country && !tradeData.countries_preference.includes(country)) {
-                            toggleCountryPreference(country);
-                          }
-                          e.target.value = '';
-                        }}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                      >
-                        <option value="">Add a country...</option>
-                        {availableCountries.filter(c => !tradeData.countries_preference.includes(c)).map(countryName => (
-                          <option key={countryName} value={countryName}>{countryName}</option>
-                        ))}
-                      </select>
-                      
-                      {tradeData.countries_preference.length > 0 && (
-                        <div className="space-y-2">
-                          <p className="text-sm font-medium text-gray-700">Selected Countries:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {tradeData.countries_preference.map(country => (
-                              <div key={country} className="flex items-center gap-2 bg-[#00A6CE] text-white px-3 py-1 rounded-full">
-                                <span className="text-sm">{country}</span>
-                                <button
-                                  type="button"
-                                  onClick={() => toggleCountryPreference(country)}
-                                  className="hover:bg-white hover:text-[#00A6CE] rounded-full w-5 h-5 flex items-center justify-center"
-                                >
-                                  ×
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="border-t pt-4">
-                    <h3 className="text-lg font-semibold mb-3">Trade / Specialization Preferences *</h3>
-                    <p className="text-sm text-gray-600 mb-3">
-                      {selectedJob ? `Select up to ${selectedJob.max_trades_selectable} ${selectedJob.max_trades_selectable === 1 ? 'trade' : 'trades'}` : 'Select your preferred trades'}
-                    </p>
-                    
-                    <div className="space-y-3">
-                      <select
-                        onChange={(e) => {
-                          const trade = e.target.value;
-                          if (trade && !tradeData.trades_preference.includes(trade)) {
-                            toggleTradePreference(trade);
-                          }
-                          e.target.value = '';
-                        }}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                      >
-                        <option value="">Add a trade...</option>
-                        {availableTrades.filter(t => !tradeData.trades_preference.includes(t)).map(trade => (
-                          <option key={trade} value={trade}>{trade}</option>
-                        ))}
-                      </select>
-                      
-                      {tradeData.trades_preference.length > 0 && (
-                        <div className="space-y-2">
-                          <p className="text-sm font-medium text-gray-700">Selected Trades:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {tradeData.trades_preference.map(trade => (
-                              <div key={trade} className="flex items-center gap-2 bg-[#00A6CE] text-white px-3 py-1 rounded-full">
-                                <span className="text-sm">{trade}</span>
-                                <button
-                                  type="button"
-                                  onClick={() => toggleTradePreference(trade)}
-                                  className="hover:bg-white hover:text-[#00A6CE] rounded-full w-5 h-5 flex items-center justify-center"
-                                >
-                                  ×
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-6">
+                <div className="border-t pt-6">
+                  <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+                  <div className="grid gap-4 max-w-md">
                     <div>
-                      <label className="block text-sm font-medium mb-2">Availability To Join *</label>
-                      <select
-                        value={tradeData.availability_to_join}
-                        onChange={(e) => setTradeData({ ...tradeData, availability_to_join: e.target.value })}
+                      <label className="block text-sm font-medium mb-2">Current Password *</label>
+                      <input
+                        type="password"
+                        value={passwordData.currentPassword}
+                        onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                        required
-                      >
-                        <option value="">Select</option>
-                        <option value="Immediately">Immediately</option>
-                        <option value="Within 1 month">Within 1 month</option>
-                        <option value="Within 3 months">Within 3 months</option>
-                        <option value="Within 6 months">Within 6 months</option>
-                      </select>
+                        placeholder="••••••••••"
+                      />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">Willingness To Relocate (Yes/No) *</label>
-                      <select
-                        value={tradeData.willingness_to_relocate}
-                        onChange={(e) => setTradeData({ ...tradeData, willingness_to_relocate: e.target.value })}
+                      <label className="block text-sm font-medium mb-2">New Password *</label>
+                      <input
+                        type="password"
+                        value={passwordData.newPassword}
+                        onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                        required
+                        placeholder="••••••••••"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Confirm New Password *</label>
+                      <input
+                        type="password"
+                        value={passwordData.confirmPassword}
+                        onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                        placeholder="••••••••••"
+                      />
+                    </div>
+                    <div>
+                      <button
+                        onClick={handlePasswordSubmit}
+                        className="bg-[#0B7A9F] hover:bg-[#096685] text-white px-6 py-2 rounded-lg"
                       >
-                        <option value="">Select</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                      </select>
+                        Update Password
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             )}
+          </div>
 
-            {currentStep === 2 && (
-              <div>
-                <h2 className="text-xl font-bold mb-6">Personal Information</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  <div><label className="block text-sm font-medium mb-2">First Name *</label><input type="text" value={personalData.first_name} onChange={(e) => setPersonalData({ ...personalData, first_name: e.target.value })} pattern="[a-zA-Z\s]+" title="Only letters allowed" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
-                  <div><label className="block text-sm font-medium mb-2">Last Name *</label><input type="text" value={personalData.last_name} onChange={(e) => setPersonalData({ ...personalData, last_name: e.target.value })} pattern="[a-zA-Z\s]+" title="Only letters allowed" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
-                  <div><label className="block text-sm font-medium mb-2">Father's/Husband's Name *</label><input type="text" value={personalData.father_husband_name} onChange={(e) => setPersonalData({ ...personalData, father_husband_name: e.target.value })} pattern="[a-zA-Z\s]+" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
-                  <div><label className="block text-sm font-medium mb-2">Marital Status *</label><select value={personalData.marital_status} onChange={(e) => setPersonalData({ ...personalData, marital_status: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required><option value="">Select</option><option value="Single">Single</option><option value="Married">Married</option><option value="Divorced">Divorced</option><option value="Widowed">Widowed</option></select></div>
-                  <div><label className="block text-sm font-medium mb-2">Gender *</label><select value={personalData.gender} onChange={(e) => setPersonalData({ ...personalData, gender: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required><option value="">Select</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
-                  <div><label className="block text-sm font-medium mb-2">Religion</label><select value={personalData.religion} onChange={(e) => setPersonalData({ ...personalData, religion: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"><option value="">Select</option><option value="Islam">Islam</option><option value="Christianity">Christianity</option><option value="Hinduism">Hinduism</option><option value="Buddhism">Buddhism</option><option value="Other">Other</option></select></div>
-                  <div><label className="block text-sm font-medium mb-2">Date Of Birth *</label><input type="date" value={personalData.date_of_birth} onChange={(e) => setPersonalData({ ...personalData, date_of_birth: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
-                  <div><label className="block text-sm font-medium mb-2">Place Of Birth</label><input type="text" value={personalData.place_of_birth} onChange={(e) => setPersonalData({ ...personalData, place_of_birth: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Province</label><input type="text" value={personalData.province} onChange={(e) => setPersonalData({ ...personalData, province: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Country *</label><select value={personalData.country} onChange={(e) => setPersonalData({ ...personalData, country: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required><option value="">Select Country</option>{countries.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}</select></div>
-                  <div><label className="block text-sm font-medium mb-2">CNIC</label><input type="text" value={personalData.cnic} onChange={(e) => setPersonalData({ ...personalData, cnic: e.target.value })} placeholder="12345-1234567-1" pattern="\d{5}-\d{7}-\d{1}" title="Format: 12345-1234567-1" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Passport Number *</label><input type="text" value={personalData.passport_number} onChange={(e) => setPersonalData({ ...personalData, passport_number: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
-                  <div><label className="block text-sm font-medium mb-2">Mobile No *</label><input type="tel" value={personalData.mobile_no} onChange={(e) => setPersonalData({ ...personalData, mobile_no: e.target.value })} placeholder="+92 300 1234567" pattern="\+\d{1,4}\d{6,14}" title="Include country code" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
-                  <div><label className="block text-sm font-medium mb-2">Email Address *</label><input type="email" value={personalData.email_address} onChange={(e) => setPersonalData({ ...personalData, email_address: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" required /></div>
-                </div>
-              </div>
-            )}
-
-            {currentStep === 3 && (
-              <div>
-                <h2 className="text-xl font-bold mb-6">Professional Details</h2>
-                {experiences.length > 0 && (
-                  <div className="mb-6 overflow-x-auto">
-                    <table className="w-full border">
-                      <thead className="bg-[#E8F4F8]">
-                        <tr>
-                          <th className="p-2 text-left text-xs">Job Title</th>
-                          <th className="p-2 text-left text-xs">Employer / Hospital Name</th>
-                          <th className="p-2 text-left text-xs">Specialization</th>
-                          <th className="p-2 text-left text-xs">From</th>
-                          <th className="p-2 text-left text-xs">To</th>
-                          <th className="p-2 text-left text-xs">Total Experience</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {experiences.map(exp => (
-                          <tr key={exp.id}><td className="p-2 text-sm">{exp.job_title}</td><td className="p-2 text-sm">{exp.employer_hospital}</td><td className="p-2 text-sm">{exp.specialization}</td><td className="p-2 text-sm">{exp.from_date}</td><td className="p-2 text-sm">{exp.to_date}</td><td className="p-2 text-sm">{exp.total_experience}</td></tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div><label className="block text-sm font-medium mb-2">Job Title</label><input type="text" placeholder="Current Job Title" value={newExperience.job_title} onChange={(e) => setNewExperience({ ...newExperience, job_title: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Employer / Hospital</label><input type="text" placeholder="Current Employer / Hospital" value={newExperience.employer_hospital} onChange={(e) => setNewExperience({ ...newExperience, employer_hospital: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Specialization</label><input type="text" placeholder="ICU Nurse" value={newExperience.specialization} onChange={(e) => setNewExperience({ ...newExperience, specialization: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Total Years Of Experience</label><input type="text" placeholder="X Years" value={newExperience.total_experience} onChange={(e) => setNewExperience({ ...newExperience, total_experience: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                </div>
-                <div className="flex justify-end mb-4"><Button onClick={addExperience} className="bg-[#00A6CE] hover:bg-[#0090B5] text-white">Add Experience</Button></div>
-              </div>
-            )}
-
-            {currentStep === 4 && (
-              <div>
-                <h2 className="text-xl font-bold mb-6">Education & Certifications</h2>
-                {educations.length > 0 && (
-                  <div className="mb-6 overflow-x-auto">
-                    <table className="w-full border">
-                      <thead className="bg-[#E8F4F8]">
-                        <tr>
-                          <th className="p-2 text-left text-xs">Degree/Diploma Title</th>
-                          <th className="p-2 text-left text-xs">University/Institute Name</th>
-                          <th className="p-2 text-left text-xs">Graduation Year</th>
-                          <th className="p-2 text-left text-xs">Program Duration</th>
-                          <th className="p-2 text-left text-xs">Registration Number</th>
-                          <th className="p-2 text-left text-xs">Marks/Percentage</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {educations.map(edu => (
-                          <tr key={edu.id}><td className="p-2 text-sm">{edu.degree_diploma_title}</td><td className="p-2 text-sm">{edu.university_institute_name}</td><td className="p-2 text-sm">{edu.graduation_year}</td><td className="p-2 text-sm">{edu.program_duration}</td><td className="p-2 text-sm">{edu.registration_number}</td><td className="p-2 text-sm">{edu.marks_percentage}</td></tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div><label className="block text-sm font-medium mb-2">Degree/Diploma Title</label><input type="text" placeholder="BSc Nursing" value={newEducation.degree_diploma_title} onChange={(e) => setNewEducation({ ...newEducation, degree_diploma_title: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">University/Institute Name</label><input type="text" placeholder="University/Institute Name" value={newEducation.university_institute_name} onChange={(e) => setNewEducation({ ...newEducation, university_institute_name: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Graduation Year</label><input type="text" placeholder="Graduation Year" value={newEducation.graduation_year} onChange={(e) => setNewEducation({ ...newEducation, graduation_year: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Program Duration</label><input type="text" placeholder="4 Years" value={newEducation.program_duration} onChange={(e) => setNewEducation({ ...newEducation, program_duration: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">License/Registration Number</label><input type="text" placeholder="LXXXXXXXXX" value={newEducation.registration_number} onChange={(e) => setNewEducation({ ...newEducation, registration_number: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Marks/Percentage</label><input type="text" placeholder="70%" value={newEducation.marks_percentage} onChange={(e) => setNewEducation({ ...newEducation, marks_percentage: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                </div>
-                <div className="flex justify-end mb-4"><Button onClick={addEducation} className="bg-[#00A6CE] hover:bg-[#0090B5] text-white">Add Education</Button></div>
-              </div>
-            )}
-
-            {currentStep === 5 && (
-              <div>
-                <h2 className="text-xl font-bold mb-6">Document Uploads (file attachments)</h2>
-                <div className="grid grid-cols-2 gap-6">
-                  <div><label className="block text-sm font-medium mb-2">Updated CV/Resume (PDF)</label><input type="text" placeholder="Document URL" value={documents.cv_resume_url} onChange={(e) => setDocuments({ ...documents, cv_resume_url: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Passport</label><input type="text" placeholder="Document URL" value={documents.passport_url} onChange={(e) => setDocuments({ ...documents, passport_url: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Degree/Diploma Certificates</label><input type="text" placeholder="Document URL" value={documents.degree_certificates_url} onChange={(e) => setDocuments({ ...documents, degree_certificates_url: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Professional License / Registration Certificate</label><input type="text" placeholder="Document URL" value={documents.license_certificate_url} onChange={(e) => setDocuments({ ...documents, license_certificate_url: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">IELTS/OET Certificate (If Applicable)</label><input type="text" placeholder="Document URL" value={documents.ielts_oet_certificate_url} onChange={(e) => setDocuments({ ...documents, ielts_oet_certificate_url: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                  <div><label className="block text-sm font-medium mb-2">Experience Letters (From Previous Employers)</label><input type="text" placeholder="Document URL" value={documents.experience_letters_url} onChange={(e) => setDocuments({ ...documents, experience_letters_url: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]" /></div>
-                </div>
-                <div className="mt-6">
-                  <label className="flex items-center gap-2 mb-2"><input type="checkbox" className="w-4 h-4" /><span className="text-sm">I Confirm That The Information Provided Is Accurate And All Documents Uploaded Are Authentic.</span></label>
-                  <label className="flex items-center gap-2"><input type="checkbox" className="w-4 h-4" /><span className="text-sm">I Agree To The Terms & Conditions Of Duke Consultancy.</span></label>
-                </div>
-              </div>
-            )}
-
-            <div className="flex justify-between mt-8">
-              <Button
-                onClick={() => currentStep > 0 ? setCurrentStep(currentStep - 1) : setLocation('/candidate/dashboard')}
-                className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 rounded-full px-8"
-              >
-                {currentStep === 0 ? 'Back To Dashboard' : 'Previous'}
-              </Button>
-              <div className="flex gap-4">
-                <Button 
-                  onClick={() => setLocation('/candidate/dashboard')}
-                  className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 rounded-full px-8"
-                >
-                  Save & Close
-                </Button>
-                <Button
-                  onClick={() => {
-                    if (currentStep === 0) setCurrentStep(1);
-                    else if (currentStep === 1) handleTradeSubmit();
-                    else if (currentStep === 2) handlePersonalSubmit();
-                    else if (currentStep === 3) setCurrentStep(4);
-                    else if (currentStep === 4) setCurrentStep(5);
-                    else if (currentStep === 5) handleDocumentsSubmit();
-                  }}
-                  className="bg-[#0B7A9F] hover:bg-[#096685] text-white rounded-full px-8"
-                >
-                  {currentStep === 5 ? 'Submit' : 'Next'}
-                </Button>
-              </div>
-            </div>
+          <div className="flex justify-center mt-6">
+            <Button 
+              onClick={() => setLocation('/candidate/dashboard')}
+              className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 rounded-full px-8"
+            >
+              Back To Dashboard
+            </Button>
           </div>
         </div>
       </div>
