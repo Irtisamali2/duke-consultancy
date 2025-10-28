@@ -141,25 +141,25 @@ export const HomePage = () => {
                     we know your home is more than just a place to live, that's why we're committed to providing the best home loan
                   </p>
                 </div>
-                <div className="relative min-h-[280px] overflow-visible">
+                <div className="relative min-h-[260px] overflow-visible">
                   {/* Background Circle - Behind everything, on the left */}
                   <img
                     src="/Ellipse 1328 (2)_1760621468329.png"
                     alt=""
-                    className="absolute -left-16 top-1/2 -translate-y-1/2 w-[280px] h-auto z-0 opacity-60"
+                    className="absolute -left-12 top-1/2 -translate-y-1/2 w-[240px] h-auto z-0 opacity-60"
                   />
                   {/* Number - On top of circle, on the left */}
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 text-[80px] font-bold text-gray-200/70 leading-none z-10">01</div>
+                  <div className="absolute left-2 top-1/2 -translate-y-1/2 text-[64px] font-bold text-gray-200/70 leading-none z-10">01</div>
                   {/* White Card - Smaller width for mobile, RIGHT-ALIGNED */}
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-6 w-[260px] z-20">
-                    <h4 className="text-base font-semibold text-gray-900 mb-5 text-center">Register Online</h4>
-                    <div className="space-y-3">
-                      <div className="h-2 bg-gray-200 rounded-full"></div>
-                      <div className="h-2 bg-gray-200 rounded-full"></div>
-                      <div className="h-2 bg-gray-200 rounded-full"></div>
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-5 w-[230px] z-20">
+                    <h4 className="text-sm font-semibold text-gray-900 mb-4 text-center">Register Online</h4>
+                    <div className="space-y-2.5">
+                      <div className="h-1.5 bg-gray-200 rounded-full"></div>
+                      <div className="h-1.5 bg-gray-200 rounded-full"></div>
+                      <div className="h-1.5 bg-gray-200 rounded-full"></div>
                     </div>
-                    <div className="mt-6 flex justify-center">
-                      <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-8 py-2.5 rounded-full text-sm font-medium">
+                    <div className="mt-5 flex justify-center">
+                      <Button className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-7 py-2 rounded-full text-xs font-medium">
                         Sign up
                       </Button>
                     </div>
@@ -210,28 +210,28 @@ export const HomePage = () => {
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
-                <div className="relative min-h-[240px] overflow-visible">
+                <div className="relative min-h-[220px] overflow-visible">
                   {/* Background Circle - Behind everything, on the left */}
                   <img
                     src="/Ellipse 1328 (1)_1760621468329.png"
                     alt=""
-                    className="absolute -left-16 top-1/2 -translate-y-1/2 w-[280px] h-auto z-0 opacity-60"
+                    className="absolute -left-12 top-1/2 -translate-y-1/2 w-[240px] h-auto z-0 opacity-60"
                   />
                   {/* Number - On top of circle, on the left */}
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 text-[80px] font-bold text-gray-200/70 leading-none z-10">02</div>
+                  <div className="absolute left-2 top-1/2 -translate-y-1/2 text-[64px] font-bold text-gray-200/70 leading-none z-10">02</div>
                   {/* White Card - Smaller width for mobile, RIGHT-ALIGNED */}
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-6 w-[260px] z-20">
-                    <h4 className="text-base font-semibold text-gray-900 mb-5 text-center">Search</h4>
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-5 w-[230px] z-20">
+                    <h4 className="text-sm font-semibold text-gray-900 mb-4 text-center">Search</h4>
                     <div className="relative">
                       <input
                         type="text"
                         placeholder="Search services"
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-400"
+                        className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-xs placeholder-gray-400"
                         readOnly
                       />
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-                        <div className="w-px h-5 bg-gray-300"></div>
-                        <svg className="w-4 h-4 text-[#00A6CE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                        <div className="w-px h-4 bg-gray-300"></div>
+                        <svg className="w-3.5 h-3.5 text-[#00A6CE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                       </div>
@@ -286,20 +286,20 @@ export const HomePage = () => {
                     It's about you and your family, having a comfortable payment, exceptional service and a lender.
                   </p>
                 </div>
-                <div className="relative min-h-[220px] overflow-visible">
+                <div className="relative min-h-[200px] overflow-visible">
                   {/* Background Circle - Behind everything, on the left */}
                   <img
                     src="/Ellipse 1328_1760621468330.png"
                     alt=""
-                    className="absolute -left-16 top-1/2 -translate-y-1/2 w-[280px] h-auto z-0 opacity-60"
+                    className="absolute -left-12 top-1/2 -translate-y-1/2 w-[240px] h-auto z-0 opacity-60"
                   />
                   {/* Number - On top of circle, on the left */}
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 text-[80px] font-bold text-gray-200/70 leading-none z-10">03</div>
+                  <div className="absolute left-2 top-1/2 -translate-y-1/2 text-[64px] font-bold text-gray-200/70 leading-none z-10">03</div>
                   {/* White Card - Smaller width for mobile, RIGHT-ALIGNED */}
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-8 w-[260px] z-20 flex justify-center gap-4">
-                    <div className="text-3xl">😮</div>
-                    <div className="text-3xl">😠</div>
-                    <div className="text-3xl">❤️</div>
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-6 w-[230px] z-20 flex justify-center gap-3">
+                    <div className="text-2xl">😮</div>
+                    <div className="text-2xl">😠</div>
+                    <div className="text-2xl">❤️</div>
                   </div>
                 </div>
               </div>
@@ -338,28 +338,28 @@ export const HomePage = () => {
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
-                <div className="relative min-h-[240px] overflow-visible">
+                <div className="relative min-h-[220px] overflow-visible">
                   {/* Background Circle - Behind everything, on the left */}
                   <img
                     src="/Ellipse 1328 (2)_1760621468329.png"
                     alt=""
-                    className="absolute -left-16 top-1/2 -translate-y-1/2 w-[280px] h-auto z-0 opacity-60"
+                    className="absolute -left-12 top-1/2 -translate-y-1/2 w-[240px] h-auto z-0 opacity-60"
                   />
                   {/* Number - On top of circle, on the left */}
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 text-[80px] font-bold text-gray-200/70 leading-none z-10">04</div>
+                  <div className="absolute left-2 top-1/2 -translate-y-1/2 text-[64px] font-bold text-gray-200/70 leading-none z-10">04</div>
                   {/* White Card - Smaller width for mobile, RIGHT-ALIGNED */}
-                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-6 w-[260px] z-20">
-                    <h4 className="text-base font-semibold text-gray-900 mb-5 text-center">Search</h4>
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-5 w-[230px] z-20">
+                    <h4 className="text-sm font-semibold text-gray-900 mb-4 text-center">Search</h4>
                     <div className="relative">
                       <input
                         type="text"
                         placeholder="Search services"
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-400"
+                        className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-xs placeholder-gray-400"
                         readOnly
                       />
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-                        <div className="w-px h-5 bg-gray-300"></div>
-                        <svg className="w-4 h-4 text-[#00A6CE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                        <div className="w-px h-4 bg-gray-300"></div>
+                        <svg className="w-3.5 h-3.5 text-[#00A6CE]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                       </div>
