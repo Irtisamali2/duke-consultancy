@@ -1,6 +1,7 @@
 import express from 'express';
 import db from '../db.js';
 import { requireAuth } from '../middleware/auth.js';
+import emailService from '../services/emailService.js';
 
 const router = express.Router();
 
@@ -79,10 +80,32 @@ router.patch('/applications/:id/status', requireAuth, async (req, res) => {
   try {
     const { status } = req.body;
     
+    const [appData] = await db.query(`
+      SELECT a.*, c.email, hp.first_name, hp.last_name, hp.trade_applied_for
+      FROM applications a
+      LEFT JOIN candidates c ON a.candidate_id = c.id
+      LEFT JOIN healthcare_profiles hp ON c.id = hp.candidate_id
+      WHERE a.id = ?
+    `, [req.params.id]);
+
+    if (appData.length === 0) {
+      return res.status(404).json({ success: false, message: 'Application not found' });
+    }
+
     await db.query(
       'UPDATE applications SET status = ? WHERE id = ?',
       [status, req.params.id]
     );
+
+    const app = appData[0];
+    if (app.email && (status === 'verified' || status === 'approved' || status === 'rejected')) {
+      emailService.sendStatusChangeEmail(app.email, status, {
+        candidate_name: `${app.first_name || ''} ${app.last_name || ''}`.trim() || 'Valued Candidate',
+        application_id: String(app.id).padStart(4, '0'),
+        updated_date: new Date().toLocaleDateString(),
+        remarks: app.remarks || ''
+      }).catch(err => console.error('Email send failed:', err));
+    }
     
     res.json({ success: true, message: 'Status updated successfully' });
   } catch (error) {

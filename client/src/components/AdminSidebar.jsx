@@ -8,6 +8,8 @@ export default function AdminSidebar({ admin, onLogout }) {
     { path: '/admin/jobs', label: 'Job Management', icon: '💼' },
     { path: '/admin/applications', label: 'Applications Management', icon: '📝' },
     { path: '/admin/blogs', label: 'Blogs', icon: '📰' },
+    { path: '/admin/email-settings', label: 'Email Settings', icon: '📧' },
+    { path: '/admin/email-templates', label: 'Email Templates', icon: '✉️' },
     { path: '/admin/profile', label: 'My Profile', icon: '👤' },
   ];
 

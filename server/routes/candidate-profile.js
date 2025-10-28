@@ -1,6 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import db from '../db.js';
+import emailService from '../services/emailService.js';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
@@ -184,10 +185,25 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
       });
     }
 
-    await db.query(
+    const [result] = await db.query(
       'INSERT INTO applications (candidate_id, job_id, applied_date, status) VALUES (?, ?, NOW(), ?)',
       [req.candidateId, job_id || null, 'pending']
     );
+
+    const [candidate] = await db.query('SELECT email FROM candidates WHERE id = ?', [req.candidateId]);
+    const [profile] = await db.query('SELECT first_name, last_name, trade_applied_for FROM healthcare_profiles WHERE candidate_id = ?', [req.candidateId]);
+
+    if (candidate.length > 0 && profile.length > 0) {
+      const candidateData = candidate[0];
+      const profileData = profile[0];
+      
+      emailService.sendApplicationReceivedEmail(candidateData.email, {
+        candidate_name: `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim() || 'Valued Candidate',
+        application_id: String(result.insertId).padStart(4, '0'),
+        trade: profileData.trade_applied_for || 'Healthcare Professional',
+        submitted_date: new Date().toLocaleDateString()
+      }).catch(err => console.error('Email send failed:', err));
+    }
 
     res.json({ success: true, message: 'Application submitted successfully' });
   } catch (error) {

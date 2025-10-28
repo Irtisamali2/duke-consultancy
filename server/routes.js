@@ -11,6 +11,7 @@ import blogsRoutes from "./routes/blogs.js";
 import statsRoutes from "./routes/stats.js";
 import candidateAuthRoutes from "./routes/candidate-auth.js";
 import candidateProfileRoutes from "./routes/candidate-profile.js";
+import emailSettingsRoutes from "./routes/email-settings.js";
 
 export async function registerRoutes(app) {
   // Database test routes
@@ -28,6 +29,7 @@ export async function registerRoutes(app) {
   app.use('/api', healthcareProfilesRoutes);
   app.use('/api', blogsRoutes);
   app.use('/api', statsRoutes);
+  app.use('/api', emailSettingsRoutes);
   
   // Candidate routes
   app.use('/api', candidateProfileRoutes);
