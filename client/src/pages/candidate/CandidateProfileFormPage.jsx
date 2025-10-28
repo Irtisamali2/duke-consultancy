@@ -13,6 +13,9 @@ export default function CandidateProfileFormPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [selectedJobId, setSelectedJobId] = useState('');
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [availableCountries, setAvailableCountries] = useState([]);
+  const [availableTrades, setAvailableTrades] = useState([]);
   
   const [accountData, setAccountData] = useState({
     firstName: '',
@@ -30,7 +33,9 @@ export default function CandidateProfileFormPage() {
   const [tradeData, setTradeData] = useState({
     trade_applied_for: '',
     availability_to_join: '',
-    willingness_to_relocate: ''
+    willingness_to_relocate: '',
+    countries_preference: [],
+    trades_preference: []
   });
   
   const [personalData, setPersonalData] = useState({
@@ -65,15 +70,47 @@ export default function CandidateProfileFormPage() {
     fetchJobs();
   }, []);
   
+  useEffect(() => {
+    if (selectedJobId) {
+      fetchJobDetails();
+    } else {
+      setAvailableCountries(countries.map(c => c.name));
+      setAvailableTrades(tradeOptions);
+      setSelectedJob(null);
+    }
+  }, [selectedJobId]);
+  
   const fetchJobs = async () => {
     try {
-      const response = await fetch('/api/jobs');
+      const response = await fetch('/api/jobs/public');
       const data = await response.json();
       if (data.success) {
-        setJobs(data.jobs.filter(j => j.status === 'active'));
+        setJobs(data.jobs);
       }
     } catch (error) {
       console.error('Failed to fetch jobs:', error);
+    }
+  };
+  
+  const fetchJobDetails = async () => {
+    try {
+      const response = await fetch(`/api/jobs/public/${selectedJobId}`);
+      const data = await response.json();
+      if (data.success) {
+        const job = data.job;
+        const jobCountries = job.countries ? JSON.parse(job.countries) : [];
+        const jobTrades = job.trades ? JSON.parse(job.trades) : [];
+        
+        setSelectedJob({
+          ...job,
+          countries: jobCountries,
+          trades: jobTrades
+        });
+        setAvailableCountries(jobCountries);
+        setAvailableTrades(jobTrades);
+      }
+    } catch (error) {
+      console.error('Failed to fetch job details:', error);
     }
   };
 
@@ -106,10 +143,15 @@ export default function CandidateProfileFormPage() {
       const data = await response.json();
       if (data.success) {
         if (data.profile) {
+          const countriesPref = data.profile.countries_preference ? JSON.parse(data.profile.countries_preference) : [];
+          const tradesPref = data.profile.trades_preference ? JSON.parse(data.profile.trades_preference) : [];
+          
           setTradeData({
             trade_applied_for: data.profile.trade_applied_for || '',
             availability_to_join: data.profile.availability_to_join || '',
-            willingness_to_relocate: data.profile.willingness_to_relocate || ''
+            willingness_to_relocate: data.profile.willingness_to_relocate || '',
+            countries_preference: countriesPref,
+            trades_preference: tradesPref
           });
           setPersonalData({ ...personalData, ...data.profile });
         }
@@ -179,6 +221,16 @@ export default function CandidateProfileFormPage() {
 
   const handleTradeSubmit = async () => {
     try {
+      if (tradeData.countries_preference.length === 0) {
+        alert('Please select at least one country preference');
+        return;
+      }
+      
+      if (tradeData.trades_preference.length === 0) {
+        alert('Please select at least one trade');
+        return;
+      }
+      
       const response = await fetch('/api/candidate/profile/trade', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -187,6 +239,47 @@ export default function CandidateProfileFormPage() {
       if (response.ok) setCurrentStep(2);
     } catch (error) {
       console.error('Failed to save trade info:', error);
+    }
+  };
+  
+  const toggleCountryPreference = (countryName) => {
+    const maxAllowed = selectedJob ? selectedJob.max_countries_selectable : 10;
+    const current = tradeData.countries_preference;
+    
+    if (current.includes(countryName)) {
+      setTradeData({ 
+        ...tradeData, 
+        countries_preference: current.filter(c => c !== countryName) 
+      });
+    } else if (current.length < maxAllowed) {
+      setTradeData({ 
+        ...tradeData, 
+        countries_preference: [...current, countryName] 
+      });
+    } else {
+      alert(`You can only select up to ${maxAllowed} ${maxAllowed === 1 ? 'country' : 'countries'} for this position`);
+    }
+  };
+  
+  const toggleTradePreference = (trade) => {
+    const maxAllowed = selectedJob ? selectedJob.max_trades_selectable : 10;
+    const current = tradeData.trades_preference;
+    
+    if (current.includes(trade)) {
+      setTradeData({ 
+        ...tradeData, 
+        trades_preference: current.filter(t => t !== trade),
+        trade_applied_for: current.filter(t => t !== trade)[0] || ''
+      });
+    } else if (current.length < maxAllowed) {
+      const newTrades = [...current, trade];
+      setTradeData({ 
+        ...tradeData, 
+        trades_preference: newTrades,
+        trade_applied_for: newTrades[0]
+      });
+    } else {
+      alert(`You can only select up to ${maxAllowed} ${maxAllowed === 1 ? 'trade' : 'trades'} for this position`);
     }
   };
 
@@ -471,19 +564,73 @@ export default function CandidateProfileFormPage() {
                     </p>
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Trade Applied For *</label>
-                    <select
-                      value={tradeData.trade_applied_for}
-                      onChange={(e) => setTradeData({ ...tradeData, trade_applied_for: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                      required
-                    >
-                      <option value="">Select Trade</option>
-                      {tradeOptions.map(trade => (
-                        <option key={trade} value={trade}>{trade}</option>
+                  {selectedJob && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                      <p className="text-sm text-yellow-800">
+                        <strong>Job Details:</strong><br />
+                        <strong>Location:</strong> {selectedJob.location}<br />
+                        <strong>Experience Required:</strong> {selectedJob.experience_required}<br />
+                        <strong>Salary Range:</strong> {selectedJob.salary_range}<br />
+                        <strong>Max Countries You Can Select:</strong> {selectedJob.max_countries_selectable}<br />
+                        <strong>Max Trades You Can Select:</strong> {selectedJob.max_trades_selectable}
+                      </p>
+                    </div>
+                  )}
+                  
+                  <div className="border-t pt-4">
+                    <h3 className="text-lg font-semibold mb-3">Country Preferences *</h3>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Select your preferred {selectedJob ? `${selectedJob.max_countries_selectable === 1 ? 'country' : 'countries'}` : 'countries'} 
+                      {selectedJob && ` (max ${selectedJob.max_countries_selectable})`}
+                    </p>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-4">
+                      {availableCountries.map(countryName => (
+                        <label key={countryName} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                          <input
+                            type="checkbox"
+                            checked={tradeData.countries_preference.includes(countryName)}
+                            onChange={() => toggleCountryPreference(countryName)}
+                            className="w-4 h-4 text-[#00A6CE] focus:ring-[#00A6CE] rounded"
+                          />
+                          <span className="text-sm text-gray-700">{countryName}</span>
+                        </label>
                       ))}
-                    </select>
+                    </div>
+                    
+                    <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
+                      <p className="text-xs text-blue-800">
+                        <strong>Selected ({tradeData.countries_preference.length}):</strong> {tradeData.countries_preference.join(', ') || 'None'}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t pt-4">
+                    <h3 className="text-lg font-semibold mb-3">Trade / Specialization Preferences *</h3>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Select your preferred {selectedJob ? `${selectedJob.max_trades_selectable === 1 ? 'trade' : 'trades'}` : 'trades'} 
+                      {selectedJob && ` (max ${selectedJob.max_trades_selectable})`}
+                    </p>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-4">
+                      {availableTrades.map(trade => (
+                        <label key={trade} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                          <input
+                            type="checkbox"
+                            checked={tradeData.trades_preference.includes(trade)}
+                            onChange={() => toggleTradePreference(trade)}
+                            className="w-4 h-4 text-[#00A6CE] focus:ring-[#00A6CE] rounded"
+                          />
+                          <span className="text-sm text-gray-700">{trade}</span>
+                        </label>
+                      ))}
+                    </div>
+                    
+                    <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
+                      <p className="text-xs text-blue-800">
+                        <strong>Selected ({tradeData.trades_preference.length}):</strong> {tradeData.trades_preference.join(', ') || 'None'}
+                      </p>
+                    </div>
                   </div>
                   <div className="grid grid-cols-2 gap-6">
                     <div>

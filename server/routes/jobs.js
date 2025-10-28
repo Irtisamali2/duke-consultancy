@@ -4,6 +4,41 @@ import { requireAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
+router.get('/jobs/public', async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT id, title, description, location, country, job_type, specialization, 
+             experience_required, salary_range, status, countries, trades, 
+             max_countries_selectable, max_trades_selectable, created_at
+      FROM jobs 
+      WHERE status = 'active'
+      ORDER BY created_at DESC
+    `);
+    res.json({ success: true, jobs: rows });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.get('/jobs/public/:id', async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT id, title, description, location, country, job_type, specialization, 
+             experience_required, salary_range, status, countries, trades, 
+             max_countries_selectable, max_trades_selectable, created_at
+      FROM jobs 
+      WHERE id = ? AND status = 'active'
+    `, [req.params.id]);
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Job not found' });
+    }
+    res.json({ success: true, job: rows[0] });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 router.get('/jobs', requireAuth, async (req, res) => {
   try {
     const [rows] = await db.query(`
