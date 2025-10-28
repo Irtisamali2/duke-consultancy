@@ -143,59 +143,67 @@ export const AboutPage = () => {
       {/* Features Section */}
       <section className="w-full py-10 sm:py-16 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            <div>
-              <img 
-                src="/icon-certification.png" 
-                alt="Certification Icon" 
-                className="w-12 h-12 sm:w-14 sm:h-14 mb-4 sm:mb-5"
-              />
-              <h3 className="text-gray-900 font-bold text-sm sm:text-base mb-2 sm:mb-3 leading-tight">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-8 lg:gap-6">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center">
+                <img 
+                  src="/icon-certification.png" 
+                  alt="Certification Icon" 
+                  className="w-8 h-8 sm:w-10 sm:h-10"
+                />
+              </div>
+              <h3 className="text-gray-900 font-bold text-base sm:text-lg leading-tight">
                 International Certification & Licensing Support
               </h3>
-              <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
                 Expert guidance to help you prepare, qualify, and meet global standards.
               </p>
             </div>
 
-            <div>
-              <img 
-                src="/icon-job-process.png" 
-                alt="Job Process Icon" 
-                className="w-12 h-12 sm:w-14 sm:h-14 mb-4 sm:mb-5"
-              />
-              <h3 className="text-gray-900 font-bold text-sm sm:text-base mb-2 sm:mb-3 leading-tight">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center">
+                <img 
+                  src="/icon-job-process.png" 
+                  alt="Job Process Icon" 
+                  className="w-8 h-8 sm:w-10 sm:h-10"
+                />
+              </div>
+              <h3 className="text-gray-900 font-bold text-base sm:text-lg leading-tight">
                 Streamlined Job Application Process
               </h3>
-              <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
                 We simplify every step, ensuring a smooth and fast application journey.
               </p>
             </div>
 
-            <div>
-              <img 
-                src="/icon-placement.png" 
-                alt="Placement Icon" 
-                className="w-12 h-12 sm:w-14 sm:h-14 mb-4 sm:mb-5"
-              />
-              <h3 className="text-gray-900 font-bold text-sm sm:text-base mb-2 sm:mb-3 leading-tight">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center">
+                <img 
+                  src="/icon-placement.png" 
+                  alt="Placement Icon" 
+                  className="w-8 h-8 sm:w-10 sm:h-10"
+                />
+              </div>
+              <h3 className="text-gray-900 font-bold text-base sm:text-lg leading-tight">
                 Guaranteed Job Placement Pathways
               </h3>
-              <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
                 Access verified global opportunities with trusted healthcare employers.
               </p>
             </div>
 
-            <div>
-              <img 
-                src="/icon-support.png" 
-                alt="Support Icon" 
-                className="w-12 h-12 sm:w-14 sm:h-14 mb-4 sm:mb-5"
-              />
-              <h3 className="text-gray-900 font-bold text-sm sm:text-base mb-2 sm:mb-3 leading-tight">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center">
+                <img 
+                  src="/icon-support.png" 
+                  alt="Support Icon" 
+                  className="w-8 h-8 sm:w-10 sm:h-10"
+                />
+              </div>
+              <h3 className="text-gray-900 font-bold text-base sm:text-lg leading-tight">
                 End-to-End Support & Cultural Readiness
               </h3>
-              <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
                 From visa prep to cultural training, we have got you covered.
               </p>
             </div>
