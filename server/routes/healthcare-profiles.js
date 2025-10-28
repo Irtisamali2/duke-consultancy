@@ -21,13 +21,6 @@ router.get('/healthcare-profiles', requireAuth, async (req, res) => {
         hp.first_name,
         hp.last_name,
         hp.mobile_no,
-        hp.passport_number,
-        hp.trade_applied_for,
-        hp.date_of_birth,
-        hp.nationality,
-        hp.gender,
-        hp.residential_address,
-        hp.mailing_address,
         (SELECT GROUP_CONCAT(degree_diploma_title SEPARATOR ', ') FROM education_records WHERE candidate_id = c.id) as education,
         (SELECT SUM(CAST(SUBSTRING_INDEX(total_experience, ' ', 1) AS UNSIGNED)) FROM work_experience WHERE candidate_id = c.id) as total_experience
       FROM candidates c
@@ -62,6 +55,69 @@ router.get('/healthcare-profiles/:id', requireAuth, async (req, res) => {
       documents: documentsRows[0] || {}
     });
   } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Update healthcare profile (admin only)
+router.put('/healthcare-profiles/:id', requireAuth, async (req, res) => {
+  try {
+    const candidateId = req.params.id;
+    const { email, status, first_name, last_name, mobile_no } = req.body;
+
+    // Update candidates table
+    if (email || status) {
+      const updates = [];
+      const values = [];
+
+      if (email) {
+        updates.push('email = ?');
+        values.push(email);
+      }
+      if (status) {
+        updates.push('status = ?');
+        values.push(status);
+      }
+
+      if (updates.length > 0) {
+        values.push(candidateId);
+        await db.query(
+          `UPDATE candidates SET ${updates.join(', ')} WHERE id = ?`,
+          values
+        );
+      }
+    }
+
+    // Update healthcare_profiles table
+    if (first_name || last_name || mobile_no) {
+      const updates = [];
+      const values = [];
+
+      if (first_name) {
+        updates.push('first_name = ?');
+        values.push(first_name);
+      }
+      if (last_name) {
+        updates.push('last_name = ?');
+        values.push(last_name);
+      }
+      if (mobile_no !== undefined) {
+        updates.push('mobile_no = ?');
+        values.push(mobile_no);
+      }
+
+      if (updates.length > 0) {
+        values.push(candidateId);
+        await db.query(
+          `UPDATE healthcare_profiles SET ${updates.join(', ')} WHERE candidate_id = ?`,
+          values
+        );
+      }
+    }
+
+    res.json({ success: true, message: 'Profile updated successfully' });
+  } catch (error) {
+    console.error('Update error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });

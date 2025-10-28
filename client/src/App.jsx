@@ -21,6 +21,7 @@ import JobFormPage from "@/pages/admin/JobFormPage";
 import ApplicationsPage from "@/pages/admin/ApplicationsPage";
 import ApplicationDetailsPage from "@/pages/admin/ApplicationDetailsPage";
 import HealthcareProfilesPage from "@/pages/admin/HealthcareProfilesPage";
+import HealthcareProfileEditPage from "@/pages/admin/HealthcareProfileEditPage";
 import EmailSettingsPage from "@/pages/admin/EmailSettingsPage";
 import EmailTemplatesPage from "@/pages/admin/EmailTemplatesPage";
 import EmailTemplateEditPage from "@/pages/admin/EmailTemplateEditPage";
@@ -74,7 +75,7 @@ function Router() {
       
       {/* Healthcare Profiles */}
       <Route path="/admin/healthcare-profiles" component={HealthcareProfilesPage} />
-      <Route path="/admin/healthcare-profiles/edit/:id" component={CandidateProfileFormPage} />
+      <Route path="/admin/healthcare-profiles/edit/:id" component={HealthcareProfileEditPage} />
       
       {/* Email Settings */}
       <Route path="/admin/email-settings" component={EmailSettingsPage} />
