@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRoute, useLocation } from 'wouter';
+import DOMPurify from 'isomorphic-dompurify';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 
@@ -50,7 +51,11 @@ export default function BlogDetailPage() {
   };
 
   const renderContent = (content) => {
-    return { __html: content };
+    const sanitizedContent = DOMPurify.sanitize(content, {
+      ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'strong', 'em', 'u', 'a', 'img', 'div', 'span', 'br'],
+      ALLOWED_ATTR: ['href', 'src', 'alt', 'style', 'class', 'target', 'rel']
+    });
+    return { __html: sanitizedContent };
   };
 
   if (loading) {
