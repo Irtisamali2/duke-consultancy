@@ -8,6 +8,7 @@ const SHORTCODES = [
   { code: '{{email}}', label: 'Email Address', desc: 'Candidate email' },
   { code: '{{phone}}', label: 'Phone Number', desc: 'Contact number' },
   { code: '{{application_id}}', label: 'Application ID', desc: 'Unique application ID' },
+  { code: '{{job_title}}', label: 'Job Title', desc: 'Job position applied for' },
   { code: '{{trade}}', label: 'Trade/Profession', desc: 'Applied position' },
   { code: '{{submitted_date}}', label: 'Submission Date', desc: 'When application was submitted' },
   { code: '{{updated_date}}', label: 'Update Date', desc: 'Last update date' },

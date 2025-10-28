@@ -286,6 +286,14 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
 
     const [candidate] = await db.query('SELECT email FROM candidates WHERE id = ?', [req.candidateId]);
     const [profile] = await db.query('SELECT first_name, last_name, trade_applied_for FROM healthcare_profiles WHERE candidate_id = ?', [req.candidateId]);
+    
+    let jobTitle = 'General Application';
+    if (job_id) {
+      const [job] = await db.query('SELECT title FROM jobs WHERE id = ?', [job_id]);
+      if (job.length > 0) {
+        jobTitle = job[0].title;
+      }
+    }
 
     if (candidate.length > 0 && profile.length > 0) {
       const candidateData = candidate[0];
@@ -294,6 +302,7 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
       emailService.sendApplicationReceivedEmail(candidateData.email, {
         candidate_name: `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim() || 'Valued Candidate',
         application_id: String(result.insertId).padStart(4, '0'),
+        job_title: jobTitle,
         trade: profileData.trade_applied_for || 'Healthcare Professional',
         submitted_date: new Date().toLocaleDateString()
       }).catch(err => console.error('Email send failed:', err));
