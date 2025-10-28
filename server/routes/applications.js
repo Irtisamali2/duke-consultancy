@@ -129,10 +129,11 @@ router.patch('/applications/:id/status', requireAuth, async (req, res) => {
     const { status } = req.body;
     
     const [appData] = await db.query(`
-      SELECT a.*, c.email, hp.first_name, hp.last_name, hp.trade_applied_for
+      SELECT a.*, c.email, hp.first_name, hp.last_name, hp.trade_applied_for, j.title as job_title
       FROM applications a
       LEFT JOIN candidates c ON a.candidate_id = c.id
       LEFT JOIN healthcare_profiles hp ON c.id = hp.candidate_id
+      LEFT JOIN jobs j ON a.job_id = j.id
       WHERE a.id = ?
     `, [req.params.id]);
 
@@ -151,6 +152,7 @@ router.patch('/applications/:id/status', requireAuth, async (req, res) => {
       emailService.sendStatusChangeEmail(app.email, status, {
         candidate_name: `${app.first_name || ''} ${app.last_name || ''}`.trim() || 'Valued Candidate',
         application_id: String(app.id).padStart(4, '0'),
+        job_title: app.job_title || 'General Application',
         updated_date: new Date().toLocaleDateString(),
         remarks: app.remarks || ''
       }).catch(err => console.error('Email send failed:', err));
