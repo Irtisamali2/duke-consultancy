@@ -1,14 +1,23 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import path from "path";
+import { fileURLToPath } from "url";
 import { registerRoutes } from "./routes.js";
 import { setupVite, serveStatic, log } from "./vite.js";
 import { migrateBlogsTable } from "./migrations/migrate-blogs.js";
 import { addAuditLogging } from "./migrations/add-audit-logging.js";
+import { addTagsColumn } from "./migrations/add-tags-column.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -44,6 +53,7 @@ app.use((req, res, next) => {
   // Run database migrations
   await migrateBlogsTable();
   await addAuditLogging();
+  await addTagsColumn();
   
   const server = await registerRoutes(app);
 

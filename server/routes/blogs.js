@@ -68,15 +68,19 @@ router.get('/blogs/admin/:id', requireAuth, async (req, res) => {
 
 router.post('/blogs', requireAuth, async (req, res) => {
   try {
-    const { title, content, excerpt, featured_image, author, category, tags, status } = req.body;
+    const { title, content, excerpt, featured_image, author, category, categories, tags, status } = req.body;
     
     const publishedDate = status === 'published' ? new Date() : null;
     const now = new Date();
     
+    // Handle both single category and multiple categories
+    const categoriesValue = categories || category || '';
+    const tagsValue = tags || '';
+    
     const [result] = await db.query(
-      `INSERT INTO blogs (title, content, excerpt, featured_image, author, category, tags, status, created_by, published_date, modified_at, modified_by, modified_by_type) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'admin')`,
-      [title, content, excerpt, featured_image, author, category, tags, status || 'draft', req.admin.id, publishedDate, now, req.admin.id]
+      `INSERT INTO blogs (title, content, excerpt, featured_image, author, category, categories, tags, status, created_by, published_date, modified_at, modified_by, modified_by_type) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'admin')`,
+      [title, content, excerpt, featured_image, author, category || '', categoriesValue, tagsValue, status || 'draft', req.admin.id, publishedDate, now, req.admin.id]
     );
     
     res.json({ success: true, message: 'Blog created successfully', id: result.insertId });
@@ -87,7 +91,7 @@ router.post('/blogs', requireAuth, async (req, res) => {
 
 router.put('/blogs/:id', requireAuth, async (req, res) => {
   try {
-    const { title, content, excerpt, featured_image, author, category, tags, status } = req.body;
+    const { title, content, excerpt, featured_image, author, category, categories, tags, status } = req.body;
     
     const [currentRows] = await db.query('SELECT status FROM blogs WHERE id = ?', [req.params.id]);
     const currentStatus = currentRows[0]?.status;
@@ -95,15 +99,19 @@ router.put('/blogs/:id', requireAuth, async (req, res) => {
     const publishedDate = (status === 'published' && currentStatus !== 'published') ? new Date() : undefined;
     const now = new Date();
     
+    // Handle both single category and multiple categories
+    const categoriesValue = categories || category || '';
+    const tagsValue = tags || '';
+    
     if (publishedDate !== undefined) {
       await db.query(
-        `UPDATE blogs SET title = ?, content = ?, excerpt = ?, featured_image = ?, author = ?, category = ?, tags = ?, status = ?, published_date = ?, modified_at = ?, modified_by = ?, modified_by_type = 'admin' WHERE id = ?`,
-        [title, content, excerpt, featured_image, author, category, tags, status, publishedDate, now, req.admin.id, req.params.id]
+        `UPDATE blogs SET title = ?, content = ?, excerpt = ?, featured_image = ?, author = ?, category = ?, categories = ?, tags = ?, status = ?, published_date = ?, modified_at = ?, modified_by = ?, modified_by_type = 'admin' WHERE id = ?`,
+        [title, content, excerpt, featured_image, author, category || '', categoriesValue, tagsValue, status, publishedDate, now, req.admin.id, req.params.id]
       );
     } else {
       await db.query(
-        `UPDATE blogs SET title = ?, content = ?, excerpt = ?, featured_image = ?, author = ?, category = ?, tags = ?, status = ?, modified_at = ?, modified_by = ?, modified_by_type = 'admin' WHERE id = ?`,
-        [title, content, excerpt, featured_image, author, category, tags, status, now, req.admin.id, req.params.id]
+        `UPDATE blogs SET title = ?, content = ?, excerpt = ?, featured_image = ?, author = ?, category = ?, categories = ?, tags = ?, status = ?, modified_at = ?, modified_by = ?, modified_by_type = 'admin' WHERE id = ?`,
+        [title, content, excerpt, featured_image, author, category || '', categoriesValue, tagsValue, status, now, req.admin.id, req.params.id]
       );
     }
     

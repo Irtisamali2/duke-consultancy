@@ -11,6 +11,7 @@ export default function BlogFormPage() {
   const isEdit = params?.action === 'edit';
   const blogId = params?.id;
   const quillRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -18,29 +19,21 @@ export default function BlogFormPage() {
     excerpt: '',
     featured_image: '',
     author: '',
-    category: '',
+    categories: '',
     tags: '',
     status: 'draft'
   });
   
   const [categories, setCategories] = useState([]);
-  const [admins, setAdmins] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [tagsModified, setTagsModified] = useState(false); // Track if tags have been modified
+  const [tagInput, setTagInput] = useState('');
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
-
-  const [showBlockEditor, setShowBlockEditor] = useState(false);
-  const [selectedBlock, setSelectedBlock] = useState({
-    type: 'text',
-    style: 'heading-3',
-    positioning: 'left',
-    color: '#4F46E5',
-    customAttribute: '',
-    textContent: '',
-    textAlign: 'left',
-    isVisible: true,
-    isHidden: false,
-    isAccessible: true
-  });
+  const [imageUploadMode, setImageUploadMode] = useState('url'); // 'url' or 'upload'
+  const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -75,7 +68,7 @@ export default function BlogFormPage() {
       const data = await response.json();
       if (data.success) {
         await fetchCategories();
-        setFormData({ ...formData, category: newCategoryName });
+        setSelectedCategories([...selectedCategories, newCategoryName]);
         setNewCategoryName('');
         setShowNewCategory(false);
       }
@@ -86,13 +79,110 @@ export default function BlogFormPage() {
 
   const fetchBlog = async () => {
     try {
-      const response = await fetch(`/api/blogs/admin/${blogId}`);
+      setLoading(true);
+      const response = await fetch(`/api/blogs/admin/${blogId}`, {
+        credentials: 'include'
+      });
       const data = await response.json();
-      if (data.success) {
-        setFormData(data.blog);
+      if (data.success && data.blog) {
+        const blog = data.blog;
+        setFormData({
+          title: blog.title || '',
+          content: blog.content || '',
+          excerpt: blog.excerpt || '',
+          featured_image: blog.featured_image || '',
+          author: blog.author || '',
+          categories: blog.categories || blog.category || '',
+          tags: blog.tags || '',
+          status: blog.status || 'draft'
+        });
+        
+        // Parse categories - always set even if empty
+        if (blog.categories) {
+          setSelectedCategories(blog.categories.split(',').map(c => c.trim()).filter(Boolean));
+        } else if (blog.category) {
+          setSelectedCategories([blog.category]);
+        } else {
+          setSelectedCategories([]);
+        }
+        
+        // Parse tags - always set even if empty to keep in sync
+        const parsedTags = blog.tags ? blog.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+        setTags(parsedTags);
       }
     } catch (error) {
       console.error('Failed to fetch blog:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCategoryToggle = (categoryName) => {
+    setSelectedCategories(prev => {
+      if (prev.includes(categoryName)) {
+        return prev.filter(c => c !== categoryName);
+      } else {
+        return [...prev, categoryName];
+      }
+    });
+  };
+
+  const handleAddTag = (e) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const newTag = tagInput.trim();
+      if (newTag && !tags.includes(newTag)) {
+        setTags([...tags, newTag]);
+        setTagsModified(true);
+        setTagInput('');
+      }
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
+    setTagsModified(true);
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB');
+      return;
+    }
+
+    // Check file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Only image files (JPEG, PNG, GIF, WEBP) are allowed');
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const formDataUpload = new FormData();
+      formDataUpload.append('image', file);
+
+      const response = await fetch('/api/upload/blog-image', {
+        method: 'POST',
+        credentials: 'include',
+        body: formDataUpload
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setFormData({ ...formData, featured_image: data.imageUrl });
+      } else {
+        alert('Upload failed: ' + (data.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('Upload failed. Please try again.');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -101,19 +191,31 @@ export default function BlogFormPage() {
       const url = isEdit ? `/api/blogs/${blogId}` : '/api/blogs';
       const method = isEdit ? 'PUT' : 'POST';
       
+      // If tags have been modified in UI, use tags state (even if empty to allow clearing)
+      // Otherwise, use original tags from formData (preserves unmodified tags)
+      const finalTags = tagsModified ? tags.join(',') : (formData.tags || '');
+      
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ ...formData, status })
+        body: JSON.stringify({ 
+          ...formData, 
+          status,
+          categories: selectedCategories.join(','),
+          tags: finalTags
+        })
       });
 
       const data = await response.json();
       if (data.success) {
         setLocation('/admin/blogs');
+      } else {
+        alert('Error: ' + (data.message || 'Failed to save blog'));
       }
     } catch (error) {
       console.error('Failed to save blog:', error);
+      alert('Failed to save blog. Please try again.');
     }
   };
 
@@ -133,348 +235,238 @@ export default function BlogFormPage() {
     'align', 'list', 'bullet', 'link', 'image'
   ];
 
-  const colorOptions = [
-    '#E5E7EB',
-    '#4F46E5',
-    '#10B981',
-    '#F59E0B',
-    '#EF4444',
-    '#8B5CF6',
-    '#6366F1'
-  ];
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-lg text-gray-600">Loading...</div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
-      <div className="flex h-[calc(100vh-4rem)] bg-gray-50">
-        <div className="flex-1 overflow-y-auto p-8">
-          <div className="max-w-5xl mx-auto">
-            <div className="mb-6">
-              <input
-                type="text"
-                placeholder="Title here......"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full text-3xl font-bold border-none focus:outline-none bg-transparent placeholder-gray-400"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <input
-                type="text"
-                placeholder="Author Name"
-                value={formData.author}
-                onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] bg-white"
-              />
-              <div className="relative">
-                <select
-                  value={formData.category}
-                  onChange={(e) => {
-                    if (e.target.value === '__new__') {
-                      setShowNewCategory(true);
-                    } else {
-                      setFormData({ ...formData, category: e.target.value });
-                    }
-                  }}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] bg-white appearance-none"
-                >
-                  <option value="">Select Category</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.name}>{cat.name}</option>
-                  ))}
-                  <option value="__new__">+ Add New Category</option>
-                </select>
-                {showNewCategory && (
-                  <div className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg p-4">
-                    <input
-                      type="text"
-                      placeholder="New category name"
-                      value={newCategoryName}
-                      onChange={(e) => setNewCategoryName(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded mb-2 focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                    />
-                    <div className="flex gap-2">
-                      <button
-                        onClick={handleAddCategory}
-                        className="flex-1 px-3 py-1.5 bg-[#00A6CE] text-white rounded hover:bg-[#0090B5]"
-                      >
-                        Add
-                      </button>
-                      <button
-                        onClick={() => { setShowNewCategory(false); setNewCategoryName(''); }}
-                        className="flex-1 px-3 py-1.5 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <input
-                type="text"
-                placeholder="Featured Image URL"
-                value={formData.featured_image}
-                onChange={(e) => setFormData({ ...formData, featured_image: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] bg-white"
-              />
-            </div>
-
-            <div className="mb-6">
-              <textarea
-                placeholder="Excerpt (short description)"
-                value={formData.excerpt}
-                onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] bg-white"
-              />
-            </div>
-
-            <div className="mb-6 bg-white rounded-lg shadow-sm">
-              <ReactQuill
-                ref={quillRef}
-                theme="snow"
-                value={formData.content}
-                onChange={(content) => setFormData({ ...formData, content })}
-                modules={modules}
-                formats={formats}
-                className="min-h-[500px]"
-                placeholder="Start writing your blog content here..."
-              />
-            </div>
-
-            <div className="flex justify-center gap-4 mt-8 pb-8">
-              <Button
-                onClick={() => handleSubmit('draft')}
-                className="px-8 py-3 bg-[#B0E5F0] hover:bg-[#9DD9E8] text-gray-700 rounded-full font-medium"
-              >
-                Save As Draft
-              </Button>
-              <Button
-                onClick={() => handleSubmit('published')}
-                className="px-8 py-3 bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-full font-medium"
-              >
-                Publish
-              </Button>
-            </div>
+      <div className="flex-1 overflow-y-auto p-8 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-6">
+            <input
+              type="text"
+              placeholder="Title here......"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              className="w-full text-3xl font-bold border-none focus:outline-none bg-transparent placeholder-gray-400"
+            />
           </div>
-        </div>
 
-        {showBlockEditor && (
-          <div className="w-80 bg-white border-l border-gray-200 p-6 overflow-y-auto">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Edit Block</h3>
-              <button
-                onClick={() => setShowBlockEditor(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+          <div className="grid grid-cols-1 gap-4 mb-6">
+            <input
+              type="text"
+              placeholder="Author Name"
+              value={formData.author}
+              onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] bg-white"
+            />
+          </div>
+
+          {/* Categories Selection */}
+          <div className="mb-6 bg-white p-6 rounded-lg border border-gray-300">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              Categories (select multiple)
+            </label>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
+              {categories.map((cat) => (
+                <label key={cat.id} className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedCategories.includes(cat.name)}
+                    onChange={() => handleCategoryToggle(cat.name)}
+                    className="w-4 h-4 text-[#00A6CE] border-gray-300 rounded focus:ring-[#00A6CE]"
+                  />
+                  <span className="text-sm text-gray-700">{cat.name}</span>
+                </label>
+              ))}
             </div>
-
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Block Type</label>
-                <select
-                  value={selectedBlock.type}
-                  onChange={(e) => setSelectedBlock({ ...selectedBlock, type: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                >
-                  <option value="text">Text</option>
-                  <option value="image">Image</option>
-                  <option value="video">Video</option>
-                  <option value="quote">Quote</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Block Style</label>
-                <select
-                  value={selectedBlock.style}
-                  onChange={(e) => setSelectedBlock({ ...selectedBlock, style: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                >
-                  <option value="heading-1">Heading 1</option>
-                  <option value="heading-2">Heading 2</option>
-                  <option value="heading-3">Heading 3</option>
-                  <option value="heading-4">Heading 4</option>
-                  <option value="heading-5">Heading 5</option>
-                  <option value="heading-6">Heading 6</option>
-                  <option value="paragraph">Paragraph</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Block Positioning</label>
-                <div className="flex gap-2">
-                  <button className="p-2 border border-gray-300 rounded hover:bg-gray-100">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                  </button>
-                  <button className="p-2 border border-gray-300 rounded hover:bg-gray-100">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h8M4 18h16" />
-                    </svg>
-                  </button>
-                  <button className="p-2 border border-gray-300 rounded hover:bg-gray-100">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M12 12h8M4 18h16" />
-                    </svg>
-                  </button>
-                  <button className="p-2 border border-gray-300 rounded hover:bg-gray-100">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Block Color</label>
-                <div className="flex gap-2">
-                  {colorOptions.map((color) => (
-                    <button
-                      key={color}
-                      onClick={() => setSelectedBlock({ ...selectedBlock, color })}
-                      className={`w-8 h-8 rounded-full border-2 ${
-                        selectedBlock.color === color ? 'border-gray-900' : 'border-transparent'
-                      }`}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Block Details</label>
-                <p className="text-xs text-gray-500 mb-3">
-                  Here you can edit your block details seamlessly.
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Custom Attribute</label>
+            <button
+              onClick={() => setShowNewCategory(!showNewCategory)}
+              className="text-sm text-[#00A6CE] hover:text-[#0090B5] font-medium"
+            >
+              + Add New Category
+            </button>
+            {showNewCategory && (
+              <div className="mt-3 flex gap-2">
                 <input
                   type="text"
-                  value={selectedBlock.customAttribute}
-                  onChange={(e) => setSelectedBlock({ ...selectedBlock, customAttribute: e.target.value })}
-                  placeholder="heading-2"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                  placeholder="New category name"
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Text Content</label>
-                <textarea
-                  value={selectedBlock.textContent}
-                  onChange={(e) => setSelectedBlock({ ...selectedBlock, textContent: e.target.value })}
-                  placeholder="Enter your main text here..."
-                  rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-sm"
-                />
-                <div className="text-right text-xs text-gray-400 mt-1">300/300</div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Text Align</label>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setSelectedBlock({ ...selectedBlock, textAlign: 'left' })}
-                    className={`p-2 border rounded ${selectedBlock.textAlign === 'left' ? 'bg-gray-200' : 'hover:bg-gray-100'}`}
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h8M4 18h16" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => setSelectedBlock({ ...selectedBlock, textAlign: 'center' })}
-                    className={`p-2 border rounded ${selectedBlock.textAlign === 'center' ? 'bg-gray-200' : 'hover:bg-gray-100'}`}
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M8 12h8M4 18h16" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => setSelectedBlock({ ...selectedBlock, textAlign: 'right' })}
-                    className={`p-2 border rounded ${selectedBlock.textAlign === 'right' ? 'bg-gray-200' : 'hover:bg-gray-100'}`}
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M12 12h8M4 18h16" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">Text Accessibility</label>
-                <div className="space-y-3">
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">Is Visible For All</span>
-                    <div
-                      onClick={() => setSelectedBlock({ ...selectedBlock, isVisible: !selectedBlock.isVisible })}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer transition-colors ${
-                        selectedBlock.isVisible ? 'bg-[#00A6CE]' : 'bg-gray-300'
-                      }`}
-                    >
-                      <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                          selectedBlock.isVisible ? 'translate-x-6' : 'translate-x-1'
-                        }`}
-                      />
-                    </div>
-                  </label>
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">Is Hidden</span>
-                    <div
-                      onClick={() => setSelectedBlock({ ...selectedBlock, isHidden: !selectedBlock.isHidden })}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer transition-colors ${
-                        selectedBlock.isHidden ? 'bg-[#00A6CE]' : 'bg-gray-300'
-                      }`}
-                    >
-                      <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                          selectedBlock.isHidden ? 'translate-x-6' : 'translate-x-1'
-                        }`}
-                      />
-                    </div>
-                  </label>
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">Is Accessible</span>
-                    <div
-                      onClick={() => setSelectedBlock({ ...selectedBlock, isAccessible: !selectedBlock.isAccessible })}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full cursor-pointer transition-colors ${
-                        selectedBlock.isAccessible ? 'bg-[#00A6CE]' : 'bg-gray-300'
-                      }`}
-                    >
-                      <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                          selectedBlock.isAccessible ? 'translate-x-6' : 'translate-x-1'
-                        }`}
-                      />
-                    </div>
-                  </label>
-                </div>
-              </div>
-
-              <div className="space-y-3 pt-4 border-t">
-                <Button className="w-full bg-[#00A6CE] hover:bg-[#0090B5] text-white">
-                  Save Changes ✓
-                </Button>
-                <Button
-                  onClick={() => setShowBlockEditor(false)}
-                  className="w-full bg-white hover:bg-gray-50 text-gray-700 border border-gray-300"
+                <button
+                  onClick={handleAddCategory}
+                  className="px-4 py-2 bg-[#00A6CE] text-white rounded hover:bg-[#0090B5]"
                 >
-                  Discard Changes ✕
-                </Button>
+                  Add
+                </button>
+                <button
+                  onClick={() => { setShowNewCategory(false); setNewCategoryName(''); }}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
               </div>
-            </div>
+            )}
+            {selectedCategories.length > 0 && (
+              <div className="mt-3">
+                <span className="text-sm text-gray-600">Selected: </span>
+                <span className="text-sm font-medium text-gray-900">{selectedCategories.join(', ')}</span>
+              </div>
+            )}
           </div>
-        )}
+
+          {/* Tags Input */}
+          <div className="mb-6 bg-white p-6 rounded-lg border border-gray-300">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              Tags (press Enter or comma to add)
+            </label>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#B0E5F0] text-gray-700"
+                >
+                  {tag}
+                  <button
+                    onClick={() => handleRemoveTag(tag)}
+                    className="ml-2 text-gray-500 hover:text-gray-700"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+            <input
+              type="text"
+              placeholder="Add tags (e.g., health, diet, nutrition)"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={handleAddTag}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+            />
+          </div>
+
+          {/* Featured Image - Both Upload and URL */}
+          <div className="mb-6 bg-white p-6 rounded-lg border border-gray-300">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              Featured Image
+            </label>
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => setImageUploadMode('upload')}
+                className={`px-4 py-2 rounded-lg font-medium ${
+                  imageUploadMode === 'upload'
+                    ? 'bg-[#00A6CE] text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Upload File
+              </button>
+              <button
+                onClick={() => setImageUploadMode('url')}
+                className={`px-4 py-2 rounded-lg font-medium ${
+                  imageUploadMode === 'url'
+                    ? 'bg-[#00A6CE] text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Use URL
+              </button>
+            </div>
+            
+            {imageUploadMode === 'upload' ? (
+              <div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#00A6CE] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {uploading ? 'Uploading...' : 'Click to upload image (max 5MB)'}
+                </button>
+                <p className="text-xs text-gray-500 mt-2">
+                  Supported formats: JPEG, PNG, GIF, WEBP
+                </p>
+              </div>
+            ) : (
+              <input
+                type="text"
+                placeholder="https://example.com/image.jpg"
+                value={formData.featured_image}
+                onChange={(e) => setFormData({ ...formData, featured_image: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+              />
+            )}
+            
+            {formData.featured_image && (
+              <div className="mt-4">
+                <p className="text-sm text-gray-600 mb-2">Preview:</p>
+                <img
+                  src={formData.featured_image}
+                  alt="Featured preview"
+                  className="max-w-full h-48 object-cover rounded-lg border border-gray-200"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+                <p className="text-xs text-gray-500 mt-2 break-all">{formData.featured_image}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="mb-6">
+            <textarea
+              placeholder="Excerpt (short description)"
+              value={formData.excerpt}
+              onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+              rows={3}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] bg-white"
+            />
+          </div>
+
+          <div className="mb-6 bg-white rounded-lg shadow-sm">
+            <ReactQuill
+              ref={quillRef}
+              theme="snow"
+              value={formData.content}
+              onChange={(content) => setFormData({ ...formData, content })}
+              modules={modules}
+              formats={formats}
+              className="min-h-[500px]"
+              placeholder="Start writing your blog content here..."
+            />
+          </div>
+
+          <div className="flex justify-center gap-4 mt-8 pb-8">
+            <Button
+              onClick={() => handleSubmit('draft')}
+              className="px-8 py-3 bg-[#B0E5F0] hover:bg-[#9DD9E8] text-gray-700 rounded-full font-medium"
+            >
+              Save As Draft
+            </Button>
+            <Button
+              onClick={() => handleSubmit('published')}
+              className="px-8 py-3 bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-full font-medium"
+            >
+              Publish
+            </Button>
+          </div>
+        </div>
       </div>
     </AdminLayout>
   );
