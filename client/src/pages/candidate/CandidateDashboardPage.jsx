@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '../../components/ui/button';
+import CandidateSidebar from '../../components/CandidateSidebar';
 
 export default function CandidateDashboardPage() {
   const [, setLocation] = useLocation();
   const [candidate, setCandidate] = useState(null);
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -61,40 +63,29 @@ export default function CandidateDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <div className="w-64 bg-white min-h-screen border-r border-gray-200 p-6">
-        <img src="/Group_1760620436964.png" alt="Duke Consultancy Logo" className="h-10 mb-8" />
-        
-        <div className="flex items-center gap-3 mb-8 p-3 bg-[#E6F7FB] rounded-lg">
-          <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
-            <span className="text-sm font-medium">
-              {candidate?.firstName?.[0]}{candidate?.lastName?.[0]}
-            </span>
-          </div>
-          <span className="font-medium text-sm">{candidate?.firstName} {candidate?.lastName}</span>
+      <CandidateSidebar 
+        candidate={candidate}
+        onLogout={handleLogout}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      
+      <div className="flex-1 flex flex-col">
+        {/* Mobile header with hamburger */}
+        <div className="md:hidden sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <img src="/Group_1760620436964.png" alt="Duke Consultancy" className="h-8" />
+          <div className="w-10" />
         </div>
 
-        <nav>
-          <button 
-            className="w-full text-left px-4 py-3 mb-2 bg-[#E6F7FB] text-[#00A6CE] rounded-lg font-medium"
-          >
-            Dashboard
-          </button>
-          <button 
-            onClick={() => setLocation('/candidate/profile')}
-            className="w-full text-left px-4 py-3 mb-2 text-gray-700 hover:bg-gray-50 rounded-lg"
-          >
-            My Profile
-          </button>
-          <button 
-            onClick={handleLogout}
-            className="w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg"
-          >
-            Logout
-          </button>
-        </nav>
-      </div>
-
-      <div className="flex-1 p-8">
+        <div className="flex-1 p-4 md:p-8 overflow-auto">
         <div className="bg-[#E6F7FB] rounded-lg p-6 mb-6 flex items-center justify-between">
           <div>
             <Button 
@@ -189,6 +180,7 @@ export default function CandidateDashboardPage() {
               </tbody>
             </table>
           </div>
+        </div>
         </div>
       </div>
     </div>

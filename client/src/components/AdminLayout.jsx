@@ -6,6 +6,7 @@ export default function AdminLayout({ children }) {
   const [, setLocation] = useLocation();
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -50,8 +51,26 @@ export default function AdminLayout({ children }) {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <AdminSidebar admin={admin} onLogout={handleLogout} />
+      <AdminSidebar 
+        admin={admin} 
+        onLogout={handleLogout} 
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
       <div className="flex-1 overflow-auto">
+        {/* Mobile header with hamburger */}
+        <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <img src="/Group_1760620436964.png" alt="Duke Consultancy" className="h-8" />
+          <div className="w-10" />
+        </div>
         {children}
       </div>
     </div>

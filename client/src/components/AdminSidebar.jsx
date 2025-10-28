@@ -1,6 +1,6 @@
 import { useLocation } from 'wouter';
 
-export default function AdminSidebar({ admin, onLogout }) {
+export default function AdminSidebar({ admin, onLogout, isOpen, onClose }) {
   const [location, setLocation] = useLocation();
 
   const menuItems = [
@@ -19,8 +19,28 @@ export default function AdminSidebar({ admin, onLogout }) {
     { path: '/admin/email-inbox', label: 'Email Inbox', icon: '📬' },
   ];
 
+  const handleMenuClick = (path) => {
+    setLocation(path);
+    if (onClose) onClose();
+  };
+
   return (
-    <div className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div className={`
+        fixed lg:static inset-y-0 left-0 z-50
+        w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col
+        transform transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
       <div className="p-6 border-b border-gray-200">
         <img src="/Group_1760620436964.png" alt="Duke Consultancy Logo" className="h-10" />
       </div>
@@ -37,11 +57,11 @@ export default function AdminSidebar({ admin, onLogout }) {
         </div>
       </div>
 
-      <nav className="flex-1 p-4">
+      <nav className="flex-1 p-4 overflow-y-auto">
         {menuItems.map((item) => (
           <button
             key={item.path}
-            onClick={() => setLocation(item.path)}
+            onClick={() => handleMenuClick(item.path)}
             className={`w-full text-left px-4 py-3 rounded-lg mb-2 transition-colors ${
               location === item.path
                 ? 'bg-[#E6F7FB] text-[#00A6CE] font-medium'
@@ -63,6 +83,7 @@ export default function AdminSidebar({ admin, onLogout }) {
           Logout
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
