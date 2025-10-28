@@ -141,17 +141,17 @@ export const HomePage = () => {
                     we know your home is more than just a place to live, that's why we're committed to providing the best home loan
                   </p>
                 </div>
-                <div className="relative flex justify-center items-center min-h-[320px] overflow-visible">
+                <div className="relative min-h-[280px] overflow-visible">
                   {/* Background Circle - Behind everything, on the left */}
                   <img
                     src="/Ellipse 1328 (2)_1760621468329.png"
                     alt=""
-                    className="absolute -left-32 top-1/2 -translate-y-1/2 w-[420px] h-auto z-0"
+                    className="absolute -left-16 top-1/2 -translate-y-1/2 w-[320px] h-auto z-0 opacity-60"
                   />
                   {/* Number - On top of circle, on the left */}
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[120px] font-bold text-gray-200/60 leading-none z-10">01</div>
-                  {/* White Card - Full width, centered, on top */}
-                  <div className="relative bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-full max-w-[397px] z-20">
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 text-[96px] font-bold text-gray-200/70 leading-none z-10">01</div>
+                  {/* White Card - Narrower, RIGHT-ALIGNED */}
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-8 w-[309px] z-20">
                     <h4 className="text-lg font-semibold text-gray-900 mb-6 text-center">Register Online</h4>
                     <div className="space-y-3.5">
                       <div className="h-2.5 bg-gray-200 rounded-full"></div>
@@ -210,17 +210,17 @@ export const HomePage = () => {
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
-                <div className="relative flex justify-center items-center min-h-[280px] overflow-visible">
+                <div className="relative min-h-[260px] overflow-visible">
                   {/* Background Circle - Behind everything, on the left */}
                   <img
                     src="/Ellipse 1328 (1)_1760621468329.png"
                     alt=""
-                    className="absolute -left-32 top-1/2 -translate-y-1/2 w-[420px] h-auto z-0"
+                    className="absolute -left-16 top-1/2 -translate-y-1/2 w-[320px] h-auto z-0 opacity-60"
                   />
                   {/* Number - On top of circle, on the left */}
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[120px] font-bold text-gray-200/60 leading-none z-10">02</div>
-                  {/* White Card - Full width, centered, on top */}
-                  <div className="relative bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-full max-w-[397px] z-20">
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 text-[96px] font-bold text-gray-200/70 leading-none z-10">02</div>
+                  {/* White Card - Narrower, RIGHT-ALIGNED */}
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-8 w-[309px] z-20">
                     <h4 className="text-lg font-semibold text-gray-900 mb-6 text-center">Search</h4>
                     <div className="relative">
                       <input
@@ -286,20 +286,20 @@ export const HomePage = () => {
                     It's about you and your family, having a comfortable payment, exceptional service and a lender.
                   </p>
                 </div>
-                <div className="relative flex justify-center items-center min-h-[260px] overflow-visible">
+                <div className="relative min-h-[240px] overflow-visible">
                   {/* Background Circle - Behind everything, on the left */}
                   <img
                     src="/Ellipse 1328_1760621468330.png"
                     alt=""
-                    className="absolute -left-32 top-1/2 -translate-y-1/2 w-[420px] h-auto z-0"
+                    className="absolute -left-16 top-1/2 -translate-y-1/2 w-[320px] h-auto z-0 opacity-60"
                   />
                   {/* Number - On top of circle, on the left */}
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[120px] font-bold text-gray-200/60 leading-none z-10">03</div>
-                  {/* White Card - Full width, centered, on top */}
-                  <div className="relative bg-white rounded-3xl shadow-2xl p-10 sm:p-12 w-full max-w-[397px] z-20 flex justify-center gap-6">
-                    <div className="text-4xl sm:text-5xl">😮</div>
-                    <div className="text-4xl sm:text-5xl">😠</div>
-                    <div className="text-4xl sm:text-5xl">❤️</div>
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 text-[96px] font-bold text-gray-200/70 leading-none z-10">03</div>
+                  {/* White Card - Narrower, RIGHT-ALIGNED */}
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-10 w-[309px] z-20 flex justify-center gap-6">
+                    <div className="text-4xl">😮</div>
+                    <div className="text-4xl">😠</div>
+                    <div className="text-4xl">❤️</div>
                   </div>
                 </div>
               </div>
@@ -338,17 +338,17 @@ export const HomePage = () => {
                     It's the fast, easy way to apply for your mortgage and access your application anytime, anywhere. With our mortgage access center
                   </p>
                 </div>
-                <div className="relative flex justify-center items-center min-h-[280px] overflow-visible">
+                <div className="relative min-h-[260px] overflow-visible">
                   {/* Background Circle - Behind everything, on the left */}
                   <img
                     src="/Ellipse 1328 (2)_1760621468329.png"
                     alt=""
-                    className="absolute -left-32 top-1/2 -translate-y-1/2 w-[420px] h-auto z-0"
+                    className="absolute -left-16 top-1/2 -translate-y-1/2 w-[320px] h-auto z-0 opacity-60"
                   />
                   {/* Number - On top of circle, on the left */}
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[120px] font-bold text-gray-200/60 leading-none z-10">04</div>
-                  {/* White Card - Full width, centered, on top */}
-                  <div className="relative bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-full max-w-[397px] z-20">
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 text-[96px] font-bold text-gray-200/70 leading-none z-10">04</div>
+                  {/* White Card - Narrower, RIGHT-ALIGNED */}
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-8 w-[309px] z-20">
                     <h4 className="text-lg font-semibold text-gray-900 mb-6 text-center">Search</h4>
                     <div className="relative">
                       <input
