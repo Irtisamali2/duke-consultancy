@@ -1,6 +1,12 @@
 import express from 'express';
 import db from '../db.js';
 import { requireAuth } from '../middleware/auth.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
@@ -123,6 +129,34 @@ router.put('/blogs/:id', requireAuth, async (req, res) => {
 
 router.delete('/blogs/:id', requireAuth, async (req, res) => {
   try {
+    // Fetch blog to get associated image file
+    const [rows] = await db.query('SELECT featured_image FROM blogs WHERE id = ?', [req.params.id]);
+    
+    if (rows.length > 0 && rows[0].featured_image) {
+      const imageUrl = rows[0].featured_image;
+      
+      // Check if it's a locally uploaded file (starts with /uploads/)
+      if (imageUrl.startsWith('/uploads/')) {
+        // Strip leading slash to make it a relative path
+        const relativePath = imageUrl.substring(1); // Remove leading /
+        const filePath = path.join(__dirname, '..', relativePath);
+        
+        // Delete the file if it exists
+        if (fs.existsSync(filePath)) {
+          try {
+            fs.unlinkSync(filePath);
+            console.log(`Deleted image file: ${filePath}`);
+          } catch (fileError) {
+            console.error(`Failed to delete file ${filePath}:`, fileError);
+            // Continue with blog deletion even if file deletion fails
+          }
+        } else {
+          console.log(`File not found for deletion: ${filePath}`);
+        }
+      }
+    }
+    
+    // Delete the blog from database
     await db.query('DELETE FROM blogs WHERE id = ?', [req.params.id]);
     res.json({ success: true, message: 'Blog deleted successfully' });
   } catch (error) {

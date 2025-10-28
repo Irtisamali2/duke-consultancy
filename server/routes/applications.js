@@ -2,6 +2,12 @@ import express from 'express';
 import db from '../db.js';
 import { requireAuth } from '../middleware/auth.js';
 import emailService from '../services/emailService.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
@@ -117,7 +123,61 @@ router.patch('/applications/:id/status', requireAuth, async (req, res) => {
 
 router.delete('/applications/:id', requireAuth, async (req, res) => {
   try {
+    // Get the candidate_id before deleting the application
+    const [appRows] = await db.query('SELECT candidate_id FROM applications WHERE id = ?', [req.params.id]);
+    
+    if (appRows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Application not found' });
+    }
+    
+    const candidateId = appRows[0].candidate_id;
+    
+    // Delete the application
     await db.query('DELETE FROM applications WHERE id = ?', [req.params.id]);
+    
+    // Check if candidate has any other applications
+    const [remainingApps] = await db.query('SELECT COUNT(*) as count FROM applications WHERE candidate_id = ?', [candidateId]);
+    
+    // If candidate has no other applications, delete their documents and associated files
+    if (remainingApps[0].count === 0) {
+      const [docs] = await db.query('SELECT * FROM candidate_documents WHERE candidate_id = ?', [candidateId]);
+      
+      if (docs.length > 0) {
+        const doc = docs[0];
+        const fileFields = [
+          'cv_resume_url',
+          'passport_url',
+          'degree_certificates_url',
+          'license_certificate_url',
+          'ielts_oet_certificate_url',
+          'experience_letters_url'
+        ];
+        
+        // Delete each file from disk
+        for (const field of fileFields) {
+          const fileUrl = doc[field];
+          if (fileUrl && fileUrl.startsWith('/uploads/')) {
+            // Strip leading slash to make it a relative path
+            const relativePath = fileUrl.substring(1);
+            const filePath = path.join(__dirname, '..', relativePath);
+            if (fs.existsSync(filePath)) {
+              try {
+                fs.unlinkSync(filePath);
+                console.log(`Deleted file: ${filePath}`);
+              } catch (fileError) {
+                console.error(`Failed to delete file ${filePath}:`, fileError);
+              }
+            } else {
+              console.log(`File not found for deletion: ${filePath}`);
+            }
+          }
+        }
+        
+        // Delete document records from database
+        await db.query('DELETE FROM candidate_documents WHERE candidate_id = ?', [candidateId]);
+      }
+    }
+    
     res.json({ success: true, message: 'Application deleted successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

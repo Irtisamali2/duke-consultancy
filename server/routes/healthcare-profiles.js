@@ -1,6 +1,12 @@
 import express from 'express';
 import db from '../db.js';
 import { requireAuth } from '../middleware/auth.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
@@ -11,12 +17,17 @@ router.get('/healthcare-profiles', requireAuth, async (req, res) => {
         c.id as candidate_id,
         c.email,
         c.status,
+        c.created_at,
         hp.first_name,
         hp.last_name,
         hp.mobile_no,
         hp.passport_number,
         hp.trade_applied_for,
         hp.date_of_birth,
+        hp.nationality,
+        hp.gender,
+        hp.residential_address,
+        hp.mailing_address,
         (SELECT GROUP_CONCAT(degree_diploma_title SEPARATOR ', ') FROM education_records WHERE candidate_id = c.id) as education,
         (SELECT SUM(CAST(SUBSTRING_INDEX(total_experience, ' ', 1) AS UNSIGNED)) FROM work_experience WHERE candidate_id = c.id) as total_experience
       FROM candidates c
@@ -51,6 +62,61 @@ router.get('/healthcare-profiles/:id', requireAuth, async (req, res) => {
       documents: documentsRows[0] || {}
     });
   } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Delete healthcare profile and all associated data (admin only)
+router.delete('/healthcare-profiles/:id', requireAuth, async (req, res) => {
+  try {
+    const candidateId = req.params.id;
+
+    // Get all document URLs before deletion
+    const [docs] = await db.query('SELECT * FROM candidate_documents WHERE candidate_id = ?', [candidateId]);
+
+    if (docs.length > 0) {
+      const doc = docs[0];
+      const fileFields = [
+        'cv_resume_url',
+        'passport_url',
+        'degree_certificates_url',
+        'license_certificate_url',
+        'ielts_oet_certificate_url',
+        'experience_letters_url'
+      ];
+
+      // Delete each file from disk
+      for (const field of fileFields) {
+        const fileUrl = doc[field];
+        if (fileUrl && fileUrl.startsWith('/uploads/')) {
+          // Strip leading slash to make it a relative path
+          const relativePath = fileUrl.substring(1);
+          const filePath = path.join(__dirname, '..', relativePath);
+          if (fs.existsSync(filePath)) {
+            try {
+              fs.unlinkSync(filePath);
+              console.log(`Deleted file: ${filePath}`);
+            } catch (fileError) {
+              console.error(`Failed to delete file ${filePath}:`, fileError);
+            }
+          } else {
+            console.log(`File not found for deletion: ${filePath}`);
+          }
+        }
+      }
+    }
+
+    // Delete in correct order due to foreign key constraints
+    await db.query('DELETE FROM candidate_documents WHERE candidate_id = ?', [candidateId]);
+    await db.query('DELETE FROM work_experience WHERE candidate_id = ?', [candidateId]);
+    await db.query('DELETE FROM education_records WHERE candidate_id = ?', [candidateId]);
+    await db.query('DELETE FROM applications WHERE candidate_id = ?', [candidateId]);
+    await db.query('DELETE FROM healthcare_profiles WHERE candidate_id = ?', [candidateId]);
+    await db.query('DELETE FROM candidates WHERE id = ?', [candidateId]);
+
+    res.json({ success: true, message: 'Profile and all associated data deleted successfully' });
+  } catch (error) {
+    console.error('Delete error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
