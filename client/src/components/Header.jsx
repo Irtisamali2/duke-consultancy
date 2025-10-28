@@ -8,7 +8,7 @@ export const Header = ({ currentPage = 'home' }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   return (
-    <header className="w-full bg-white py-4 px-4 sm:px-6 lg:px-20 border-b">
+    <header className="w-full bg-white py-4 px-4 sm:px-6 lg:px-20 border-b relative">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <img src="/Group_1760620436964.png" alt="Duke Consultancy Logo" className="h-8 sm:h-10" />
         
