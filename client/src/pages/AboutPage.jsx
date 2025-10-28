@@ -36,24 +36,40 @@ export const AboutPage = () => {
 
   const faqs = [
     {
-      question: "What are the eligibility requirements for healthcare professionals seeking for overseas job opportunities in the UK/GCC?",
-      answer: "Healthcare professionals must have relevant qualifications recognized by the destination country, minimum years of experience (typically 1-2 years), English language proficiency (IELTS/OET), valid registration with professional bodies, and meet specific licensing requirements of the destination country."
+      question: "What are the basic eligibility requirements for a Pakistani nurse to work in Saudi Arabia?",
+      answer: "To work as a nurse in Saudi Arabia, you will generally need: A Bachelor's degree in Nursing, a valid nursing license from Pakistan, a minimum of 2-3 years of clinical experience, to be in good health and pass a medical examination, and to be of good character with no criminal record."
     },
     {
-      question: "Do you provide housing and travel support once I am selected for an overseas job opportunity?",
-      answer: "Yes, we provide comprehensive relocation support including assistance with accommodation arrangements, travel coordination, and settlement guidance. Our team helps you connect with housing resources and provides detailed information about living in your destination country."
+      question: "What is the role of the Saudi Commission for Health Specialties (SCFHS)?",
+      answer: "The Saudi Commission for Health Specialties (SCFHS) is the regulatory body for healthcare professionals in Saudi Arabia. All foreign-trained nurses must be classified and registered with the SCFHS to be licensed to practice in the Kingdom. This process involves verifying your qualifications and experience."
     },
     {
-      question: "How long does it take to secure a job placement opportunity?",
-      answer: "The timeline varies depending on factors such as your qualifications, destination country, and job availability. Typically, the process takes 3-6 months from application to placement, including credential verification, interviews, and visa processing."
+      question: "What is the Saudi Prometric Exam?",
+      answer: "The Saudi Prometric Exam (also known as the Saudi Nursing Licensing Exam - SNLE) is a mandatory examination for all nurses who wish to practice in Saudi Arabia. The exam assesses your nursing knowledge and skills to ensure they meet the standards of the Kingdom. You must pass this exam to be registered with the SCFHS."
     },
     {
-      question: "What is one of the most crucial importance for health applicants (OSCE)?",
-      answer: "The OSCE (Objective Structured Clinical Examination) is crucial as it assesses your practical clinical skills and competencies required for registration in countries like the UK. We provide comprehensive OSCE preparation and training to ensure you're fully prepared for this essential assessment."
+      question: "How do I apply for a work visa for Saudi Arabia?",
+      answer: "Your employer in Saudi Arabia will typically sponsor your work visa. The process generally involves: Your employer obtaining a work visa authorization from the Saudi Ministry of Labor, then you applying for a work visa at the Saudi Embassy or Consulate in Pakistan. You will need to submit documents including your passport, photographs, a signed employment contract, and your educational and professional credentials attested by the relevant authorities."
     },
     {
-      question: "What is one of the most crucial importance for health applicants (OSCE)?",
-      answer: "The OSCE assessment is vital for demonstrating your clinical competence and patient care abilities. It evaluates communication skills, clinical examination techniques, and professional behavior essential for practicing in international healthcare settings."
+      question: "What documents do I need to have attested?",
+      answer: "Document attestation is a crucial step. You will need to have your educational and professional documents attested by several bodies, which may include: The Ministry of Foreign Affairs in Pakistan, The Saudi Culture Mission in Pakistan, and The Saudi Embassy or Consulate in Pakistan."
+    },
+    {
+      question: "What is the average salary for a nurse in Saudi Arabia?",
+      answer: "The salary for nurses in Saudi Arabia can vary depending on your qualifications, experience, and the healthcare facility you work for. However, it is generally considered to be competitive and often comes with benefits such as accommodation, transportation, and health insurance."
+    },
+    {
+      question: "What is the cost of living in Saudi Arabia?",
+      answer: "The cost of living in Saudi Arabia can vary depending on the city and your lifestyle. Major cities like Riyadh and Jeddah are more expensive than smaller towns. However, many employers provide accommodation and transportation allowances, which can significantly reduce your living expenses."
+    },
+    {
+      question: "What is the work environment like for nurses in Saudi Arabia?",
+      answer: "Saudi Arabia has a modern and well-equipped healthcare system. Nurses can expect to work in a professional environment with a diverse team of healthcare professionals from around the world. The working hours and conditions are generally regulated by the Saudi Labor Law."
+    },
+    {
+      question: "Can I bring my family with me to Saudi Arabia?",
+      answer: "Many employers offer family status to their employees, which allows you to bring your spouse and children to live with you in Saudi Arabia. However, this will depend on your profession, salary, and the policies of your employer. You will need to apply for a family residence visa for your dependents."
     }
   ];
 
