@@ -110,4 +110,73 @@ router.get('/admin/verify', async (req, res) => {
   }
 });
 
+router.put('/admin/password', async (req, res) => {
+  try {
+    const token = req.cookies.admin_token;
+
+    if (!token) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Not authenticated' 
+      });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const { currentPassword, newPassword } = req.body;
+
+    // Validation
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Current password and new password are required' 
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'New password must be at least 6 characters long' 
+      });
+    }
+
+    // Get current password hash from database
+    const [admins] = await db.query('SELECT password FROM admins WHERE id = ?', [decoded.id]);
+
+    if (admins.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Admin not found' 
+      });
+    }
+
+    // Verify current password
+    const isPasswordValid = await bcrypt.compare(currentPassword, admins[0].password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Current password is incorrect' 
+      });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password
+    await db.query('UPDATE admins SET password = ? WHERE id = ?', [hashedPassword, decoded.id]);
+
+    res.json({ 
+      success: true, 
+      message: 'Password updated successfully' 
+    });
+  } catch (error) {
+    console.error('Password update error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to update password',
+      error: error.message 
+    });
+  }
+});
+
 export default router;

@@ -17,6 +17,7 @@ export default function AdminSidebar({ admin, onLogout, isOpen, onClose }) {
     { path: '/admin/email-templates', label: 'Email Templates', icon: '✉️' },
     { path: '/admin/email-logs', label: 'Email Logs', icon: '📋' },
     { path: '/admin/email-inbox', label: 'Email Inbox', icon: '📬' },
+    { path: '/admin/account-settings', label: 'Account Settings', icon: '⚙️' },
   ];
 
   const handleMenuClick = (path) => {
