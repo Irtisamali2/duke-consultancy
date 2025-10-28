@@ -8,6 +8,7 @@ import jobsRoutes from "./routes/jobs.js";
 import applicationsRoutes from "./routes/applications.js";
 import healthcareProfilesRoutes from "./routes/healthcare-profiles.js";
 import blogsRoutes from "./routes/blogs.js";
+import blogCategoriesRoutes from "./routes/blog-categories.js";
 import statsRoutes from "./routes/stats.js";
 import candidateAuthRoutes from "./routes/candidate-auth.js";
 import candidateProfileRoutes from "./routes/candidate-profile.js";
@@ -31,6 +32,7 @@ export async function registerRoutes(app) {
   app.use('/api', applicationsRoutes);
   app.use('/api', healthcareProfilesRoutes);
   app.use('/api', blogsRoutes);
+  app.use('/api', blogCategoriesRoutes);
   app.use('/api', statsRoutes);
   app.use('/api', emailSettingsRoutes);
   app.use('/api', bulkEmailRoutes);

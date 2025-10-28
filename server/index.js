@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import { registerRoutes } from "./routes.js";
 import { setupVite, serveStatic, log } from "./vite.js";
 import { migrateBlogsTable } from "./migrations/migrate-blogs.js";
+import { addAuditLogging } from "./migrations/add-audit-logging.js";
 
 const app = express();
 app.use(express.json());
@@ -42,6 +43,7 @@ app.use((req, res, next) => {
 (async () => {
   // Run database migrations
   await migrateBlogsTable();
+  await addAuditLogging();
   
   const server = await registerRoutes(app);
 

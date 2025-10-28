@@ -22,6 +22,11 @@ export default function BlogFormPage() {
     tags: '',
     status: 'draft'
   });
+  
+  const [categories, setCategories] = useState([]);
+  const [admins, setAdmins] = useState([]);
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
 
   const [showBlockEditor, setShowBlockEditor] = useState(false);
   const [selectedBlock, setSelectedBlock] = useState({
@@ -38,10 +43,46 @@ export default function BlogFormPage() {
   });
 
   useEffect(() => {
+    fetchCategories();
     if (isEdit && blogId) {
       fetchBlog();
     }
   }, [isEdit, blogId]);
+  
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/blog-categories');
+      const data = await response.json();
+      if (data.success) {
+        setCategories(data.categories);
+      }
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    }
+  };
+  
+  const handleAddCategory = async () => {
+    if (!newCategoryName.trim()) return;
+    
+    try {
+      const response = await fetch('/api/blog-categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ name: newCategoryName, description: '' })
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        await fetchCategories();
+        setFormData({ ...formData, category: newCategoryName });
+        setNewCategoryName('');
+        setShowNewCategory(false);
+      }
+    } catch (error) {
+      console.error('Failed to add category:', error);
+    }
+  };
 
   const fetchBlog = async () => {
     try {
@@ -120,18 +161,55 @@ export default function BlogFormPage() {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <input
                 type="text"
-                placeholder="Author"
+                placeholder="Author Name"
                 value={formData.author}
                 onChange={(e) => setFormData({ ...formData, author: e.target.value })}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] bg-white"
               />
-              <input
-                type="text"
-                placeholder="Category"
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] bg-white"
-              />
+              <div className="relative">
+                <select
+                  value={formData.category}
+                  onChange={(e) => {
+                    if (e.target.value === '__new__') {
+                      setShowNewCategory(true);
+                    } else {
+                      setFormData({ ...formData, category: e.target.value });
+                    }
+                  }}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] bg-white appearance-none"
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                  ))}
+                  <option value="__new__">+ Add New Category</option>
+                </select>
+                {showNewCategory && (
+                  <div className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg p-4">
+                    <input
+                      type="text"
+                      placeholder="New category name"
+                      value={newCategoryName}
+                      onChange={(e) => setNewCategoryName(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded mb-2 focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleAddCategory}
+                        className="flex-1 px-3 py-1.5 bg-[#00A6CE] text-white rounded hover:bg-[#0090B5]"
+                      >
+                        Add
+                      </button>
+                      <button
+                        onClick={() => { setShowNewCategory(false); setNewCategoryName(''); }}
+                        className="flex-1 px-3 py-1.5 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="mb-6">

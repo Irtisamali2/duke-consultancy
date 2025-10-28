@@ -71,11 +71,12 @@ router.post('/blogs', requireAuth, async (req, res) => {
     const { title, content, excerpt, featured_image, author, category, tags, status } = req.body;
     
     const publishedDate = status === 'published' ? new Date() : null;
+    const now = new Date();
     
     const [result] = await db.query(
-      `INSERT INTO blogs (title, content, excerpt, featured_image, author, category, tags, status, created_by, published_date) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [title, content, excerpt, featured_image, author, category, tags, status || 'draft', req.admin.id, publishedDate]
+      `INSERT INTO blogs (title, content, excerpt, featured_image, author, category, tags, status, created_by, published_date, modified_at, modified_by, modified_by_type) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'admin')`,
+      [title, content, excerpt, featured_image, author, category, tags, status || 'draft', req.admin.id, publishedDate, now, req.admin.id]
     );
     
     res.json({ success: true, message: 'Blog created successfully', id: result.insertId });
@@ -92,16 +93,17 @@ router.put('/blogs/:id', requireAuth, async (req, res) => {
     const currentStatus = currentRows[0]?.status;
     
     const publishedDate = (status === 'published' && currentStatus !== 'published') ? new Date() : undefined;
+    const now = new Date();
     
     if (publishedDate !== undefined) {
       await db.query(
-        `UPDATE blogs SET title = ?, content = ?, excerpt = ?, featured_image = ?, author = ?, category = ?, tags = ?, status = ?, published_date = ? WHERE id = ?`,
-        [title, content, excerpt, featured_image, author, category, tags, status, publishedDate, req.params.id]
+        `UPDATE blogs SET title = ?, content = ?, excerpt = ?, featured_image = ?, author = ?, category = ?, tags = ?, status = ?, published_date = ?, modified_at = ?, modified_by = ?, modified_by_type = 'admin' WHERE id = ?`,
+        [title, content, excerpt, featured_image, author, category, tags, status, publishedDate, now, req.admin.id, req.params.id]
       );
     } else {
       await db.query(
-        `UPDATE blogs SET title = ?, content = ?, excerpt = ?, featured_image = ?, author = ?, category = ?, tags = ?, status = ? WHERE id = ?`,
-        [title, content, excerpt, featured_image, author, category, tags, status, req.params.id]
+        `UPDATE blogs SET title = ?, content = ?, excerpt = ?, featured_image = ?, author = ?, category = ?, tags = ?, status = ?, modified_at = ?, modified_by = ?, modified_by_type = 'admin' WHERE id = ?`,
+        [title, content, excerpt, featured_image, author, category, tags, status, now, req.admin.id, req.params.id]
       );
     }
     
