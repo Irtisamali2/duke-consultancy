@@ -26,7 +26,9 @@ export default function JobFormPage() {
     countries: [],
     trades: [],
     max_countries_selectable: 1,
-    max_trades_selectable: 1
+    max_trades_selectable: 1,
+    active_from: '',
+    active_to: ''
   });
 
   useEffect(() => {
@@ -54,12 +56,22 @@ export default function JobFormPage() {
       const data = await response.json();
       if (data.success) {
         const job = data.job;
+        
+        // Format dates for HTML date inputs (YYYY-MM-DD)
+        const formatDateForInput = (dateStr) => {
+          if (!dateStr) return '';
+          const date = new Date(dateStr);
+          return date.toISOString().split('T')[0];
+        };
+        
         setFormData({
           ...job,
           countries: job.countries ? JSON.parse(job.countries) : [],
           trades: job.trades ? JSON.parse(job.trades) : [],
           max_countries_selectable: job.max_countries_selectable || 1,
-          max_trades_selectable: job.max_trades_selectable || 1
+          max_trades_selectable: job.max_trades_selectable || 1,
+          active_from: formatDateForInput(job.active_from),
+          active_to: formatDateForInput(job.active_to)
         });
       }
     } catch (error) {
@@ -193,6 +205,28 @@ export default function JobFormPage() {
                 <option value="inactive">Inactive</option>
                 <option value="closed">Closed</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Active From (Optional)</label>
+              <input
+                type="date"
+                value={formData.active_from}
+                onChange={(e) => setFormData({ ...formData, active_from: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+              />
+              <p className="text-xs text-gray-500 mt-1">Job will be visible starting from this date</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Active To (Optional)</label>
+              <input
+                type="date"
+                value={formData.active_to}
+                onChange={(e) => setFormData({ ...formData, active_to: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+              />
+              <p className="text-xs text-gray-500 mt-1">Job will be hidden after this date</p>
             </div>
             
             <div className="col-span-2 border-t pt-6 mt-4">

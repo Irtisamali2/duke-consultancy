@@ -92,9 +92,13 @@ router.post('/jobs', requireAuth, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Active from date cannot be after active to date' });
     }
 
-    // Prevent activating job if active_to date has passed
-    if (status === 'active' && active_to && new Date(active_to) < new Date()) {
-      return res.status(400).json({ success: false, message: 'Cannot set status to active: end date has passed' });
+    // Prevent activating job if active_to date has passed (compare dates only, not timestamps)
+    if (status === 'active' && active_to) {
+      const endDate = new Date(active_to);
+      endDate.setHours(23, 59, 59, 999); // Set to end of day
+      if (endDate < new Date()) {
+        return res.status(400).json({ success: false, message: 'Cannot set status to active: end date has passed' });
+      }
     }
     
     const countriesJson = countries ? JSON.stringify(countries) : JSON.stringify([country]);
@@ -141,9 +145,13 @@ router.put('/jobs/:id', requireAuth, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Active from date cannot be after active to date' });
     }
 
-    // Prevent activating job if active_to date has passed
-    if (status === 'active' && active_to && new Date(active_to) < new Date()) {
-      return res.status(400).json({ success: false, message: 'Cannot set status to active: end date has passed' });
+    // Prevent activating job if active_to date has passed (compare dates only, not timestamps)
+    if (status === 'active' && active_to) {
+      const endDate = new Date(active_to);
+      endDate.setHours(23, 59, 59, 999); // Set to end of day
+      if (endDate < new Date()) {
+        return res.status(400).json({ success: false, message: 'Cannot set status to active: end date has passed' });
+      }
     }
     
     const countriesJson = countries ? JSON.stringify(countries) : JSON.stringify([country]);

@@ -65,6 +65,9 @@ export default function CandidateProfileFormPage() {
     license_certificate_url: '', ielts_oet_certificate_url: '', experience_letters_url: ''
   });
 
+  const [profileImage, setProfileImage] = useState(null);
+  const [profileImagePreview, setProfileImagePreview] = useState(null);
+
   useEffect(() => {
     checkAuth();
     fetchJobs();
@@ -154,6 +157,10 @@ export default function CandidateProfileFormPage() {
             trades_preference: tradesPref
           });
           setPersonalData({ ...personalData, ...data.profile });
+          
+          if (data.profile.profile_image_url) {
+            setProfileImagePreview(data.profile.profile_image_url);
+          }
         }
         if (data.experience) setExperiences(data.experience);
         if (data.education) setEducations(data.education);
@@ -216,6 +223,71 @@ export default function CandidateProfileFormPage() {
       }
     } catch (error) {
       setMessage({ type: 'error', text: 'An error occurred while updating your password' });
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        setMessage({ type: 'error', text: 'Please select an image file' });
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        setMessage({ type: 'error', text: 'Image size should be less than 5MB' });
+        return;
+      }
+      setProfileImage(file);
+      setProfileImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (!profileImage) {
+      setMessage({ type: 'error', text: 'Please select an image first' });
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('image', profileImage);
+
+      const response = await fetch('/api/candidate/profile/image', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setMessage({ type: 'success', text: 'Profile image uploaded successfully!' });
+        setProfileImage(null);
+        await fetchProfile();
+      } else {
+        setMessage({ type: 'error', text: data.message || 'Failed to upload image' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'An error occurred while uploading your image' });
+    }
+  };
+
+  const handleImageRemove = async () => {
+    if (!confirm('Are you sure you want to remove your profile image?')) return;
+
+    try {
+      const response = await fetch('/api/candidate/profile/image', {
+        method: 'DELETE'
+      });
+
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setMessage({ type: 'success', text: 'Profile image removed successfully!' });
+        setProfileImage(null);
+        setProfileImagePreview(null);
+      } else {
+        setMessage({ type: 'error', text: data.message || 'Failed to remove image' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'An error occurred while removing your image' });
     }
   };
 
@@ -480,6 +552,57 @@ export default function CandidateProfileFormPage() {
                     >
                       Save Account Information
                     </button>
+                  </div>
+                </div>
+
+                <div className="border-t pt-6">
+                  <h3 className="text-lg font-semibold mb-4">Profile Image</h3>
+                  <div className="flex items-start gap-6">
+                    <div className="flex-shrink-0">
+                      {profileImagePreview ? (
+                        <img 
+                          src={profileImagePreview} 
+                          alt="Profile" 
+                          className="w-32 h-32 rounded-full object-cover border-4 border-[#00A6CE]"
+                        />
+                      ) : (
+                        <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center border-4 border-gray-300">
+                          <span className="text-3xl text-gray-400">
+                            {candidate?.firstName?.[0]}{candidate?.lastName?.[0]}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-600 mb-3">Upload a professional photo. Image should be less than 5MB.</p>
+                      <div className="flex gap-3">
+                        <label className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-4 py-2 rounded-lg cursor-pointer">
+                          Choose Image
+                          <input 
+                            type="file" 
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="hidden"
+                          />
+                        </label>
+                        {profileImage && (
+                          <button
+                            onClick={handleImageUpload}
+                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+                          >
+                            Upload
+                          </button>
+                        )}
+                        {profileImagePreview && (
+                          <button
+                            onClick={handleImageRemove}
+                            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
+                          >
+                            Remove Image
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
