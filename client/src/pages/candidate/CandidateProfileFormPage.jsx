@@ -105,9 +105,15 @@ export default function CandidateProfileFormPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(personalData)
       });
-      if (response.ok) setCurrentStep(3);
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setCurrentStep(3);
+      } else {
+        alert(data.message || 'Failed to save personal information');
+      }
     } catch (error) {
       console.error('Failed to save personal info:', error);
+      alert('An error occurred while saving your information');
     }
   };
 
