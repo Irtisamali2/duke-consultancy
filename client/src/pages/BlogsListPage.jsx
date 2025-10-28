@@ -36,15 +36,15 @@ export default function BlogsListPage() {
       <Header />
       
       <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-sm mb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="inline-flex items-center gap-2 bg-white px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-sm mb-4 sm:mb-6">
               <span className="text-[#00A6CE]">🏠</span>
-              <span className="text-sm text-gray-600">Rated #1 choice for job searching</span>
+              <span className="text-xs sm:text-sm text-gray-600">Rated #1 choice for job searching</span>
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Our Blogs</h1>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">Our Blogs</h1>
+            <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">
               Whether you have a question, need support, or want to learn more about how Duke can help you, we're here to assist you.
             </p>
           </div>
@@ -58,11 +58,11 @@ export default function BlogsListPage() {
               <p className="text-gray-500">No blogs available yet.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
               {blogs.map((blog) => (
                 <div
                   key={blog.id}
-                  className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+                  className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
                   onClick={() => setLocation(`/blogs/${blog.id}`)}
                 >
                   <div className="aspect-[4/3] overflow-hidden">
@@ -73,25 +73,25 @@ export default function BlogsListPage() {
                     />
                   </div>
                   
-                  <div className="p-6">
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="bg-[#E6F7FB] text-[#00A6CE] px-3 py-1 rounded text-sm font-medium">
+                  <div className="p-4 sm:p-6">
+                    <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                      <span className="bg-[#E6F7FB] text-[#00A6CE] px-2 sm:px-3 py-0.5 sm:py-1 rounded text-xs sm:text-sm font-medium">
                         {blog.category || 'General'}
                       </span>
-                      <span className="text-gray-500 text-sm">{formatDate(blog.published_date)}</span>
+                      <span className="text-gray-500 text-xs sm:text-sm">{formatDate(blog.published_date)}</span>
                     </div>
                     
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 line-clamp-2">
                       {blog.title}
                     </h3>
                     
-                    <p className="text-gray-600 mb-4 line-clamp-3">
+                    <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-3">
                       {blog.excerpt || blog.content?.substring(0, 150) + '...'}
                     </p>
                     
-                    <button className="text-[#00A6CE] font-medium hover:text-[#0090B5] inline-flex items-center gap-1">
+                    <button className="text-[#00A6CE] text-sm sm:text-base font-medium hover:text-[#0090B5] inline-flex items-center gap-1">
                       Read More
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
