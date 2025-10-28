@@ -5,6 +5,7 @@ import emailService from '../services/emailService.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import * as XLSX from 'xlsx';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,20 +14,60 @@ const router = express.Router();
 
 router.get('/applications', requireAuth, async (req, res) => {
   try {
-    const [rows] = await db.query(`
+    const { job_id, country, trade, from_date, to_date, status } = req.query;
+    
+    let query = `
       SELECT 
         a.*,
         c.email,
         hp.first_name,
         hp.last_name,
         hp.mobile_no,
+        hp.country,
+        hp.trade_applied_for,
         j.title as job_title
       FROM applications a
       LEFT JOIN candidates c ON a.candidate_id = c.id
       LEFT JOIN healthcare_profiles hp ON c.id = hp.candidate_id
       LEFT JOIN jobs j ON a.job_id = j.id
-      ORDER BY a.applied_date DESC
-    `);
+      WHERE 1=1
+    `;
+    
+    const params = [];
+    
+    if (job_id) {
+      query += ' AND a.job_id = ?';
+      params.push(job_id);
+    }
+    
+    if (country) {
+      query += ' AND hp.country = ?';
+      params.push(country);
+    }
+    
+    if (trade) {
+      query += ' AND hp.trade_applied_for = ?';
+      params.push(trade);
+    }
+    
+    if (status) {
+      query += ' AND a.status = ?';
+      params.push(status);
+    }
+    
+    if (from_date) {
+      query += ' AND DATE(a.applied_date) >= ?';
+      params.push(from_date);
+    }
+    
+    if (to_date) {
+      query += ' AND DATE(a.applied_date) <= ?';
+      params.push(to_date);
+    }
+    
+    query += ' ORDER BY a.applied_date DESC';
+    
+    const [rows] = await db.query(query, params);
     res.json({ success: true, applications: rows });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -180,6 +221,157 @@ router.delete('/applications/:id', requireAuth, async (req, res) => {
     
     res.json({ success: true, message: 'Application deleted successfully' });
   } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post('/applications/export', requireAuth, async (req, res) => {
+  try {
+    const { application_ids, job_id, country, trade, from_date, to_date, status } = req.body;
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    
+    let query = `
+      SELECT 
+        a.id as application_id,
+        a.status as application_status,
+        a.applied_date,
+        a.remarks,
+        c.email,
+        hp.first_name,
+        hp.last_name,
+        hp.father_husband_name,
+        hp.marital_status,
+        hp.gender,
+        hp.religion,
+        hp.date_of_birth,
+        hp.place_of_birth,
+        hp.province,
+        hp.country,
+        hp.cnic,
+        hp.passport_number,
+        hp.mobile_no,
+        hp.trade_applied_for,
+        hp.availability_to_join,
+        hp.willingness_to_relocate,
+        hp.present_address,
+        hp.permanent_address,
+        j.title as job_title,
+        j.location as job_location,
+        j.country as job_country,
+        cd.cv_resume_url,
+        cd.passport_url,
+        cd.degree_certificates_url,
+        cd.license_certificate_url,
+        cd.ielts_oet_certificate_url,
+        cd.experience_letters_url
+      FROM applications a
+      LEFT JOIN candidates c ON a.candidate_id = c.id
+      LEFT JOIN healthcare_profiles hp ON c.id = hp.candidate_id
+      LEFT JOIN jobs j ON a.job_id = j.id
+      LEFT JOIN candidate_documents cd ON c.id = cd.candidate_id
+      WHERE 1=1
+    `;
+    
+    const params = [];
+    
+    if (application_ids && application_ids.length > 0) {
+      query += ` AND a.id IN (${application_ids.map(() => '?').join(',')})`;
+      params.push(...application_ids);
+    } else {
+      if (job_id) {
+        query += ' AND a.job_id = ?';
+        params.push(job_id);
+      }
+      
+      if (country) {
+        query += ' AND hp.country = ?';
+        params.push(country);
+      }
+      
+      if (trade) {
+        query += ' AND hp.trade_applied_for = ?';
+        params.push(trade);
+      }
+      
+      if (status) {
+        query += ' AND a.status = ?';
+        params.push(status);
+      }
+      
+      if (from_date) {
+        query += ' AND DATE(a.applied_date) >= ?';
+        params.push(from_date);
+      }
+      
+      if (to_date) {
+        query += ' AND DATE(a.applied_date) <= ?';
+        params.push(to_date);
+      }
+    }
+    
+    query += ' ORDER BY a.applied_date DESC';
+    
+    const [applications] = await db.query(query, params);
+    
+    if (applications.length === 0) {
+      return res.status(404).json({ success: false, message: 'No applications found to export' });
+    }
+    
+    const exportData = applications.map(app => ({
+      'Application ID': String(app.application_id).padStart(6, '0'),
+      'Applied Date': new Date(app.applied_date).toLocaleDateString(),
+      'Status': app.application_status,
+      'Job Title': app.job_title || 'General Application',
+      'Job Location': app.job_location || '',
+      'Job Country': app.job_country || '',
+      'First Name': app.first_name || '',
+      'Last Name': app.last_name || '',
+      'Email': app.email || '',
+      'Mobile': app.mobile_no || '',
+      'Father/Husband Name': app.father_husband_name || '',
+      'Marital Status': app.marital_status || '',
+      'Gender': app.gender || '',
+      'Religion': app.religion || '',
+      'Date of Birth': app.date_of_birth ? new Date(app.date_of_birth).toLocaleDateString() : '',
+      'Place of Birth': app.place_of_birth || '',
+      'Province': app.province || '',
+      'Country': app.country || '',
+      'CNIC': app.cnic || '',
+      'Passport Number': app.passport_number || '',
+      'Trade Applied For': app.trade_applied_for || '',
+      'Availability to Join': app.availability_to_join || '',
+      'Willingness to Relocate': app.willingness_to_relocate || '',
+      'Present Address': app.present_address || '',
+      'Permanent Address': app.permanent_address || '',
+      'Remarks': app.remarks || '',
+      'CV/Resume': app.cv_resume_url ? `${baseUrl}${app.cv_resume_url}` : '',
+      'Passport Document': app.passport_url ? `${baseUrl}${app.passport_url}` : '',
+      'Degree Certificates': app.degree_certificates_url ? `${baseUrl}${app.degree_certificates_url}` : '',
+      'License Certificate': app.license_certificate_url ? `${baseUrl}${app.license_certificate_url}` : '',
+      'IELTS/OET Certificate': app.ielts_oet_certificate_url ? `${baseUrl}${app.ielts_oet_certificate_url}` : '',
+      'Experience Letters': app.experience_letters_url ? `${baseUrl}${app.experience_letters_url}` : ''
+    }));
+    
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Applications');
+    
+    worksheet['!cols'] = [
+      { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 25 }, { wch: 20 },
+      { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 25 }, { wch: 15 },
+      { wch: 20 }, { wch: 15 }, { wch: 10 }, { wch: 12 }, { wch: 12 },
+      { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 15 }, { wch: 18 },
+      { wch: 20 }, { wch: 20 }, { wch: 25 }, { wch: 30 }, { wch: 30 },
+      { wch: 50 }, { wch: 50 }, { wch: 50 }, { wch: 50 }, { wch: 50 }, { wch: 50 }
+    ];
+    
+    const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    
+    res.setHeader('Content-Disposition', `attachment; filename=applications_${new Date().toISOString().split('T')[0]}.xlsx`);
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer);
+  } catch (error) {
+    console.error('Export error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });

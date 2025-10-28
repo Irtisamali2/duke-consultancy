@@ -8,6 +8,7 @@ import { migrateBlogsTable } from "./migrations/migrate-blogs.js";
 import { addAuditLogging } from "./migrations/add-audit-logging.js";
 import { addTagsColumn } from "./migrations/add-tags-column.js";
 import addCompanySettings from "./migrations/add-company-settings.js";
+import { ensureGeneralJob } from "./migrations/add-general-job.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -56,6 +57,7 @@ app.use((req, res, next) => {
   await addAuditLogging();
   await addTagsColumn();
   await addCompanySettings();
+  await ensureGeneralJob();
   
   const server = await registerRoutes(app);
 
