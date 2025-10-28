@@ -262,9 +262,10 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
       });
     }
 
+    const now = new Date();
     const [result] = await db.query(
-      'INSERT INTO applications (candidate_id, job_id, applied_date, status) VALUES (?, ?, NOW(), ?)',
-      [req.candidateId, job_id || null, 'pending']
+      'INSERT INTO applications (candidate_id, job_id, applied_date, status, submitted_at, modified_at, modified_by, modified_by_type) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)',
+      [req.candidateId, job_id || null, 'pending', now, now, req.candidateId, 'candidate']
     );
 
     const [candidate] = await db.query('SELECT email FROM candidates WHERE id = ?', [req.candidateId]);

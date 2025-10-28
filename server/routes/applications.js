@@ -64,10 +64,11 @@ router.get('/applications/:id', requireAuth, async (req, res) => {
 router.put('/applications/:id', requireAuth, async (req, res) => {
   try {
     const { status, remarks } = req.body;
+    const now = new Date();
     
     await db.query(
-      'UPDATE applications SET status = ?, remarks = ? WHERE id = ?',
-      [status, remarks, req.params.id]
+      'UPDATE applications SET status = ?, remarks = ?, modified_at = ?, modified_by = ?, modified_by_type = ? WHERE id = ?',
+      [status, remarks, now, req.admin.id, 'admin', req.params.id]
     );
     
     res.json({ success: true, message: 'Application updated successfully' });
@@ -92,9 +93,10 @@ router.patch('/applications/:id/status', requireAuth, async (req, res) => {
       return res.status(404).json({ success: false, message: 'Application not found' });
     }
 
+    const now = new Date();
     await db.query(
-      'UPDATE applications SET status = ? WHERE id = ?',
-      [status, req.params.id]
+      'UPDATE applications SET status = ?, modified_at = ?, modified_by = ?, modified_by_type = ? WHERE id = ?',
+      [status, now, req.admin.id, 'admin', req.params.id]
     );
 
     const app = appData[0];

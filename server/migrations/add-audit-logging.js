@@ -54,34 +54,34 @@ export async function addAuditLogging() {
     `);
     console.log('✓ Inserted default blog categories');
     
-    // Add audit columns to candidate_applications table
+    // Add audit columns to applications table
     const [appColumns] = await db.query(`
       SELECT COLUMN_NAME 
       FROM INFORMATION_SCHEMA.COLUMNS 
       WHERE TABLE_SCHEMA = DATABASE()
-      AND TABLE_NAME = 'candidate_applications'
+      AND TABLE_NAME = 'applications'
     `);
     
     const appColumnNames = appColumns.map(c => c.COLUMN_NAME);
     
     if (!appColumnNames.includes('modified_at')) {
-      await db.query(`ALTER TABLE candidate_applications ADD COLUMN modified_at DATETIME DEFAULT NULL`);
-      console.log('✓ Added modified_at to candidate_applications');
+      await db.query(`ALTER TABLE applications ADD COLUMN modified_at DATETIME DEFAULT NULL`);
+      console.log('✓ Added modified_at to applications');
     }
     
     if (!appColumnNames.includes('modified_by')) {
-      await db.query(`ALTER TABLE candidate_applications ADD COLUMN modified_by INT DEFAULT NULL`);
-      console.log('✓ Added modified_by to candidate_applications');
+      await db.query(`ALTER TABLE applications ADD COLUMN modified_by INT DEFAULT NULL`);
+      console.log('✓ Added modified_by to applications');
     }
     
     if (!appColumnNames.includes('modified_by_type')) {
-      await db.query(`ALTER TABLE candidate_applications ADD COLUMN modified_by_type ENUM('admin', 'candidate') DEFAULT 'candidate'`);
-      console.log('✓ Added modified_by_type to candidate_applications');
+      await db.query(`ALTER TABLE applications ADD COLUMN modified_by_type ENUM('admin', 'candidate') DEFAULT 'candidate'`);
+      console.log('✓ Added modified_by_type to applications');
     }
     
     if (!appColumnNames.includes('submitted_at')) {
-      await db.query(`ALTER TABLE candidate_applications ADD COLUMN submitted_at DATETIME DEFAULT NULL`);
-      console.log('✓ Added submitted_at to candidate_applications');
+      await db.query(`ALTER TABLE applications ADD COLUMN submitted_at DATETIME DEFAULT NULL`);
+      console.log('✓ Added submitted_at to applications');
     }
     
     // Add audit columns to email_logs table
