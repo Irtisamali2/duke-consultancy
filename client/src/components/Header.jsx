@@ -25,7 +25,14 @@ export const Header = ({ currentPage = 'home' }) => {
           >
             About Us
           </a>
-          <a href="#" className="text-sm font-medium text-gray-700 hover:text-[#00A6CE] transition-colors">Blogs</a>
+          <a 
+            href="/blogs" 
+            className={`text-sm font-medium transition-colors ${
+              currentPage === 'blogs' ? 'text-[#00A6CE]' : 'text-gray-700 hover:text-[#00A6CE]'
+            }`}
+          >
+            Blogs
+          </a>
           <a 
             href="/contact" 
             className={`text-sm font-medium transition-colors ${
