@@ -1,13 +1,14 @@
 export const Footer = () => {
   return (
-    <footer className="w-full bg-gradient-to-b from-white to-[#B3E0EC] py-12">
+    <footer className="w-full bg-gradient-to-b from-white to-[#B3E0EC] py-8 sm:py-12">
       <div className="max-w-7xl mx-auto px-6 lg:px-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-8">
-          <div className="space-y-5">
+        {/* Logo and description section - full width on all screens */}
+        <div className="mb-8 sm:mb-10">
+          <div className="space-y-4 sm:space-y-5">
             <img
               src="/Group_1760620436964.png"
               alt="Duke Consultancy Logo"
-              className="h-12"
+              className="h-10 sm:h-12"
             />
             <p className="text-gray-800 text-sm leading-relaxed max-w-xs">
               Connecting skilled healthcare professionals from Pakistan to leading hospitals across Europe, the UK, and beyond.
@@ -30,10 +31,13 @@ export const Footer = () => {
               </a>
             </div>
           </div>
+        </div>
 
+        {/* Services and Company section - 2 columns on mobile, 3 columns on desktop */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12">
           <div>
-            <h3 className="font-bold text-gray-900 mb-4">Services</h3>
-            <ul className="space-y-3 text-gray-800 text-sm">
+            <h3 className="font-bold text-gray-900 mb-3 sm:mb-4 text-sm sm:text-base">Services</h3>
+            <ul className="space-y-2 sm:space-y-3 text-gray-800 text-xs sm:text-sm">
               <li><a href="#" className="hover:text-[#00A6CE]">Professional Training</a></li>
               <li><a href="#" className="hover:text-[#00A6CE]">Healthcare Recruitment</a></li>
               <li><a href="#" className="hover:text-[#00A6CE]">Job Placement Abroad</a></li>
@@ -42,14 +46,17 @@ export const Footer = () => {
           </div>
 
           <div>
-            <h3 className="font-bold text-gray-900 mb-4">Company</h3>
-            <ul className="space-y-3 text-gray-800 text-sm">
+            <h3 className="font-bold text-gray-900 mb-3 sm:mb-4 text-sm sm:text-base">Company</h3>
+            <ul className="space-y-2 sm:space-y-3 text-gray-800 text-xs sm:text-sm">
               <li><a href="#" className="hover:text-[#00A6CE]">About us</a></li>
               <li><a href="#" className="hover:text-[#00A6CE]">Careers</a></li>
               <li><a href="#" className="hover:text-[#00A6CE]">Blogs</a></li>
               <li><a href="#" className="hover:text-[#00A6CE]">Contact Us</a></li>
             </ul>
           </div>
+
+          {/* Empty column for desktop 3-column layout */}
+          <div className="hidden lg:block"></div>
         </div>
       </div>
     </footer>
