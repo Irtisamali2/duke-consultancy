@@ -16,6 +16,10 @@ import emailSettingsRoutes from "./routes/email-settings.js";
 import passwordResetRoutes from "./routes/password-reset.js";
 import bulkEmailRoutes from "./routes/bulk-email.js";
 import uploadRoutes from "./routes/upload.js";
+import companySettingsRoutes from "./routes/company-settings.js";
+import testimonialsRoutes from "./routes/testimonials.js";
+import socialLinksRoutes from "./routes/social-links.js";
+import contactLeadsRoutes from "./routes/contact-leads.js";
 
 export async function registerRoutes(app) {
   // Database test routes
@@ -38,6 +42,12 @@ export async function registerRoutes(app) {
   app.use('/api', emailSettingsRoutes);
   app.use('/api', bulkEmailRoutes);
   app.use('/api', uploadRoutes);
+  
+  // Company settings routes
+  app.use('/api', companySettingsRoutes);
+  app.use('/api', testimonialsRoutes);
+  app.use('/api', socialLinksRoutes);
+  app.use('/api', contactLeadsRoutes);
   
   // Candidate routes
   app.use('/api', candidateProfileRoutes);
