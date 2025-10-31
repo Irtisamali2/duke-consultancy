@@ -17,10 +17,28 @@ export default function CandidateProfileFormPage() {
   const [availableCountries, setAvailableCountries] = useState([]);
   const [availableTrades, setAvailableTrades] = useState([]);
   const [applicationId, setApplicationId] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState({});
   
   const urlParams = new URLSearchParams(window.location.search);
   const jobIdFromUrl = urlParams.get('job_id');
   const applicationIdFromUrl = urlParams.get('application_id');
+  
+  // Utility function to convert date to MySQL format (YYYY-MM-DD)
+  const formatDateForMySQL = (dateValue) => {
+    if (!dateValue) return null;
+    // If it's already in YYYY-MM-DD format, return as is
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) return dateValue;
+    // If it has time component, extract date part
+    if (dateValue.includes('T')) return dateValue.split('T')[0];
+    // Try to parse and format
+    try {
+      const date = new Date(dateValue);
+      if (isNaN(date.getTime())) return null;
+      return date.toISOString().split('T')[0];
+    } catch {
+      return null;
+    }
+  };
   
   const [accountData, setAccountData] = useState({
     firstName: '',
@@ -67,7 +85,7 @@ export default function CandidateProfileFormPage() {
   
   const [documents, setDocuments] = useState({
     cv_resume_url: '', passport_url: '', degree_certificates_url: '',
-    license_certificate_url: '', ielts_oet_certificate_url: '', experience_letters_url: ''
+    license_certificate_url: '', ielts_oet_certificate_url: '', experience_letters_url: '', additional_files: []
   });
 
   const [profileImage, setProfileImage] = useState(null);
@@ -469,8 +487,11 @@ export default function CandidateProfileFormPage() {
       // Format dates to MySQL format
       const formattedPersonalData = {
         ...personalData,
-        date_of_birth: personalData.date_of_birth ? personalData.date_of_birth.split('T')[0] : null,
-        passport_expire_date: personalData.passport_expire_date ? personalData.passport_expire_date.split('T')[0] : null
+        date_of_birth: formatDateForMySQL(personalData.date_of_birth),
+        cnic_issue_date: formatDateForMySQL(personalData.cnic_issue_date),
+        cnic_expiry_date: formatDateForMySQL(personalData.cnic_expiry_date),
+        passport_issue_date: formatDateForMySQL(personalData.passport_issue_date),
+        passport_expiry_date: formatDateForMySQL(personalData.passport_expiry_date)
       };
 
       const response = await fetch('/api/candidate/profile/personal', {
@@ -497,17 +518,28 @@ export default function CandidateProfileFormPage() {
       const url = isEditing ? `/api/candidate/profile/experience/${newExperience.id}` : '/api/candidate/profile/experience';
       const method = isEditing ? 'PUT' : 'POST';
       
+      // Format dates for MySQL
+      const formattedExperience = {
+        ...newExperience,
+        from_date: formatDateForMySQL(newExperience.from_date),
+        to_date: formatDateForMySQL(newExperience.to_date),
+        application_id: applicationId
+      };
+      
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...newExperience, application_id: applicationId })
+        body: JSON.stringify(formattedExperience)
       });
       if (response.ok) {
         await fetchProfile();
         setNewExperience({ job_title: '', employer_hospital: '', specialization: '', from_date: '', to_date: '', total_experience: '' });
+        setMessage({ type: 'success', text: isEditing ? 'Experience updated successfully' : 'Experience added successfully' });
+        setTimeout(() => setMessage({ type: '', text: '' }), 3000);
       }
     } catch (error) {
       console.error('Failed to add/update experience:', error);
+      setMessage({ type: 'error', text: 'Failed to save experience' });
     }
   };
 
@@ -525,9 +557,12 @@ export default function CandidateProfileFormPage() {
       if (response.ok) {
         await fetchProfile();
         setNewEducation({ degree_diploma_title: '', university_institute_name: '', graduation_year: '', program_duration: '', registration_number: '', marks_percentage: '' });
+        setMessage({ type: 'success', text: isEditing ? 'Education updated successfully' : 'Education added successfully' });
+        setTimeout(() => setMessage({ type: '', text: '' }), 3000);
       }
     } catch (error) {
       console.error('Failed to add/update education:', error);
+      setMessage({ type: 'error', text: 'Failed to save education' });
     }
   };
 
@@ -551,9 +586,12 @@ export default function CandidateProfileFormPage() {
       });
       if (response.ok) {
         await fetchProfile();
+        setMessage({ type: 'success', text: 'Experience deleted successfully' });
+        setTimeout(() => setMessage({ type: '', text: '' }), 3000);
       }
     } catch (error) {
       console.error('Failed to delete experience:', error);
+      setMessage({ type: 'error', text: 'Failed to delete experience' });
     }
   };
 
@@ -577,10 +615,133 @@ export default function CandidateProfileFormPage() {
       });
       if (response.ok) {
         await fetchProfile();
+        setMessage({ type: 'success', text: 'Education deleted successfully' });
+        setTimeout(() => setMessage({ type: '', text: '' }), 3000);
       }
     } catch (error) {
       console.error('Failed to delete education:', error);
+      setMessage({ type: 'error', text: 'Failed to delete education' });
     }
+  };
+
+  const handleFileUpload = async (file, fieldName) => {
+    if (!file) return;
+
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'File size must be less than 5MB' });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      setUploadProgress(prev => ({ ...prev, [fieldName]: 0 }));
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+          const progress = Math.round((e.loaded / e.total) * 100);
+          setUploadProgress(prev => ({ ...prev, [fieldName]: progress }));
+        }
+      });
+
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+          if (response.success) {
+            setDocuments(prev => ({ ...prev, [fieldName]: response.url }));
+            setMessage({ type: 'success', text: 'File uploaded successfully' });
+            setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+          }
+        } else {
+          setMessage({ type: 'error', text: 'File upload failed' });
+        }
+        setUploadProgress(prev => ({ ...prev, [fieldName]: null }));
+      });
+
+      xhr.addEventListener('error', () => {
+        setMessage({ type: 'error', text: 'File upload failed' });
+        setUploadProgress(prev => ({ ...prev, [fieldName]: null }));
+      });
+
+      xhr.open('POST', '/api/candidate/upload-document');
+      xhr.send(formData);
+    } catch (error) {
+      console.error('Failed to upload file:', error);
+      setMessage({ type: 'error', text: 'Failed to upload file' });
+      setUploadProgress(prev => ({ ...prev, [fieldName]: null }));
+    }
+  };
+
+  const handleAdditionalFileUpload = async (file) => {
+    if (!file) return;
+
+    // Check if we already have 5 files
+    if (documents.additional_files.length >= 5) {
+      setMessage({ type: 'error', text: 'Maximum 5 additional files allowed' });
+      return;
+    }
+
+    // Check file size (5MB limit per file)
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'File size must be less than 5MB' });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const tempId = `additional_${Date.now()}`;
+      setUploadProgress(prev => ({ ...prev, [tempId]: 0 }));
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+          const progress = Math.round((e.loaded / e.total) * 100);
+          setUploadProgress(prev => ({ ...prev, [tempId]: progress }));
+        }
+      });
+
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+          if (response.success) {
+            setDocuments(prev => ({
+              ...prev,
+              additional_files: [...prev.additional_files, { name: file.name, url: response.url }]
+            }));
+            setMessage({ type: 'success', text: 'Additional file uploaded successfully' });
+            setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+          }
+        } else {
+          setMessage({ type: 'error', text: 'File upload failed' });
+        }
+        setUploadProgress(prev => ({ ...prev, [tempId]: null }));
+      });
+
+      xhr.addEventListener('error', () => {
+        setMessage({ type: 'error', text: 'File upload failed' });
+        setUploadProgress(prev => ({ ...prev, [tempId]: null }));
+      });
+
+      xhr.open('POST', '/api/candidate/upload-document');
+      xhr.send(formData);
+    } catch (error) {
+      console.error('Failed to upload additional file:', error);
+      setMessage({ type: 'error', text: 'Failed to upload file' });
+    }
+  };
+
+  const removeAdditionalFile = (index) => {
+    setDocuments(prev => ({
+      ...prev,
+      additional_files: prev.additional_files.filter((_, i) => i !== index)
+    }));
   };
 
   const handleDocumentsSubmit = async () => {
