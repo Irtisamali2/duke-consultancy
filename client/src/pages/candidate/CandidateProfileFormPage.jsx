@@ -315,6 +315,7 @@ export default function CandidateProfileFormPage() {
               passport_issue_date: formatDateForInput(data.profile.passport_issue_date),
               passport_expire_date: formatDateForInput(data.profile.passport_expire_date),
               email_address: data.profile.email_address || '',
+              confirm_email_address: data.profile.email_address || '',
               tel_off_no: data.profile.tel_off_no || '',
               tel_res_no: data.profile.tel_res_no || '',
               mobile_no: data.profile.mobile_no || '',
@@ -388,7 +389,7 @@ export default function CandidateProfileFormPage() {
         setProfileImage(null);
         setProfileImagePreview(null);
         
-        // Fetch and set only basic profile info (name, email, profile image)
+        // Fetch and set only basic profile info (name, email, phone, profile image)
         const response = await fetch('/api/candidate/profile/basic');
         const data = await response.json();
         if (data.success && data.profile) {
@@ -411,9 +412,10 @@ export default function CandidateProfileFormPage() {
             passport_issue_date: '',
             passport_expire_date: '',
             email_address: data.profile.email_address || '',
+            confirm_email_address: data.profile.email_address || '',
             tel_off_no: '',
             tel_res_no: '',
-            mobile_no: '',
+            mobile_no: data.profile.mobile_no || '',
             present_address: '',
             present_street: '',
             present_postal_code: '',

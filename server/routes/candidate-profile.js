@@ -117,12 +117,24 @@ router.get('/candidate/profile', requireCandidateAuth, async (req, res) => {
       applicationId ? [req.candidateId, applicationId] : [req.candidateId]
     );
 
+    // Parse additional_files JSON string back to array
+    const documentsData = documents[0] || {};
+    if (documentsData.additional_files) {
+      try {
+        documentsData.additional_files = JSON.parse(documentsData.additional_files);
+      } catch (e) {
+        documentsData.additional_files = [];
+      }
+    } else {
+      documentsData.additional_files = [];
+    }
+
     res.json({
       success: true,
       profile: profiles[0] || {},
       education,
       experience,
-      documents: documents[0] || {}
+      documents: documentsData
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -132,16 +144,16 @@ router.get('/candidate/profile', requireCandidateAuth, async (req, res) => {
 // Get basic profile info only (for new applications - only name, email, profile image)
 router.get('/candidate/profile/basic', requireCandidateAuth, async (req, res) => {
   try {
-    // Get candidate email from candidates table
+    // Get candidate email and phone from candidates table
     const [candidates] = await pool.query(
-      'SELECT email FROM candidates WHERE id = ?',
+      'SELECT email, phone FROM candidates WHERE id = ?',
       [req.candidateId]
     );
     
     // Get "My Profile" data only (not application-specific profiles)
     // This ensures sidebar always shows the general profile image, not job application images
     const [profiles] = await pool.query(
-      'SELECT first_name, last_name, profile_image_url FROM healthcare_profiles WHERE candidate_id = ? AND application_id IS NULL ORDER BY id DESC LIMIT 1',
+      'SELECT first_name, last_name, profile_image_url, mobile_no FROM healthcare_profiles WHERE candidate_id = ? AND application_id IS NULL ORDER BY id DESC LIMIT 1',
       [req.candidateId]
     );
     
@@ -154,6 +166,7 @@ router.get('/candidate/profile/basic', requireCandidateAuth, async (req, res) =>
         first_name: profile.first_name || '',
         last_name: profile.last_name || '',
         email_address: candidate.email || '',
+        mobile_no: profile.mobile_no || candidate.phone || '',
         profile_image_url: profile.profile_image_url || null
       }
     });
@@ -592,7 +605,7 @@ router.put('/candidate/profile/education/:id', requireCandidateAuth, async (req,
 
 router.put('/candidate/profile/documents', requireCandidateAuth, async (req, res) => {
   try {
-    const { cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, application_id } = req.body;
+    const { cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, additional_files, application_id } = req.body;
     
     // CRITICAL: Require application_id to prevent orphaned data
     if (!application_id) {
@@ -622,24 +635,60 @@ router.put('/candidate/profile/documents', requireCandidateAuth, async (req, res
       });
     }
 
+    // Serialize additional_files as JSON string for storage
+    const additionalFilesJson = additional_files && additional_files.length > 0 ? JSON.stringify(additional_files) : null;
+
     const [existing] = await pool.query(
       'SELECT id FROM candidate_documents WHERE candidate_id = ? AND application_id = ?',
       [req.candidateId, appId]
     );
 
     if (existing.length > 0) {
-      await pool.query(
-        `UPDATE candidate_documents SET 
-         cv_resume_url = ?, passport_url = ?, degree_certificates_url = ?, 
-         license_certificate_url = ?, ielts_oet_certificate_url = ?, experience_letters_url = ?
-         WHERE candidate_id = ? AND application_id = ?`,
-        [cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, req.candidateId, appId]
-      );
+      // Try to update with additional_files column, fallback if column doesn't exist
+      try {
+        await pool.query(
+          `UPDATE candidate_documents SET 
+           cv_resume_url = ?, passport_url = ?, degree_certificates_url = ?, 
+           license_certificate_url = ?, ielts_oet_certificate_url = ?, experience_letters_url = ?,
+           additional_files = ?
+           WHERE candidate_id = ? AND application_id = ?`,
+          [cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, additionalFilesJson, req.candidateId, appId]
+        );
+      } catch (updateError) {
+        // If additional_files column doesn't exist, try to add it and retry
+        if (updateError.code === 'ER_BAD_FIELD_ERROR') {
+          await pool.query('ALTER TABLE candidate_documents ADD COLUMN additional_files TEXT');
+          await pool.query(
+            `UPDATE candidate_documents SET 
+             cv_resume_url = ?, passport_url = ?, degree_certificates_url = ?, 
+             license_certificate_url = ?, ielts_oet_certificate_url = ?, experience_letters_url = ?,
+             additional_files = ?
+             WHERE candidate_id = ? AND application_id = ?`,
+            [cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, additionalFilesJson, req.candidateId, appId]
+          );
+        } else {
+          throw updateError;
+        }
+      }
     } else {
-      await pool.query(
-        'INSERT INTO candidate_documents (candidate_id, application_id, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [req.candidateId, appId, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url]
-      );
+      // Try to insert with additional_files column, fallback if column doesn't exist
+      try {
+        await pool.query(
+          'INSERT INTO candidate_documents (candidate_id, application_id, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, additional_files) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          [req.candidateId, appId, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, additionalFilesJson]
+        );
+      } catch (insertError) {
+        // If additional_files column doesn't exist, try to add it and retry
+        if (insertError.code === 'ER_BAD_FIELD_ERROR') {
+          await pool.query('ALTER TABLE candidate_documents ADD COLUMN additional_files TEXT');
+          await pool.query(
+            'INSERT INTO candidate_documents (candidate_id, application_id, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, additional_files) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [req.candidateId, appId, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, additionalFilesJson]
+          );
+        } else {
+          throw insertError;
+        }
+      }
     }
 
     res.json({ success: true, message: 'Documents updated' });

@@ -175,6 +175,18 @@ export default function CandidateApplicationViewPage() {
 
             <div className="bg-white rounded-lg shadow p-4 sm:p-6">
               <h2 className="text-lg sm:text-xl font-bold text-[#00A6CE] mb-4">Personal Information</h2>
+              
+              {/* Candidate Picture */}
+              {profile.profile_image_url && (
+                <div className="mb-6 flex justify-center">
+                  <img 
+                    src={profile.profile_image_url} 
+                    alt="Candidate Profile" 
+                    className="w-32 h-32 object-cover rounded-full border-4 border-[#00A6CE]"
+                  />
+                </div>
+              )}
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 <div>
                   <p className="text-sm text-gray-600">First Name</p>
