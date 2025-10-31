@@ -166,18 +166,30 @@ export default function CandidateDashboardPage() {
                           app.status === 'approved' ? 'bg-green-100 text-green-800' :
                           app.status === 'verified' ? 'bg-blue-100 text-blue-800' :
                           app.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                          app.status === 'draft' ? 'bg-gray-100 text-gray-800' :
                           'bg-red-100 text-red-800'
                         }`}>
                           {app.status}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <button 
-                          onClick={() => setLocation('/candidate/profile')}
-                          className="text-[#00A6CE] hover:text-[#0090B5]"
-                        >
-                          👁️
-                        </button>
+                        {app.status === 'draft' ? (
+                          <button 
+                            onClick={() => setLocation(`/candidate/profile?job_id=${app.job_id}`)}
+                            className="text-[#00A6CE] hover:text-[#0090B5] font-medium"
+                            title="Continue editing draft"
+                          >
+                            ✏️ Edit
+                          </button>
+                        ) : (
+                          <button 
+                            onClick={() => setLocation('/candidate/profile')}
+                            className="text-[#00A6CE] hover:text-[#0090B5]"
+                            title="View application"
+                          >
+                            👁️ View
+                          </button>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <button className="text-[#00A6CE] hover:text-[#0090B5]">
