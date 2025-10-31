@@ -464,4 +464,198 @@ router.post('/applications/export', requireAuth, async (req, res) => {
   }
 });
 
+// Download individual application with all documents
+router.get('/applications/:id/download', requireAuth, async (req, res) => {
+  try {
+    const applicationId = req.params.id;
+
+    // Import necessary modules dynamically
+    const PDFDocument = (await import('pdfkit')).default;
+    const archiver = (await import('archiver')).default;
+
+    // Fetch application data
+    const [applications] = await pool.query(
+      'SELECT * FROM applications WHERE id = ?',
+      [applicationId]
+    );
+
+    if (!applications || applications.length === 0) {
+      return res.status(404).json({ success: false, message: 'Application not found' });
+    }
+
+    const application = applications[0];
+
+    // Fetch profile, experience, education, and documents
+    const [profiles] = await pool.query(
+      'SELECT * FROM healthcare_profiles WHERE application_id = ?',
+      [applicationId]
+    );
+
+    const [experiences] = await pool.query(
+      'SELECT * FROM work_experience WHERE application_id = ?',
+      [applicationId]
+    );
+
+    const [educations] = await pool.query(
+      'SELECT * FROM education_records WHERE application_id = ?',
+      [applicationId]
+    );
+
+    const [docs] = await pool.query(
+      'SELECT * FROM candidate_documents WHERE application_id = ?',
+      [applicationId]
+    );
+
+    const profile = profiles[0] || {};
+    const documents = docs[0] || {};
+
+    // Create ZIP archive
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    
+    res.attachment(`application_${applicationId}.zip`);
+    archive.pipe(res);
+
+    // Generate PDF
+    const doc = new PDFDocument({ margin: 50 });
+    const pdfBuffers = [];
+    
+    doc.on('data', (chunk) => pdfBuffers.push(chunk));
+    doc.on('end', async () => {
+      const pdfData = Buffer.concat(pdfBuffers);
+      archive.append(pdfData, { name: `application_${applicationId}.pdf` });
+
+      // Add attached files to ZIP
+      const fileFields = [
+        { url: documents.cv_resume_url, name: 'CV_Resume.pdf' },
+        { url: documents.passport_url, name: 'Passport.pdf' },
+        { url: documents.degree_certificates_url, name: 'Degree_Certificates.pdf' },
+        { url: documents.license_certificate_url, name: 'License_Certificate.pdf' },
+        { url: documents.ielts_oet_certificate_url, name: 'IELTS_OET_Certificate.pdf' },
+        { url: documents.experience_letters_url, name: 'Experience_Letters.pdf' }
+      ];
+
+      // Add additional files
+      if (documents.additional_files) {
+        try {
+          const additionalFiles = typeof documents.additional_files === 'string' 
+            ? JSON.parse(documents.additional_files) 
+            : documents.additional_files;
+          
+          if (Array.isArray(additionalFiles)) {
+            additionalFiles.forEach((file, index) => {
+              const fileUrl = file.url || file;
+              const fileName = file.name || `Additional_Document_${index + 1}`;
+              fileFields.push({ url: fileUrl, name: fileName });
+            });
+          }
+        } catch (e) {
+          console.error('Error parsing additional files:', e);
+        }
+      }
+
+      // Download and add files to archive
+      for (const field of fileFields) {
+        if (field.url) {
+          try {
+            const filePath = path.join(__dirname, '..', field.url.startsWith('/') ? field.url.substring(1) : field.url);
+            if (fs.existsSync(filePath)) {
+              const fileData = fs.readFileSync(filePath);
+              archive.append(fileData, { name: field.name });
+            }
+          } catch (error) {
+            console.error(`Failed to add ${field.name}:`, error);
+          }
+        }
+      }
+
+      // Finalize the archive
+      archive.finalize();
+    });
+
+    // Generate PDF content - same as candidate download
+    doc.fontSize(20).text('Job Application Details', { align: 'center' });
+    doc.moveDown();
+    doc.fontSize(10).text(`Application ID: ${String(applicationId).padStart(6, '0')}`, { align: 'right' });
+    doc.text(`Status: ${application.status}`, { align: 'right' });
+    doc.text(`Date: ${new Date(application.applied_date).toLocaleDateString()}`, { align: 'right' });
+    doc.moveDown();
+
+    // Personal Information
+    const addSection = (doc, title) => {
+      doc.fontSize(14).fillColor('#00A6CE').text(title, { underline: true });
+      doc.fillColor('black').moveDown(0.5);
+    };
+
+    const addField = (doc, label, value) => {
+      if (value) {
+        doc.fontSize(10).text(`${label}: `, { continued: true })
+           .fontSize(10).text(value || 'N/A');
+      }
+    };
+
+    addSection(doc, 'Personal Information');
+    addField(doc, 'First Name', profile.first_name);
+    addField(doc, 'Last Name', profile.last_name);
+    addField(doc, 'Father\'s/Husband\'s Name', profile.father_husband_name);
+    addField(doc, 'Date of Birth', profile.date_of_birth);
+    addField(doc, 'Gender', profile.gender);
+    addField(doc, 'Marital Status', profile.marital_status);
+    addField(doc, 'Religion', profile.religion);
+    addField(doc, 'Place of Birth', profile.place_of_birth);
+    addField(doc, 'Province', profile.province);
+    addField(doc, 'Country', profile.country);
+    addField(doc, 'CNIC', profile.cnic);
+    addField(doc, 'Passport Number', profile.passport_number);
+    addField(doc, 'Email Address', profile.email_address);
+    addField(doc, 'Mobile Number', profile.mobile_no);
+    doc.moveDown();
+
+    // Work Experience
+    addSection(doc, 'Work Experience');
+    if (experiences && experiences.length > 0) {
+      experiences.forEach((exp, index) => {
+        doc.fontSize(11).text(`Experience ${index + 1}:`, { underline: true });
+        addField(doc, 'Job Title', exp.job_title);
+        addField(doc, 'Employer/Hospital', exp.employer_hospital);
+        addField(doc, 'Specialization', exp.specialization);
+        addField(doc, 'Total Experience', exp.total_experience);
+        doc.moveDown(0.5);
+      });
+    } else {
+      doc.fontSize(10).text('No work experience records', { italics: true });
+    }
+    doc.moveDown();
+
+    // Education & Certifications
+    addSection(doc, 'Education & Certifications');
+    if (educations && educations.length > 0) {
+      educations.forEach((edu, index) => {
+        doc.fontSize(11).text(`Education ${index + 1}:`, { underline: true });
+        addField(doc, 'Degree/Diploma Title', edu.degree_diploma_title);
+        addField(doc, 'University/Institute', edu.university_institute_name);
+        addField(doc, 'Graduation Year', edu.graduation_year);
+        addField(doc, 'Registration Number', edu.registration_number);
+        doc.moveDown(0.5);
+      });
+    } else {
+      doc.fontSize(10).text('No education records', { italics: true });
+    }
+    doc.moveDown();
+
+    // Trade Information
+    addSection(doc, 'Trade Information');
+    addField(doc, 'Trade Applied For', profile.trade_applied_for);
+    addField(doc, 'Availability to Join', profile.availability_to_join);
+    addField(doc, 'Willingness to Relocate', profile.willingness_to_relocate);
+
+    doc.end();
+
+  } catch (error) {
+    console.error('Error generating application download:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, message: 'Failed to generate application download' });
+    }
+  }
+});
+
 export default router;

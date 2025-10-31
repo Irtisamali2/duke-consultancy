@@ -47,6 +47,27 @@ export default function ApplicationDetailsPage() {
     }
   };
 
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(`/api/applications/${params.id}/download`);
+      if (!response.ok) {
+        throw new Error('Download failed');
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `application_${params.id}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Failed to download application:', error);
+      alert('Failed to download application. Please try again.');
+    }
+  };
+
   if (!data) {
     return (
       <AdminLayout>
@@ -64,12 +85,20 @@ export default function ApplicationDetailsPage() {
       <div className="p-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Applications Management</h1>
-          <Button
-            onClick={() => setLocation('/admin/applications')}
-            className="bg-gray-400 hover:bg-gray-500 text-white"
-          >
-            Back
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={handleDownload}
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              Download Application
+            </Button>
+            <Button
+              onClick={() => setLocation('/admin/applications')}
+              className="bg-gray-400 hover:bg-gray-500 text-white"
+            >
+              Back
+            </Button>
+          </div>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6">
