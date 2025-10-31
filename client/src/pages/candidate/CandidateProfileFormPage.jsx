@@ -104,7 +104,6 @@ export default function CandidateProfileFormPage() {
   useEffect(() => {
     checkAuth();
     fetchApplications();
-    fetchSidebarProfile();
     if (jobIdFromUrl) {
       setSelectedJobId(jobIdFromUrl);
       setCurrentStep(1);
@@ -138,6 +137,22 @@ export default function CandidateProfileFormPage() {
       fetchProfile();
     }
   }, [candidate, applicationId]);
+
+  // Fetch sidebar profile (My Profile image) separately
+  useEffect(() => {
+    const loadSidebarProfile = async () => {
+      try {
+        const response = await fetch('/api/candidate/profile/basic');
+        const data = await response.json();
+        if (data.success && data.profile) {
+          setSidebarProfileImage(data.profile.profile_image_url || null);
+        }
+      } catch (error) {
+        console.error('Failed to fetch sidebar profile:', error);
+      }
+    };
+    loadSidebarProfile();
+  }, []);
   
   const fetchApplications = async () => {
     try {
@@ -230,18 +245,6 @@ export default function CandidateProfileFormPage() {
       setLocation('/candidate/login');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchSidebarProfile = async () => {
-    try {
-      const response = await fetch('/api/candidate/profile/basic');
-      const data = await response.json();
-      if (data.success && data.profile) {
-        setSidebarProfileImage(data.profile.profile_image_url || null);
-      }
-    } catch (error) {
-      console.error('Failed to fetch sidebar profile:', error);
     }
   };
 
