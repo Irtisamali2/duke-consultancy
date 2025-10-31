@@ -720,21 +720,83 @@ router.post('/candidate/save-draft-application', requireCandidateAuth, async (re
       [req.candidateId, job_id, 'draft']
     );
     
+    let draftApplicationId;
+    
     if (existing.length > 0) {
       // Update existing draft
       await pool.query(
         'UPDATE applications SET applied_date = NOW() WHERE id = ?',
         [existing[0].id]
       );
-      res.json({ success: true, message: 'Draft updated', applicationId: existing[0].id });
+      draftApplicationId = existing[0].id;
     } else {
       // Create new draft
       const [result] = await pool.query(
         'INSERT INTO applications (candidate_id, job_id, status, applied_date) VALUES (?, ?, ?, NOW())',
         [req.candidateId, job_id, 'draft']
       );
-      res.json({ success: true, message: 'Draft created', applicationId: result.insertId });
+      draftApplicationId = result.insertId;
+      
+      // CRITICAL FIX: Associate any existing NULL application_id data with this new draft
+      // This fixes the issue where data was saved before the application record was created
+      await pool.query(
+        'UPDATE healthcare_profiles SET application_id = ? WHERE candidate_id = ? AND application_id IS NULL',
+        [draftApplicationId, req.candidateId]
+      );
+      await pool.query(
+        'UPDATE education_records SET application_id = ? WHERE candidate_id = ? AND application_id IS NULL',
+        [draftApplicationId, req.candidateId]
+      );
+      await pool.query(
+        'UPDATE work_experience SET application_id = ? WHERE candidate_id = ? AND application_id IS NULL',
+        [draftApplicationId, req.candidateId]
+      );
+      await pool.query(
+        'UPDATE candidate_documents SET application_id = ? WHERE candidate_id = ? AND application_id IS NULL',
+        [draftApplicationId, req.candidateId]
+      );
     }
+    
+    res.json({ success: true, message: existing.length > 0 ? 'Draft updated' : 'Draft created', applicationId: draftApplicationId });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Temporary fix endpoint to associate NULL data with a specific application
+router.post('/candidate/fix-orphaned-data/:applicationId', requireCandidateAuth, async (req, res) => {
+  try {
+    const applicationId = parseInt(req.params.applicationId);
+    
+    // Verify the application belongs to this candidate
+    const [app] = await pool.query(
+      'SELECT id FROM applications WHERE id = ? AND candidate_id = ?',
+      [applicationId, req.candidateId]
+    );
+    
+    if (app.length === 0) {
+      return res.status(404).json({ success: false, message: 'Application not found' });
+    }
+    
+    // Update all NULL application_id records to this application
+    await pool.query(
+      'UPDATE healthcare_profiles SET application_id = ? WHERE candidate_id = ? AND application_id IS NULL',
+      [applicationId, req.candidateId]
+    );
+    await pool.query(
+      'UPDATE education_records SET application_id = ? WHERE candidate_id = ? AND application_id IS NULL',
+      [applicationId, req.candidateId]
+    );
+    await pool.query(
+      'UPDATE work_experience SET application_id = ? WHERE candidate_id = ? AND application_id IS NULL',
+      [applicationId, req.candidateId]
+    );
+    await pool.query(
+      'UPDATE candidate_documents SET application_id = ? WHERE candidate_id = ? AND application_id IS NULL',
+      [applicationId, req.candidateId]
+    );
+    
+    res.json({ success: true, message: 'Orphaned data successfully linked to application' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

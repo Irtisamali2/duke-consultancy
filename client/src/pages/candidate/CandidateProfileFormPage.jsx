@@ -604,10 +604,27 @@ export default function CandidateProfileFormPage() {
         return;
       }
       
+      // CRITICAL: Create application record FIRST if it doesn't exist
+      // This ensures all subsequent data is saved with the correct application_id
+      let currentApplicationId = applicationId;
+      if (!currentApplicationId && selectedJobId) {
+        const draftResponse = await fetch('/api/candidate/save-draft-application', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ job_id: selectedJobId })
+        });
+        
+        if (draftResponse.ok) {
+          const draftData = await draftResponse.json();
+          currentApplicationId = draftData.applicationId;
+          setApplicationId(currentApplicationId);
+        }
+      }
+      
       const response = await fetch('/api/candidate/profile/trade', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...tradeData, application_id: applicationId })
+        body: JSON.stringify({ ...tradeData, application_id: currentApplicationId })
       });
       if (response.ok) {
         setCurrentStep(2);
