@@ -93,20 +93,28 @@ router.get('/candidate/profile', requireCandidateAuth, async (req, res) => {
     const applicationId = req.query.application_id ? parseInt(req.query.application_id) : null;
     
     const [profiles] = await pool.query(
-      'SELECT * FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
-      [req.candidateId, applicationId, applicationId]
+      applicationId 
+        ? 'SELECT * FROM healthcare_profiles WHERE candidate_id = ? AND application_id = ?'
+        : 'SELECT * FROM healthcare_profiles WHERE candidate_id = ? AND application_id IS NULL',
+      applicationId ? [req.candidateId, applicationId] : [req.candidateId]
     );
     const [education] = await pool.query(
-      'SELECT * FROM education_records WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
-      [req.candidateId, applicationId, applicationId]
+      applicationId
+        ? 'SELECT * FROM education_records WHERE candidate_id = ? AND application_id = ?'
+        : 'SELECT * FROM education_records WHERE candidate_id = ? AND application_id IS NULL',
+      applicationId ? [req.candidateId, applicationId] : [req.candidateId]
     );
     const [experience] = await pool.query(
-      'SELECT * FROM work_experience WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
-      [req.candidateId, applicationId, applicationId]
+      applicationId
+        ? 'SELECT * FROM work_experience WHERE candidate_id = ? AND application_id = ?'
+        : 'SELECT * FROM work_experience WHERE candidate_id = ? AND application_id IS NULL',
+      applicationId ? [req.candidateId, applicationId] : [req.candidateId]
     );
     const [documents] = await pool.query(
-      'SELECT * FROM candidate_documents WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
-      [req.candidateId, applicationId, applicationId]
+      applicationId
+        ? 'SELECT * FROM candidate_documents WHERE candidate_id = ? AND application_id = ?'
+        : 'SELECT * FROM candidate_documents WHERE candidate_id = ? AND application_id IS NULL',
+      applicationId ? [req.candidateId, applicationId] : [req.candidateId]
     );
 
     res.json({
