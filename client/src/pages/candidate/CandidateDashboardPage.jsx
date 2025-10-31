@@ -58,6 +58,26 @@ export default function CandidateDashboardPage() {
     }
   };
 
+  const handleDownload = async (applicationId) => {
+    try {
+      const response = await fetch(`/api/candidate/application/download/${applicationId}`);
+      if (!response.ok) throw new Error('Download failed');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `application_${applicationId}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Failed to download application:', error);
+      alert('Failed to download application. Please try again.');
+    }
+  };
+
   const handleDeleteDraft = async (id) => {
     if (!window.confirm('Are you sure you want to delete this draft application? This action cannot be undone.')) {
       return;
@@ -224,7 +244,11 @@ export default function CandidateDashboardPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         {app.status !== 'draft' && (
-                          <button className="text-[#00A6CE] hover:text-[#0090B5]">
+                          <button 
+                            onClick={() => handleDownload(app.id)}
+                            className="text-[#00A6CE] hover:text-[#0090B5]"
+                            title="Download application"
+                          >
                             ⬇️
                           </button>
                         )}
@@ -292,7 +316,10 @@ export default function CandidateDashboardPage() {
                         >
                           👁️ View
                         </button>
-                        <button className="flex-1 px-4 py-2 bg-[#00A6CE] text-white text-sm rounded-lg hover:bg-[#0090B5]">
+                        <button 
+                          onClick={() => handleDownload(app.id)}
+                          className="flex-1 px-4 py-2 bg-[#00A6CE] text-white text-sm rounded-lg hover:bg-[#0090B5]"
+                        >
                           ⬇️ Download
                         </button>
                       </>

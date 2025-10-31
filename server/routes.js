@@ -13,6 +13,7 @@ import blogCategoriesRoutes from "./routes/blog-categories.js";
 import statsRoutes from "./routes/stats.js";
 import candidateAuthRoutes from "./routes/candidate-auth.js";
 import candidateProfileRoutes from "./routes/candidate-profile.js";
+import candidateDownloadRoutes from "./routes/candidate-download.js";
 import emailSettingsRoutes from "./routes/email-settings.js";
 import passwordResetRoutes from "./routes/password-reset.js";
 import bulkEmailRoutes from "./routes/bulk-email.js";
@@ -53,6 +54,7 @@ export async function registerRoutes(app) {
   
   // Candidate routes
   app.use('/api', candidateProfileRoutes);
+  app.use('/api', candidateDownloadRoutes);
 
   // put application routes here
   // prefix all routes with /api
