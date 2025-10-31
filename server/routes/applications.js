@@ -17,28 +17,49 @@ router.get('/applications/filters/options', requireAuth, async (req, res) => {
   try {
     const { job_id } = req.query;
     
-    let query = `
-      SELECT DISTINCT 
-        hp.country,
-        hp.trade_applied_for,
-        j.title as job_title
-      FROM applications a
-      LEFT JOIN healthcare_profiles hp ON a.id = hp.application_id
-      LEFT JOIN jobs j ON a.job_id = j.id
-      WHERE 1=1
-    `;
-    
-    const params = [];
+    let countries = [];
+    let trades = [];
     
     if (job_id) {
-      query += ' AND a.job_id = ?';
-      params.push(job_id);
+      // Get countries and trades for specific job
+      const [jobRows] = await pool.query(
+        'SELECT countries, trades FROM jobs WHERE id = ? AND status = "active"',
+        [job_id]
+      );
+      
+      if (jobRows.length > 0) {
+        const job = jobRows[0];
+        try {
+          countries = job.countries ? JSON.parse(job.countries) : [];
+          trades = job.trades ? JSON.parse(job.trades) : [];
+        } catch (e) {
+          console.error('Error parsing job countries/trades:', e);
+        }
+      }
+    } else {
+      // Get all unique countries and trades from all active jobs
+      const [jobRows] = await pool.query(
+        'SELECT countries, trades FROM jobs WHERE status = "active"'
+      );
+      
+      const allCountries = new Set();
+      const allTrades = new Set();
+      
+      jobRows.forEach(job => {
+        try {
+          const jobCountries = job.countries ? JSON.parse(job.countries) : [];
+          const jobTrades = job.trades ? JSON.parse(job.trades) : [];
+          
+          jobCountries.forEach(c => allCountries.add(c));
+          jobTrades.forEach(t => allTrades.add(t));
+        } catch (e) {
+          console.error('Error parsing job countries/trades:', e);
+        }
+      });
+      
+      countries = Array.from(allCountries).sort();
+      trades = Array.from(allTrades).sort();
     }
-    
-    const [rows] = await pool.query(query, params);
-    
-    const countries = [...new Set(rows.map(r => r.country).filter(Boolean))].sort();
-    const trades = [...new Set(rows.map(r => r.trade_applied_for).filter(Boolean))].sort();
     
     res.json({ success: true, countries, trades });
   } catch (error) {
