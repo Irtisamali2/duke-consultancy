@@ -98,11 +98,13 @@ export default function CandidateProfileFormPage() {
 
   const [profileImage, setProfileImage] = useState(null);
   const [profileImagePreview, setProfileImagePreview] = useState(null);
+  const [sidebarProfileImage, setSidebarProfileImage] = useState(null);
   const [applications, setApplications] = useState([]);
 
   useEffect(() => {
     checkAuth();
     fetchApplications();
+    fetchSidebarProfile();
     if (jobIdFromUrl) {
       setSelectedJobId(jobIdFromUrl);
       setCurrentStep(1);
@@ -228,6 +230,18 @@ export default function CandidateProfileFormPage() {
       setLocation('/candidate/login');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSidebarProfile = async () => {
+    try {
+      const response = await fetch('/api/candidate/profile/basic');
+      const data = await response.json();
+      if (data.success && data.profile) {
+        setSidebarProfileImage(data.profile.profile_image_url || null);
+      }
+    } catch (error) {
+      console.error('Failed to fetch sidebar profile:', error);
     }
   };
 
@@ -521,6 +535,12 @@ export default function CandidateProfileFormPage() {
         setMessage({ type: 'success', text: 'Profile image uploaded successfully!' });
         setProfileImage(null);
         setProfileImagePreview(data.imageUrl);
+        
+        // If uploading to My Profile (no application_id), update sidebar image
+        if (!applicationId) {
+          setSidebarProfileImage(data.imageUrl);
+        }
+        
         await fetchProfile();
       } else {
         setMessage({ type: 'error', text: data.message || 'Failed to upload image' });
@@ -1140,7 +1160,7 @@ export default function CandidateProfileFormPage() {
     <div className="min-h-screen bg-gray-50 flex">
       <CandidateSidebar 
         candidate={candidate}
-        profileImage={profileImagePreview}
+        profileImage={sidebarProfileImage}
         onLogout={handleLogout}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
