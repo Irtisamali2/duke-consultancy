@@ -118,6 +118,12 @@ export default function CandidateProfileFormPage() {
         });
         setAvailableCountries(jobCountries);
         setAvailableTrades(jobTrades);
+        
+        setTradeData(prev => ({
+          ...prev,
+          countries_preference: prev.countries_preference.filter(c => jobCountries.includes(c)),
+          trades_preference: prev.trades_preference.filter(t => jobTrades.includes(t))
+        }));
       }
     } catch (error) {
       console.error('Failed to fetch job details:', error);
