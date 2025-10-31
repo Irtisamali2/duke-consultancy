@@ -114,7 +114,7 @@ export default function EmailSettingsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">SMTP Password *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">SMTP Password</label>
                 <input
                   type="password"
                   value={settings.smtp_password}
