@@ -1054,10 +1054,11 @@ export default function CandidateProfileFormPage() {
         return;
       }
       
+      // Save documents with application_id
       await fetch('/api/candidate/profile/documents', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(documents)
+        body: JSON.stringify({ ...documents, application_id: applicationId })
       });
       
       const appResponse = await fetch('/api/candidate/submit-application', {
