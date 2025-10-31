@@ -76,6 +76,7 @@ export default function CandidateProfileFormPage() {
     fetchJobs();
     if (jobIdFromUrl) {
       setSelectedJobId(jobIdFromUrl);
+      setCurrentStep(1);
     }
   }, []);
   
@@ -446,7 +447,12 @@ export default function CandidateProfileFormPage() {
   }
 
   const steps = [
-    { number: 0, label: 'Account Settings' }
+    { number: 0, label: 'Job Selection' },
+    { number: 1, label: 'Trade Information' },
+    { number: 2, label: 'Personal Information' },
+    { number: 3, label: 'Professional Experience' },
+    { number: 4, label: 'Education' },
+    { number: 5, label: 'Documents' }
   ];
 
   const handleLogout = async () => {
@@ -505,7 +511,7 @@ export default function CandidateProfileFormPage() {
 
             {currentStep === 0 && (
               <div>
-                <h2 className="text-xl font-bold mb-6">Account Settings</h2>
+                <h2 className="text-xl font-bold mb-6">Select Job Position</h2>
                 
                 <div className="mb-8">
                   <h3 className="text-lg font-semibold mb-4">Account Information</h3>
@@ -656,6 +662,116 @@ export default function CandidateProfileFormPage() {
                       </button>
                     </div>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {currentStep === 1 && (
+              <div>
+                <h2 className="text-xl font-bold mb-6">Trade Information</h2>
+                
+                {selectedJob && (
+                  <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h3 className="font-semibold text-blue-900 mb-2">Applying for: {selectedJob.title}</h3>
+                    <p className="text-sm text-blue-700">{selectedJob.location}</p>
+                  </div>
+                )}
+                
+                <div className="mb-6">
+                  <label className="block text-sm font-medium mb-2">Select Job Position *</label>
+                  <select
+                    value={selectedJobId}
+                    onChange={(e) => setSelectedJobId(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                    required
+                  >
+                    <option value="">Select a job position</option>
+                    {jobs.map((job) => (
+                      <option key={job.id} value={job.id}>{job.title} - {job.location}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="mb-6">
+                  <label className="block text-sm font-medium mb-2">Select Country Preference (Max: {selectedJob ? selectedJob.max_countries_selectable : 10}) *</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {availableCountries.map((countryName) => (
+                      <button
+                        key={countryName}
+                        type="button"
+                        onClick={() => toggleCountryPreference(countryName)}
+                        className={`px-3 py-2 rounded-lg text-sm ${
+                          tradeData.countries_preference.includes(countryName)
+                            ? 'bg-[#00A6CE] text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {countryName}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <label className="block text-sm font-medium mb-2">Select Trade/Specialization (Max: {selectedJob ? selectedJob.max_trades_selectable : 10}) *</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {availableTrades.map((trade) => (
+                      <button
+                        key={trade}
+                        type="button"
+                        onClick={() => toggleTradePreference(trade)}
+                        className={`px-3 py-2 rounded-lg text-sm ${
+                          tradeData.trades_preference.includes(trade)
+                            ? 'bg-[#00A6CE] text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {trade}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Availability to Join *</label>
+                    <select
+                      value={tradeData.availability_to_join}
+                      onChange={(e) => setTradeData({ ...tradeData, availability_to_join: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      required
+                    >
+                      <option value="">Select</option>
+                      <option value="Immediately">Immediately</option>
+                      <option value="Within 1 Month">Within 1 Month</option>
+                      <option value="Within 3 Months">Within 3 Months</option>
+                      <option value="Within 6 Months">Within 6 Months</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Willingness to Relocate *</label>
+                    <select
+                      value={tradeData.willingness_to_relocate}
+                      onChange={(e) => setTradeData({ ...tradeData, willingness_to_relocate: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      required
+                    >
+                      <option value="">Select</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                      <option value="Maybe">Maybe</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div className="flex justify-end">
+                  <Button
+                    onClick={handleTradeSubmit}
+                    className="bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-full px-8"
+                  >
+                    Continue to Personal Information
+                  </Button>
                 </div>
               </div>
             )}
