@@ -106,7 +106,7 @@ export default function CandidateDashboardPage() {
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Ready to Apply?</h3>
             <p className="text-gray-600 text-sm mb-3">Browse available job opportunities and submit your application.</p>
             <Button 
-              onClick={() => setLocation('/candidate/register-profile')}
+              onClick={() => setLocation('/candidate/browse-jobs')}
               className="bg-[#0B7A9F] hover:bg-[#096685] text-white rounded-full px-8"
             >
               Browse Jobs
