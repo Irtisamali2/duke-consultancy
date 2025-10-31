@@ -423,8 +423,30 @@ export default function ApplicationsPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{app.email}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{app.mobile_no || 'N/A'}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{app.job_title || 'General Application'}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{app.country || 'N/A'}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{app.trade_applied_for || 'N/A'}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {(() => {
+                          try {
+                            const countries = typeof app.countries_preference === 'string' 
+                              ? JSON.parse(app.countries_preference) 
+                              : app.countries_preference;
+                            return Array.isArray(countries) && countries.length > 0 ? countries.join(', ') : 'N/A';
+                          } catch (e) {
+                            return 'N/A';
+                          }
+                        })()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {(() => {
+                          try {
+                            const trades = typeof app.trades_preference === 'string' 
+                              ? JSON.parse(app.trades_preference) 
+                              : app.trades_preference;
+                            return Array.isArray(trades) && trades.length > 0 ? trades.join(', ') : 'N/A';
+                          } catch (e) {
+                            return 'N/A';
+                          }
+                        })()}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                         {new Date(app.applied_date).toLocaleDateString()}
                       </td>

@@ -78,8 +78,8 @@ router.get('/applications', requireAuth, async (req, res) => {
         hp.first_name,
         hp.last_name,
         hp.mobile_no,
-        hp.country,
-        hp.trade_applied_for,
+        hp.countries_preference,
+        hp.trades_preference,
         j.title as job_title
       FROM applications a
       LEFT JOIN candidates c ON a.candidate_id = c.id
@@ -96,13 +96,13 @@ router.get('/applications', requireAuth, async (req, res) => {
     }
     
     if (country) {
-      query += ` AND hp.country = ?`;
-      params.push(country);
+      query += ` AND JSON_CONTAINS(hp.countries_preference, ?)`;
+      params.push(JSON.stringify(country));
     }
     
     if (trade) {
-      query += ` AND hp.trade_applied_for = ?`;
-      params.push(trade);
+      query += ` AND JSON_CONTAINS(hp.trades_preference, ?)`;
+      params.push(JSON.stringify(trade));
     }
     
     if (status) {
@@ -441,13 +441,13 @@ router.post('/applications/export', requireAuth, async (req, res) => {
       }
       
       if (country) {
-        query += ' AND hp.country = ?';
-        params.push(country);
+        query += ' AND JSON_CONTAINS(hp.countries_preference, ?)';
+        params.push(JSON.stringify(country));
       }
       
       if (trade) {
-        query += ' AND hp.trade_applied_for = ?';
-        params.push(trade);
+        query += ' AND JSON_CONTAINS(hp.trades_preference, ?)';
+        params.push(JSON.stringify(trade));
       }
       
       if (status) {
