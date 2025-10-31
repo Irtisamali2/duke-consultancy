@@ -45,11 +45,11 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-6xl bg-white rounded-3xl shadow-lg overflow-hidden">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6">
+      <div className="w-full max-w-6xl bg-white rounded-2xl sm:rounded-3xl shadow-lg overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           {/* Left Side - Form */}
-          <div className="p-8 lg:p-12">
+          <div className="p-6 sm:p-8 lg:p-12">
             <div className="mb-8">
               <img src="/Group_1760620436964.png" alt="Duke Consultancy Logo" className="h-12 mb-8" />
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
@@ -115,7 +115,7 @@ export default function AdminLoginPage() {
           </div>
 
           {/* Right Side - Illustration */}
-          <div className="bg-gradient-to-br from-[#00A6CE]/10 to-[#00A6CE]/5 p-8 lg:p-12 flex items-center justify-center">
+          <div className="hidden lg:flex bg-gradient-to-br from-[#00A6CE]/10 to-[#00A6CE]/5 p-8 lg:p-12 items-center justify-center">
             <div className="relative w-full max-w-md">
               <svg viewBox="0 0 400 400" className="w-full h-auto">
                 {/* Lock icon */}
