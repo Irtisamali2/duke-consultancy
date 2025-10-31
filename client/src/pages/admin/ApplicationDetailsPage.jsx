@@ -74,6 +74,18 @@ export default function ApplicationDetailsPage() {
 
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-bold text-[#00A6CE] mb-4">Personal Information</h2>
+          
+          {/* Candidate Profile Image */}
+          {profile.profile_image_url && (
+            <div className="mb-6 flex justify-center">
+              <img 
+                src={profile.profile_image_url} 
+                alt="Candidate Profile" 
+                className="w-32 h-32 object-cover rounded-full border-4 border-[#00A6CE]"
+              />
+            </div>
+          )}
+          
           <div className="grid grid-cols-3 gap-4 mb-6">
             <div>
               <p className="text-sm text-gray-600">First Name</p>
@@ -302,7 +314,12 @@ export default function ApplicationDetailsPage() {
           
           {documents.additional_files && (() => {
             try {
-              const files = JSON.parse(documents.additional_files || '[]');
+              // Handle both array (already parsed by backend) and JSON string
+              let files = documents.additional_files;
+              if (typeof files === 'string') {
+                files = JSON.parse(files || '[]');
+              }
+              
               return Array.isArray(files) && files.length > 0 ? (
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold text-gray-700 mb-3">Additional Files</h3>
@@ -311,7 +328,7 @@ export default function ApplicationDetailsPage() {
                       const fileUrl = file.url || file;
                       return fileUrl ? (
                         <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <span className="text-sm">{file.name || `File ${index + 1}`}</span>
+                          <span className="text-sm">{file.name || `Additional File ${index + 1}`}</span>
                           <div className="flex gap-2">
                             <a 
                               href={fileUrl} 
@@ -336,6 +353,7 @@ export default function ApplicationDetailsPage() {
                 </div>
               ) : null;
             } catch (e) {
+              console.error('Error parsing additional_files:', e);
               return null;
             }
           })()}
