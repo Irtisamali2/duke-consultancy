@@ -336,7 +336,11 @@ export default function CandidateProfileFormPage() {
         countries_preference: [...current, countryName] 
       });
     } else {
-      alert(`You can only select up to ${maxAllowed} ${maxAllowed === 1 ? 'country' : 'countries'} for this position`);
+      setMessage({ 
+        type: 'error', 
+        text: `You can only select up to ${maxAllowed} ${maxAllowed === 1 ? 'country' : 'countries'} for this position. Please deselect one first.` 
+      });
+      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
     }
   };
   
@@ -358,7 +362,11 @@ export default function CandidateProfileFormPage() {
         trade_applied_for: newTrades[0]
       });
     } else {
-      alert(`You can only select up to ${maxAllowed} ${maxAllowed === 1 ? 'trade' : 'trades'} for this position`);
+      setMessage({ 
+        type: 'error', 
+        text: `You can only select up to ${maxAllowed} ${maxAllowed === 1 ? 'trade' : 'trades'} for this position. Please deselect one first.` 
+      });
+      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
     }
   };
 
@@ -795,14 +803,19 @@ export default function CandidateProfileFormPage() {
                 </div>
                 
                 <div className="mb-6">
-                  <label className="block text-sm font-medium mb-2">Select Country Preference (Max: {selectedJob ? selectedJob.max_countries_selectable : 10}) *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Select Country Preference (Max: {selectedJob ? selectedJob.max_countries_selectable : 10}) *
+                    <span className="ml-2 text-xs text-gray-600">
+                      ({tradeData.countries_preference.length} / {selectedJob ? selectedJob.max_countries_selectable : 10} selected)
+                    </span>
+                  </label>
                   <div className="grid grid-cols-3 gap-2">
                     {availableCountries.map((countryName) => (
                       <button
                         key={countryName}
                         type="button"
                         onClick={() => toggleCountryPreference(countryName)}
-                        className={`px-3 py-2 rounded-lg text-sm ${
+                        className={`px-3 py-2 rounded-lg text-sm transition-colors ${
                           tradeData.countries_preference.includes(countryName)
                             ? 'bg-[#00A6CE] text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -815,14 +828,19 @@ export default function CandidateProfileFormPage() {
                 </div>
                 
                 <div className="mb-6">
-                  <label className="block text-sm font-medium mb-2">Select Trade/Specialization (Max: {selectedJob ? selectedJob.max_trades_selectable : 10}) *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Select Trade/Specialization (Max: {selectedJob ? selectedJob.max_trades_selectable : 10}) *
+                    <span className="ml-2 text-xs text-gray-600">
+                      ({tradeData.trades_preference.length} / {selectedJob ? selectedJob.max_trades_selectable : 10} selected)
+                    </span>
+                  </label>
                   <div className="grid grid-cols-2 gap-2">
                     {availableTrades.map((trade) => (
                       <button
                         key={trade}
                         type="button"
                         onClick={() => toggleTradePreference(trade)}
-                        className={`px-3 py-2 rounded-lg text-sm ${
+                        className={`px-3 py-2 rounded-lg text-sm transition-colors ${
                           tradeData.trades_preference.includes(trade)
                             ? 'bg-[#00A6CE] text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
