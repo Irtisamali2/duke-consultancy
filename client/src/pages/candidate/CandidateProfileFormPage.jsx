@@ -122,6 +122,13 @@ export default function CandidateProfileFormPage() {
     }
   }, [selectedJobId]);
   
+  // Fetch profile when applicationId changes (for editing drafts)
+  useEffect(() => {
+    if (candidate) {
+      fetchProfile();
+    }
+  }, [applicationId, candidate]);
+  
   const fetchApplications = async () => {
     try {
       const response = await fetch('/api/candidate/applications');
@@ -202,7 +209,7 @@ export default function CandidateProfileFormPage() {
           email: data.candidate.email || '',
           phone: data.candidate.phone || ''
         });
-        await fetchProfile();
+        // fetchProfile is now called in useEffect when applicationId is set
       } else {
         setLocation('/candidate/login');
       }
