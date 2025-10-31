@@ -79,6 +79,12 @@ export default function CandidateProfileFormPage() {
     permanent_address: '', permanent_street: '', permanent_postal_code: ''
   });
   
+  const [sameAsPresentAddress, setSameAsPresentAddress] = useState(false);
+  const [declarations, setDeclarations] = useState({
+    informationAccurate: false,
+    agreeTerms: false
+  });
+  
   const [experiences, setExperiences] = useState([]);
   const [newExperience, setNewExperience] = useState({
     job_title: '', employer_hospital: '', specialization: '',
@@ -153,6 +159,18 @@ export default function CandidateProfileFormPage() {
     };
     loadSidebarProfile();
   }, []);
+  
+  // Handle "Same as Present Address" checkbox
+  useEffect(() => {
+    if (sameAsPresentAddress) {
+      setPersonalData(prev => ({
+        ...prev,
+        permanent_address: prev.present_address,
+        permanent_street: prev.present_street,
+        permanent_postal_code: prev.present_postal_code
+      }));
+    }
+  }, [sameAsPresentAddress, personalData.present_address, personalData.present_street, personalData.present_postal_code]);
   
   const fetchApplications = async () => {
     try {
@@ -269,6 +287,16 @@ export default function CandidateProfileFormPage() {
             });
             
             // Set personal data from fetched profile - use fresh object to avoid stale data
+            // Format dates properly for date input fields (YYYY-MM-DD)
+            const formatDateForInput = (dateValue) => {
+              if (!dateValue) return '';
+              // If it has time component, extract date part
+              if (typeof dateValue === 'string' && dateValue.includes('T')) {
+                return dateValue.split('T')[0];
+              }
+              return dateValue;
+            };
+            
             setPersonalData({
               first_name: data.profile.first_name || '',
               last_name: data.profile.last_name || '',
@@ -276,16 +304,16 @@ export default function CandidateProfileFormPage() {
               marital_status: data.profile.marital_status || '',
               gender: data.profile.gender || '',
               religion: data.profile.religion || '',
-              date_of_birth: data.profile.date_of_birth || '',
+              date_of_birth: formatDateForInput(data.profile.date_of_birth),
               place_of_birth: data.profile.place_of_birth || '',
               province: data.profile.province || '',
               country: data.profile.country || '',
               cnic: data.profile.cnic || '',
-              cnic_issue_date: data.profile.cnic_issue_date || '',
-              cnic_expire_date: data.profile.cnic_expire_date || '',
+              cnic_issue_date: formatDateForInput(data.profile.cnic_issue_date),
+              cnic_expire_date: formatDateForInput(data.profile.cnic_expire_date),
               passport_number: data.profile.passport_number || '',
-              passport_issue_date: data.profile.passport_issue_date || '',
-              passport_expire_date: data.profile.passport_expire_date || '',
+              passport_issue_date: formatDateForInput(data.profile.passport_issue_date),
+              passport_expire_date: formatDateForInput(data.profile.passport_expire_date),
               email_address: data.profile.email_address || '',
               tel_off_no: data.profile.tel_off_no || '',
               tel_res_no: data.profile.tel_res_no || '',
@@ -1013,6 +1041,17 @@ export default function CandidateProfileFormPage() {
 
   const handleDocumentsSubmit = async () => {
     try {
+      // Validate declarations
+      if (!declarations.informationAccurate) {
+        setMessage({ type: 'error', text: 'Please confirm that the information provided is accurate and all documents uploaded are authentic.' });
+        return;
+      }
+      
+      if (!declarations.agreeTerms) {
+        setMessage({ type: 'error', text: 'Please agree to the Terms & Conditions of Duke Consultancy.' });
+        return;
+      }
+      
       await fetch('/api/candidate/profile/documents', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -1899,6 +1938,18 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
+                <div className="mb-4">
+                  <label className="flex items-center gap-2">
+                    <input 
+                      type="checkbox" 
+                      className="w-4 h-4" 
+                      checked={sameAsPresentAddress}
+                      onChange={(e) => setSameAsPresentAddress(e.target.checked)}
+                    />
+                    <span className="text-sm font-medium">Same As Present Address</span>
+                  </label>
+                </div>
+                
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Permanent Address</label>
@@ -1906,8 +1957,9 @@ export default function CandidateProfileFormPage() {
                       type="text"
                       value={personalData.permanent_address}
                       onChange={(e) => setPersonalData({ ...personalData, permanent_address: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] disabled:bg-gray-100 disabled:cursor-not-allowed"
                       placeholder="Permanent Address"
+                      disabled={sameAsPresentAddress}
                     />
                   </div>
                   <div>
@@ -1916,8 +1968,9 @@ export default function CandidateProfileFormPage() {
                       type="text"
                       value={personalData.permanent_street}
                       onChange={(e) => setPersonalData({ ...personalData, permanent_street: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] disabled:bg-gray-100 disabled:cursor-not-allowed"
                       placeholder="123"
+                      disabled={sameAsPresentAddress}
                     />
                   </div>
                   <div>
@@ -1926,17 +1979,11 @@ export default function CandidateProfileFormPage() {
                       type="text"
                       value={personalData.permanent_postal_code}
                       onChange={(e) => setPersonalData({ ...personalData, permanent_postal_code: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] disabled:bg-gray-100 disabled:cursor-not-allowed"
                       placeholder="56855"
+                      disabled={sameAsPresentAddress}
                     />
                   </div>
-                </div>
-                
-                <div className="mb-6">
-                  <label className="flex items-center gap-2">
-                    <input type="checkbox" className="w-4 h-4" />
-                    <span className="text-sm">Same As Present Address</span>
-                  </label>
                 </div>
                 
                 <div className="flex justify-between mt-8">
@@ -2526,14 +2573,26 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="mb-6 space-y-3">
-                  <label className="flex items-start gap-2">
-                    <input type="checkbox" className="w-4 h-4 mt-1" />
-                    <span className="text-sm">I Confirm That The Information Provided Is Accurate And All Documents Uploaded Are Authentic.</span>
+                <div className="mb-6 space-y-3 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="w-4 h-4 mt-1" 
+                      checked={declarations.informationAccurate}
+                      onChange={(e) => setDeclarations({ ...declarations, informationAccurate: e.target.checked })}
+                      required
+                    />
+                    <span className="text-sm font-medium">I Confirm That The Information Provided Is Accurate And All Documents Uploaded Are Authentic.</span>
                   </label>
-                  <label className="flex items-start gap-2">
-                    <input type="checkbox" className="w-4 h-4 mt-1" />
-                    <span className="text-sm">I Agree To The Terms & Conditions Of Duke Consultancy.</span>
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="w-4 h-4 mt-1" 
+                      checked={declarations.agreeTerms}
+                      onChange={(e) => setDeclarations({ ...declarations, agreeTerms: e.target.checked })}
+                      required
+                    />
+                    <span className="text-sm font-medium">I Agree To The Terms & Conditions Of Duke Consultancy.</span>
                   </label>
                 </div>
                 
