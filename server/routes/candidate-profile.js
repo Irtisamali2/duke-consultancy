@@ -124,15 +124,15 @@ router.get('/candidate/profile', requireCandidateAuth, async (req, res) => {
 // Get basic profile info only (for new applications - only name, email, profile image)
 router.get('/candidate/profile/basic', requireCandidateAuth, async (req, res) => {
   try {
-    // Get candidate basic info from candidates table
+    // Get candidate email from candidates table
     const [candidates] = await db.query(
-      'SELECT firstName, lastName, email FROM candidates WHERE id = ?',
+      'SELECT email FROM candidates WHERE id = ?',
       [req.candidateId]
     );
     
-    // Get most recent profile image from any application
+    // Get most recent profile data from healthcare_profiles (any application)
     const [profiles] = await db.query(
-      'SELECT profile_image_url FROM healthcare_profiles WHERE candidate_id = ? AND profile_image_url IS NOT NULL ORDER BY id DESC LIMIT 1',
+      'SELECT first_name, last_name, profile_image_url FROM healthcare_profiles WHERE candidate_id = ? ORDER BY id DESC LIMIT 1',
       [req.candidateId]
     );
     
@@ -142,8 +142,8 @@ router.get('/candidate/profile/basic', requireCandidateAuth, async (req, res) =>
     res.json({
       success: true,
       profile: {
-        first_name: candidate.firstName || '',
-        last_name: candidate.lastName || '',
+        first_name: profile.first_name || '',
+        last_name: profile.last_name || '',
         email_address: candidate.email || '',
         profile_image_url: profile.profile_image_url || null
       }
@@ -179,10 +179,16 @@ router.put('/candidate/profile/account', requireCandidateAuth, async (req, res) 
       return res.status(400).json({ success: false, message: 'Email is already in use by another account' });
     }
 
-    // Update candidate account information
+    // Update email in candidates table
     await db.query(
-      'UPDATE candidates SET firstName = ?, lastName = ?, email = ?, phone = ? WHERE id = ?',
-      [firstName, lastName, email, phone, req.candidateId]
+      'UPDATE candidates SET email = ? WHERE id = ?',
+      [email, req.candidateId]
+    );
+    
+    // Update first_name, last_name, mobile_no in most recent healthcare_profiles
+    await db.query(
+      'UPDATE healthcare_profiles SET first_name = ?, last_name = ?, mobile_no = ? WHERE candidate_id = ? ORDER BY id DESC LIMIT 1',
+      [firstName, lastName, phone, req.candidateId]
     );
 
     res.json({ success: true, message: 'Account information updated successfully' });
