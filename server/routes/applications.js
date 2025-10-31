@@ -336,13 +336,26 @@ router.post('/applications/export', requireAuth, async (req, res) => {
         hp.province,
         hp.country,
         hp.cnic,
+        hp.cnic_issue_date,
+        hp.cnic_expire_date,
         hp.passport_number,
+        hp.passport_issue_date,
+        hp.passport_expire_date,
         hp.mobile_no,
+        hp.email_address,
+        hp.tel_off_no,
+        hp.tel_res_no,
         hp.trade_applied_for,
         hp.availability_to_join,
         hp.willingness_to_relocate,
+        hp.countries_preference,
+        hp.trades_preference,
         hp.present_address,
+        hp.present_street,
+        hp.present_postal_code,
         hp.permanent_address,
+        hp.permanent_street,
+        hp.permanent_postal_code,
         j.title as job_title,
         j.location as job_location,
         j.country as job_country,
@@ -351,12 +364,13 @@ router.post('/applications/export', requireAuth, async (req, res) => {
         cd.degree_certificates_url,
         cd.license_certificate_url,
         cd.ielts_oet_certificate_url,
-        cd.experience_letters_url
+        cd.experience_letters_url,
+        cd.additional_files
       FROM applications a
       LEFT JOIN candidates c ON a.candidate_id = c.id
-      LEFT JOIN healthcare_profiles hp ON c.id = hp.candidate_id
+      LEFT JOIN healthcare_profiles hp ON a.id = hp.application_id
       LEFT JOIN jobs j ON a.job_id = j.id
-      LEFT JOIN candidate_documents cd ON c.id = cd.candidate_id
+      LEFT JOIN candidate_documents cd ON a.id = cd.application_id
       WHERE 1=1
     `;
     
@@ -405,40 +419,83 @@ router.post('/applications/export', requireAuth, async (req, res) => {
       return res.status(404).json({ success: false, message: 'No applications found to export' });
     }
     
-    const exportData = applications.map(app => ({
-      'Application ID': String(app.application_id).padStart(6, '0'),
-      'Applied Date': new Date(app.applied_date).toLocaleDateString(),
-      'Status': app.application_status,
-      'Job Title': app.job_title || 'General Application',
-      'Job Location': app.job_location || '',
-      'Job Country': app.job_country || '',
-      'First Name': app.first_name || '',
-      'Last Name': app.last_name || '',
-      'Email': app.email || '',
-      'Mobile': app.mobile_no || '',
-      'Father/Husband Name': app.father_husband_name || '',
-      'Marital Status': app.marital_status || '',
-      'Gender': app.gender || '',
-      'Religion': app.religion || '',
-      'Date of Birth': app.date_of_birth ? new Date(app.date_of_birth).toLocaleDateString() : '',
-      'Place of Birth': app.place_of_birth || '',
-      'Province': app.province || '',
-      'Country': app.country || '',
-      'CNIC': app.cnic || '',
-      'Passport Number': app.passport_number || '',
-      'Trade Applied For': app.trade_applied_for || '',
-      'Availability to Join': app.availability_to_join || '',
-      'Willingness to Relocate': app.willingness_to_relocate || '',
-      'Present Address': app.present_address || '',
-      'Permanent Address': app.permanent_address || '',
-      'Remarks': app.remarks || '',
-      'CV/Resume': app.cv_resume_url ? `${baseUrl}${app.cv_resume_url}` : '',
-      'Passport Document': app.passport_url ? `${baseUrl}${app.passport_url}` : '',
-      'Degree Certificates': app.degree_certificates_url ? `${baseUrl}${app.degree_certificates_url}` : '',
-      'License Certificate': app.license_certificate_url ? `${baseUrl}${app.license_certificate_url}` : '',
-      'IELTS/OET Certificate': app.ielts_oet_certificate_url ? `${baseUrl}${app.ielts_oet_certificate_url}` : '',
-      'Experience Letters': app.experience_letters_url ? `${baseUrl}${app.experience_letters_url}` : ''
-    }));
+    const exportData = applications.map(app => {
+      let additionalFilesUrls = '';
+      if (app.additional_files) {
+        try {
+          const files = typeof app.additional_files === 'string' ? JSON.parse(app.additional_files) : app.additional_files;
+          if (Array.isArray(files)) {
+            additionalFilesUrls = files.map(f => {
+              const url = f.url || f;
+              return url ? `${baseUrl}${url}` : '';
+            }).filter(Boolean).join('; ');
+          }
+        } catch (e) {
+          console.error('Error parsing additional_files:', e);
+        }
+      }
+
+      let countriesPreference = '';
+      try {
+        const countries = app.countries_preference ? JSON.parse(app.countries_preference) : [];
+        countriesPreference = Array.isArray(countries) ? countries.join(', ') : '';
+      } catch (e) {}
+
+      let tradesPreference = '';
+      try {
+        const trades = app.trades_preference ? JSON.parse(app.trades_preference) : [];
+        tradesPreference = Array.isArray(trades) ? trades.join(', ') : '';
+      } catch (e) {}
+
+      return {
+        'Application ID': String(app.application_id).padStart(6, '0'),
+        'Applied Date': new Date(app.applied_date).toLocaleDateString(),
+        'Status': app.application_status,
+        'Job Title': app.job_title || 'General Application',
+        'Job Location': app.job_location || '',
+        'Job Country': app.job_country || '',
+        'First Name': app.first_name || '',
+        'Last Name': app.last_name || '',
+        'Email': app.email || '',
+        'Email Address': app.email_address || '',
+        'Mobile': app.mobile_no || '',
+        'Office Tel': app.tel_off_no || '',
+        'Residence Tel': app.tel_res_no || '',
+        'Father/Husband Name': app.father_husband_name || '',
+        'Marital Status': app.marital_status || '',
+        'Gender': app.gender || '',
+        'Religion': app.religion || '',
+        'Date of Birth': app.date_of_birth ? new Date(app.date_of_birth).toLocaleDateString() : '',
+        'Place of Birth': app.place_of_birth || '',
+        'Province': app.province || '',
+        'Country': app.country || '',
+        'CNIC': app.cnic || '',
+        'CNIC Issue Date': app.cnic_issue_date || '',
+        'CNIC Expiry Date': app.cnic_expire_date || '',
+        'Passport Number': app.passport_number || '',
+        'Passport Issue Date': app.passport_issue_date || '',
+        'Passport Expiry Date': app.passport_expire_date || '',
+        'Trade Applied For': app.trade_applied_for || '',
+        'Availability to Join': app.availability_to_join || '',
+        'Willingness to Relocate': app.willingness_to_relocate || '',
+        'Countries Preference': countriesPreference,
+        'Trades Preference': tradesPreference,
+        'Present Address': app.present_address || '',
+        'Present Street': app.present_street || '',
+        'Present Postal Code': app.present_postal_code || '',
+        'Permanent Address': app.permanent_address || '',
+        'Permanent Street': app.permanent_street || '',
+        'Permanent Postal Code': app.permanent_postal_code || '',
+        'Remarks': app.remarks || '',
+        'CV/Resume': app.cv_resume_url ? `${baseUrl}${app.cv_resume_url}` : '',
+        'Passport Document': app.passport_url ? `${baseUrl}${app.passport_url}` : '',
+        'Degree Certificates': app.degree_certificates_url ? `${baseUrl}${app.degree_certificates_url}` : '',
+        'License Certificate': app.license_certificate_url ? `${baseUrl}${app.license_certificate_url}` : '',
+        'IELTS/OET Certificate': app.ielts_oet_certificate_url ? `${baseUrl}${app.ielts_oet_certificate_url}` : '',
+        'Experience Letters': app.experience_letters_url ? `${baseUrl}${app.experience_letters_url}` : '',
+        'Additional Files': additionalFilesUrls
+      };
+    });
     
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
