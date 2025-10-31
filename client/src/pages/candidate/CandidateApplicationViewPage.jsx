@@ -428,6 +428,47 @@ export default function CandidateApplicationViewPage() {
                   </div>
                 ))}
               </div>
+              
+              {documents && documents.additional_files && (() => {
+                try {
+                  let files = documents.additional_files;
+                  if (typeof files === 'string') {
+                    files = JSON.parse(files || '[]');
+                  }
+                  
+                  return Array.isArray(files) && files.length > 0 ? (
+                    <div className="mb-6">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Additional Documents</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {files.map((file, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span className="text-sm truncate mr-2">{file.name || `Document ${index + 1}`}</span>
+                            <div className="flex gap-2 flex-shrink-0">
+                              <a 
+                                href={file.url || file} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 text-sm"
+                              >
+                                View
+                              </a>
+                              <a 
+                                href={file.url || file} 
+                                download
+                                className="text-green-600 hover:text-green-800 text-sm"
+                              >
+                                Download
+                              </a>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null;
+                } catch (e) {
+                  return null;
+                }
+              })()}
             </div>
           </div>
         </div>
