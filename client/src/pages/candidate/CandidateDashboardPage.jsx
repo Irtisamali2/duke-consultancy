@@ -121,37 +121,38 @@ export default function CandidateDashboardPage() {
           <div className="w-10" />
         </div>
 
-        <div className="flex-1 p-4 md:p-8 overflow-auto">
-        <div className="bg-[#E6F7FB] rounded-lg p-6 mb-6 flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">Ready to Apply?</h3>
-            <p className="text-gray-600 text-sm mb-3">Browse available job opportunities and submit your application.</p>
+        <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
+        <div className="bg-[#E6F7FB] rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex-1">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Ready to Apply?</h3>
+            <p className="text-gray-600 text-xs sm:text-sm mb-3">Browse available job opportunities and submit your application.</p>
             <Button 
               onClick={() => setLocation('/candidate/browse-jobs')}
-              className="bg-[#0B7A9F] hover:bg-[#096685] text-white rounded-full px-8"
+              className="bg-[#0B7A9F] hover:bg-[#096685] text-white rounded-full px-6 sm:px-8 text-sm sm:text-base"
             >
               Browse Jobs
             </Button>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-[#00A6CE] to-[#0B7A9F] rounded-lg p-8 mb-6 text-white">
-          <h1 className="text-3xl font-bold mb-2">Welcome to Duke!</h1>
-          <h2 className="text-4xl font-bold mb-2">{candidate?.firstName} {candidate?.lastName}</h2>
-          <p className="text-sm opacity-90">Last Login From - {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        <div className="bg-gradient-to-br from-[#00A6CE] to-[#0B7A9F] rounded-lg p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 text-white">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">Welcome to Duke!</h1>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">{candidate?.firstName} {candidate?.lastName}</h2>
+          <p className="text-xs sm:text-sm opacity-90">Last Login From - {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-900">My Applications</h2>
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">My Applications</h2>
             <input
               type="text"
               placeholder="Search..."
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] text-sm w-full sm:w-auto"
             />
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden lg:block overflow-x-auto">
             <table className="w-full">
               <thead className="bg-[#E8F4F8]">
                 <tr>
@@ -233,6 +234,73 @@ export default function CandidateDashboardPage() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="lg:hidden space-y-4">
+            {applications.length === 0 ? (
+              <div className="py-8 text-center text-gray-500 text-sm">
+                No applications found. Complete your profile to submit your first application!
+              </div>
+            ) : (
+              applications.map((app) => (
+                <div key={app.id} className="border border-gray-200 rounded-lg p-4 space-y-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Application ID</p>
+                      <p className="font-semibold text-gray-900">{String(app.id).padStart(6, '0')}</p>
+                    </div>
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      app.status === 'approved' ? 'bg-green-100 text-green-800' :
+                      app.status === 'verified' ? 'bg-blue-100 text-blue-800' :
+                      app.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                      app.status === 'draft' ? 'bg-gray-100 text-gray-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {app.status}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">Application Type</p>
+                    <p className="text-sm text-gray-900">{app.job_title || 'General Application'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">Date</p>
+                    <p className="text-sm text-gray-900">{new Date(app.applied_date).toLocaleDateString()}</p>
+                  </div>
+                  <div className="flex gap-2 pt-2 border-t border-gray-200">
+                    {app.status === 'draft' ? (
+                      <>
+                        <button 
+                          onClick={() => setLocation(`/candidate/profile?job_id=${app.job_id}&application_id=${app.id}`)}
+                          className="flex-1 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700"
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteDraft(app.id)}
+                          className="flex-1 px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700"
+                        >
+                          🗑️ Delete
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button 
+                          onClick={() => setLocation('/candidate/profile')}
+                          className="flex-1 px-4 py-2 bg-[#00A6CE] text-white text-sm rounded-lg hover:bg-[#0090B5]"
+                        >
+                          👁️ View
+                        </button>
+                        <button className="flex-1 px-4 py-2 bg-[#00A6CE] text-white text-sm rounded-lg hover:bg-[#0090B5]">
+                          ⬇️ Download
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
         </div>

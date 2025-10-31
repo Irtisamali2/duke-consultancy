@@ -26,13 +26,13 @@ export default function CandidateSidebar({ candidate, profileImage, onLogout, is
       {/* Sidebar */}
       <div className={`
         fixed md:static inset-y-0 left-0 z-50
-        w-64 bg-white border-r border-gray-200 min-h-screen p-6
+        w-64 lg:w-72 bg-white border-r border-gray-200 min-h-screen p-4 sm:p-6
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
-        <img src="/Group_1760620436964.png" alt="Duke Consultancy Logo" className="h-10 mb-8" />
+        <img src="/Group_1760620436964.png" alt="Duke Consultancy Logo" className="h-10 mb-6 sm:mb-8" />
         
-        <div className="flex items-center gap-3 mb-8 p-3 bg-[#E6F7FB] rounded-lg">
+        <div className="flex items-center gap-3 mb-6 sm:mb-8 p-3 bg-[#E6F7FB] rounded-lg">
           {profileImage ? (
             <img 
               src={profileImage} 
@@ -46,7 +46,7 @@ export default function CandidateSidebar({ candidate, profileImage, onLogout, is
               </span>
             </div>
           )}
-          <span className="font-medium text-sm">{candidate?.firstName} {candidate?.lastName}</span>
+          <span className="font-medium text-sm truncate">{candidate?.firstName} {candidate?.lastName}</span>
         </div>
 
         <nav>
