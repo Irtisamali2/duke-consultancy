@@ -71,6 +71,12 @@ export default function CandidateProfileFormPage() {
   useEffect(() => {
     checkAuth();
     fetchJobs();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobId = urlParams.get('job_id');
+    if (jobId) {
+      setSelectedJobId(jobId);
+    }
   }, []);
   
   useEffect(() => {
