@@ -292,8 +292,8 @@ export default function CandidateProfileFormPage() {
             });
           }
         }
-      } else {
-        // New application - clear ALL form data and only pre-fill basic profile info
+      } else if (jobIdFromUrl) {
+        // New application with job_id - clear ALL form data and only pre-fill basic profile info
         // ALWAYS clear all sections first to avoid stale data from previous drafts
         setTradeData({
           trade_applied_for: '',
@@ -403,6 +403,15 @@ export default function CandidateProfileFormPage() {
             permanent_postal_code: ''
           });
           setProfileImagePreview(null);
+        }
+      } else {
+        // Profile settings view (no job_id, no application_id) - fetch and display current profile image
+        const response = await fetch('/api/candidate/profile/basic');
+        const data = await response.json();
+        if (data.success && data.profile) {
+          if (data.profile.profile_image_url) {
+            setProfileImagePreview(data.profile.profile_image_url);
+          }
         }
       }
     } catch (error) {
