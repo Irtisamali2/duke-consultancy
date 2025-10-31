@@ -64,8 +64,8 @@ export default function CandidateProfileFormPage() {
   const [personalData, setPersonalData] = useState({
     first_name: '', last_name: '', father_husband_name: '', marital_status: '',
     gender: '', religion: '', date_of_birth: '', place_of_birth: '',
-    province: '', country: '', cnic: '', cnic_issue_date: '', cnic_expiry_date: '',
-    passport_number: '', passport_issue_date: '', passport_expiry_date: '',
+    province: '', country: '', cnic: '', cnic_issue_date: '', cnic_expire_date: '',
+    passport_number: '', passport_issue_date: '', passport_expire_date: '',
     email_address: '', tel_off_no: '', tel_res_no: '', mobile_no: '',
     present_address: '', present_street: '', present_postal_code: '',
     permanent_address: '', permanent_street: '', permanent_postal_code: ''
@@ -257,10 +257,10 @@ export default function CandidateProfileFormPage() {
               country: data.profile.country || '',
               cnic: data.profile.cnic || '',
               cnic_issue_date: data.profile.cnic_issue_date || '',
-              cnic_expiry_date: data.profile.cnic_expiry_date || '',
+              cnic_expire_date: data.profile.cnic_expire_date || '',
               passport_number: data.profile.passport_number || '',
               passport_issue_date: data.profile.passport_issue_date || '',
-              passport_expiry_date: data.profile.passport_expiry_date || '',
+              passport_expire_date: data.profile.passport_expire_date || '',
               email_address: data.profile.email_address || '',
               tel_off_no: data.profile.tel_off_no || '',
               tel_res_no: data.profile.tel_res_no || '',
@@ -353,10 +353,10 @@ export default function CandidateProfileFormPage() {
             country: '',
             cnic: '',
             cnic_issue_date: '',
-            cnic_expiry_date: '',
+            cnic_expire_date: '',
             passport_number: '',
             passport_issue_date: '',
-            passport_expiry_date: '',
+            passport_expire_date: '',
             email_address: data.profile.email_address || '',
             tel_off_no: '',
             tel_res_no: '',
@@ -387,10 +387,10 @@ export default function CandidateProfileFormPage() {
             country: '',
             cnic: '',
             cnic_issue_date: '',
-            cnic_expiry_date: '',
+            cnic_expire_date: '',
             passport_number: '',
             passport_issue_date: '',
-            passport_expiry_date: '',
+            passport_expire_date: '',
             email_address: '',
             tel_off_no: '',
             tel_res_no: '',
@@ -667,9 +667,9 @@ export default function CandidateProfileFormPage() {
         ...personalData,
         date_of_birth: formatDateForMySQL(personalData.date_of_birth),
         cnic_issue_date: formatDateForMySQL(personalData.cnic_issue_date),
-        cnic_expiry_date: formatDateForMySQL(personalData.cnic_expiry_date),
+        cnic_expire_date: formatDateForMySQL(personalData.cnic_expire_date),
         passport_issue_date: formatDateForMySQL(personalData.passport_issue_date),
-        passport_expiry_date: formatDateForMySQL(personalData.passport_expiry_date)
+        passport_expire_date: formatDateForMySQL(personalData.passport_expire_date)
       };
 
       const response = await fetch('/api/candidate/profile/personal', {
@@ -1684,8 +1684,8 @@ export default function CandidateProfileFormPage() {
                     <label className="block text-sm font-medium mb-2">CNIC Expire Date</label>
                     <input
                       type="date"
-                      value={personalData.cnic_expiry_date}
-                      onChange={(e) => setPersonalData({ ...personalData, cnic_expiry_date: e.target.value })}
+                      value={personalData.cnic_expire_date}
+                      onChange={(e) => setPersonalData({ ...personalData, cnic_expire_date: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                       placeholder="DD/MM/YYYY"
                     />
@@ -1717,8 +1717,8 @@ export default function CandidateProfileFormPage() {
                     <label className="block text-sm font-medium mb-2">Passport Expire Date</label>
                     <input
                       type="date"
-                      value={personalData.passport_expiry_date}
-                      onChange={(e) => setPersonalData({ ...personalData, passport_expiry_date: e.target.value })}
+                      value={personalData.passport_expire_date}
+                      onChange={(e) => setPersonalData({ ...personalData, passport_expire_date: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                       placeholder="DD/MM/YYYY"
                     />

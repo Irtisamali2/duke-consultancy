@@ -130,9 +130,10 @@ router.get('/candidate/profile/basic', requireCandidateAuth, async (req, res) =>
       [req.candidateId]
     );
     
-    // Get most recent profile data from healthcare_profiles (any application)
+    // Get "My Profile" data only (not application-specific profiles)
+    // This ensures sidebar always shows the general profile image, not job application images
     const [profiles] = await db.query(
-      'SELECT first_name, last_name, profile_image_url FROM healthcare_profiles WHERE candidate_id = ? ORDER BY id DESC LIMIT 1',
+      'SELECT first_name, last_name, profile_image_url FROM healthcare_profiles WHERE candidate_id = ? AND application_id IS NULL ORDER BY id DESC LIMIT 1',
       [req.candidateId]
     );
     
@@ -290,8 +291,8 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
   try {
     const {
       first_name, middle_name, last_name, father_husband_name, marital_status, gender, religion,
-      date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expiry_date,
-      passport_number, passport_issue_date, passport_expiry_date, email_address, confirm_email_address,
+      date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expire_date,
+      passport_number, passport_issue_date, passport_expire_date, email_address, confirm_email_address,
       tel_off_no, tel_res_no, mobile_no, present_address, present_street, present_postal_code,
       permanent_address, permanent_street, permanent_postal_code, application_id
     } = req.body;
@@ -309,15 +310,15 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
       await db.query(
         `UPDATE healthcare_profiles SET 
          first_name = ?, middle_name = ?, last_name = ?, father_husband_name = ?, marital_status = ?, gender = ?, religion = ?,
-         date_of_birth = ?, place_of_birth = ?, province = ?, country = ?, cnic = ?, cnic_issue_date = ?, cnic_expiry_date = ?,
-         passport_number = ?, passport_issue_date = ?, passport_expiry_date = ?, email_address = ?, confirm_email_address = ?,
+         date_of_birth = ?, place_of_birth = ?, province = ?, country = ?, cnic = ?, cnic_issue_date = ?, cnic_expire_date = ?,
+         passport_number = ?, passport_issue_date = ?, passport_expire_date = ?, email_address = ?, confirm_email_address = ?,
          tel_off_no = ?, tel_res_no = ?, mobile_no = ?, present_address = ?, present_street = ?, present_postal_code = ?,
          permanent_address = ?, permanent_street = ?, permanent_postal_code = ?
          WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))`,
         [
           first_name, middle_name, last_name, father_husband_name, marital_status, gender, religion,
-          date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expiry_date,
-          passport_number, passport_issue_date, passport_expiry_date, email_address, confirm_email_address,
+          date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expire_date,
+          passport_number, passport_issue_date, passport_expire_date, email_address, confirm_email_address,
           tel_off_no, tel_res_no, mobile_no, present_address, present_street, present_postal_code,
           permanent_address, permanent_street, permanent_postal_code, req.candidateId, appId, appId
         ]
@@ -326,14 +327,14 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
       // Create new profile for this application
       await db.query(
         `INSERT INTO healthcare_profiles (candidate_id, application_id, first_name, middle_name, last_name, father_husband_name, 
-         marital_status, gender, religion, date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expiry_date,
-         passport_number, passport_issue_date, passport_expiry_date, email_address, confirm_email_address, tel_off_no, tel_res_no, 
+         marital_status, gender, religion, date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expire_date,
+         passport_number, passport_issue_date, passport_expire_date, email_address, confirm_email_address, tel_off_no, tel_res_no, 
          mobile_no, present_address, present_street, present_postal_code, permanent_address, permanent_street, permanent_postal_code)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           req.candidateId, appId, first_name, middle_name, last_name, father_husband_name,
-          marital_status, gender, religion, date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expiry_date,
-          passport_number, passport_issue_date, passport_expiry_date, email_address, confirm_email_address, tel_off_no, tel_res_no,
+          marital_status, gender, religion, date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expire_date,
+          passport_number, passport_issue_date, passport_expire_date, email_address, confirm_email_address, tel_off_no, tel_res_no,
           mobile_no, present_address, present_street, present_postal_code, permanent_address, permanent_street, permanent_postal_code
         ]
       );
