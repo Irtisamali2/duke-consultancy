@@ -124,18 +124,16 @@ router.get('/candidate/profile', requireCandidateAuth, async (req, res) => {
 // Get basic profile info only (for new applications - only name, email, profile image)
 router.get('/candidate/profile/basic', requireCandidateAuth, async (req, res) => {
   try {
-    const application_id = req.query.application_id ? parseInt(req.query.application_id) : null;
-    
-    // Get candidate basic info
+    // Get candidate basic info from candidates table
     const [candidates] = await db.query(
       'SELECT firstName, lastName, email FROM candidates WHERE id = ?',
       [req.candidateId]
     );
     
-    // Get profile for this specific application (if it exists)
+    // Get most recent profile image from any application
     const [profiles] = await db.query(
-      'SELECT first_name, last_name, email_address, profile_image_url FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL)) LIMIT 1',
-      [req.candidateId, application_id, application_id]
+      'SELECT profile_image_url FROM healthcare_profiles WHERE candidate_id = ? AND profile_image_url IS NOT NULL ORDER BY id DESC LIMIT 1',
+      [req.candidateId]
     );
     
     const candidate = candidates[0] || {};
@@ -144,9 +142,9 @@ router.get('/candidate/profile/basic', requireCandidateAuth, async (req, res) =>
     res.json({
       success: true,
       profile: {
-        first_name: profile.first_name || candidate.firstName || '',
-        last_name: profile.last_name || candidate.lastName || '',
-        email_address: profile.email_address || candidate.email || '',
+        first_name: candidate.firstName || '',
+        last_name: candidate.lastName || '',
+        email_address: candidate.email || '',
         profile_image_url: profile.profile_image_url || null
       }
     });
