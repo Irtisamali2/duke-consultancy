@@ -466,22 +466,27 @@ router.put('/candidate/profile/education/:id', requireCandidateAuth, async (req,
 
 router.put('/candidate/profile/documents', requireCandidateAuth, async (req, res) => {
   try {
-    const { cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url } = req.body;
+    const { cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, application_id } = req.body;
+    
+    const appId = application_id ? parseInt(application_id) : null;
 
-    const [existing] = await pool.query('SELECT id FROM candidate_documents WHERE candidate_id = ?', [req.candidateId]);
+    const [existing] = await pool.query(
+      'SELECT id FROM candidate_documents WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
+      [req.candidateId, appId, appId]
+    );
 
     if (existing.length > 0) {
       await pool.query(
         `UPDATE candidate_documents SET 
          cv_resume_url = ?, passport_url = ?, degree_certificates_url = ?, 
          license_certificate_url = ?, ielts_oet_certificate_url = ?, experience_letters_url = ?
-         WHERE candidate_id = ?`,
-        [cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, req.candidateId]
+         WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))`,
+        [cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, req.candidateId, appId, appId]
       );
     } else {
       await pool.query(
-        'INSERT INTO candidate_documents (candidate_id, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [req.candidateId, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url]
+        'INSERT INTO candidate_documents (candidate_id, application_id, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [req.candidateId, appId, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url]
       );
     }
 
