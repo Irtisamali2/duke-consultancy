@@ -17,6 +17,9 @@ export default function CandidateProfileFormPage() {
   const [availableCountries, setAvailableCountries] = useState([]);
   const [availableTrades, setAvailableTrades] = useState([]);
   
+  const urlParams = new URLSearchParams(window.location.search);
+  const jobIdFromUrl = urlParams.get('job_id');
+  
   const [accountData, setAccountData] = useState({
     firstName: '',
     lastName: '',
@@ -71,6 +74,9 @@ export default function CandidateProfileFormPage() {
   useEffect(() => {
     checkAuth();
     fetchJobs();
+    if (jobIdFromUrl) {
+      setSelectedJobId(jobIdFromUrl);
+    }
   }, []);
   
   useEffect(() => {

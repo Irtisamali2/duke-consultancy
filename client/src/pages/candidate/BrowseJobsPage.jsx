@@ -80,37 +80,12 @@ export default function BrowseJobsPage() {
     setShowModal(true);
   };
 
-  const handleApply = async (jobId) => {
-    if (!profile) {
-      alert('Please complete your profile before applying to jobs');
-      setLocation('/candidate/register-profile');
-      return;
-    }
-
+  const handleApply = (jobId) => {
     if (appliedJobs.includes(jobId)) {
       alert('You have already applied to this job');
       return;
     }
-
-    try {
-      const response = await fetch('/api/candidate/submit-application', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ job_id: jobId })
-      });
-
-      const data = await response.json();
-      
-      if (data.success) {
-        alert('Application submitted successfully!');
-        setShowModal(false);
-        await fetchApplications();
-      } else {
-        alert(data.message || 'Failed to submit application');
-      }
-    } catch (error) {
-      alert('Failed to submit application');
-    }
+    setLocation(`/candidate/profile?job_id=${jobId}`);
   };
 
   const handleLogout = async () => {
@@ -302,11 +277,9 @@ export default function BrowseJobsPage() {
                 >
                   {appliedJobs.includes(selectedJob.id) ? 'Already Applied' : 'Apply for This Job'}
                 </Button>
-                {!profile && (
-                  <p className="text-sm text-amber-600 mt-2 text-center">
-                    Complete your profile before applying
-                  </p>
-                )}
+                <p className="text-sm text-gray-500 mt-2 text-center">
+                  You'll be redirected to complete your application form
+                </p>
               </div>
             </div>
           </div>
