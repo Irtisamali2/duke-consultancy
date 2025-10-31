@@ -5,7 +5,7 @@ export default function AdminSidebar({ admin, onLogout, isOpen, onClose }) {
 
   const menuItems = [
     { path: "/admin/dashboard", label: "Dashboard", icon: "📊" },
-    // { path: '/admin/jobs', label: 'Job Management', icon: '💼' },
+    { path: "/admin/jobs", label: "Job Management", icon: "💼" },
     {
       path: "/admin/applications",
       label: "Applications Management",
