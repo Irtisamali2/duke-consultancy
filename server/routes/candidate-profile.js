@@ -61,10 +61,24 @@ const requireCandidateAuth = (req, res, next) => {
 
 router.get('/candidate/profile', requireCandidateAuth, async (req, res) => {
   try {
-    const [profiles] = await db.query('SELECT * FROM healthcare_profiles WHERE candidate_id = ?', [req.candidateId]);
-    const [education] = await db.query('SELECT * FROM education_records WHERE candidate_id = ?', [req.candidateId]);
-    const [experience] = await db.query('SELECT * FROM work_experience WHERE candidate_id = ?', [req.candidateId]);
-    const [documents] = await db.query('SELECT * FROM candidate_documents WHERE candidate_id = ?', [req.candidateId]);
+    const applicationId = req.query.application_id ? parseInt(req.query.application_id) : null;
+    
+    const [profiles] = await db.query(
+      'SELECT * FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
+      [req.candidateId, applicationId, applicationId]
+    );
+    const [education] = await db.query(
+      'SELECT * FROM education_records WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
+      [req.candidateId, applicationId, applicationId]
+    );
+    const [experience] = await db.query(
+      'SELECT * FROM work_experience WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
+      [req.candidateId, applicationId, applicationId]
+    );
+    const [documents] = await db.query(
+      'SELECT * FROM candidate_documents WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
+      [req.candidateId, applicationId, applicationId]
+    );
 
     res.json({
       success: true,
@@ -156,28 +170,47 @@ router.put('/candidate/profile/password', requireCandidateAuth, async (req, res)
 
 router.put('/candidate/profile/trade', requireCandidateAuth, async (req, res) => {
   try {
-    const { trade_applied_for, availability_to_join, willingness_to_relocate, countries_preference, trades_preference } = req.body;
+    const { trade_applied_for, availability_to_join, willingness_to_relocate, countries_preference, trades_preference, application_id } = req.body;
 
     const countriesJson = countries_preference ? JSON.stringify(countries_preference) : null;
     const tradesJson = trades_preference ? JSON.stringify(trades_preference) : null;
+    const appId = application_id ? parseInt(application_id) : null;
     
-    await db.query(
-      `UPDATE healthcare_profiles SET 
-        trade_applied_for = ?, 
-        availability_to_join = ?, 
-        willingness_to_relocate = ?,
-        countries_preference = ?,
-        trades_preference = ?
-      WHERE candidate_id = ?`,
-      [
-        trade_applied_for, 
-        availability_to_join, 
-        willingness_to_relocate,
-        countriesJson,
-        tradesJson,
-        req.candidateId
-      ]
+    // Check if profile exists for this application
+    const [existing] = await db.query(
+      'SELECT id FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
+      [req.candidateId, appId, appId]
     );
+    
+    if (existing.length > 0) {
+      // Update existing profile
+      await db.query(
+        `UPDATE healthcare_profiles SET 
+          trade_applied_for = ?, 
+          availability_to_join = ?, 
+          willingness_to_relocate = ?,
+          countries_preference = ?,
+          trades_preference = ?
+        WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))`,
+        [
+          trade_applied_for, 
+          availability_to_join, 
+          willingness_to_relocate,
+          countriesJson,
+          tradesJson,
+          req.candidateId,
+          appId,
+          appId
+        ]
+      );
+    } else {
+      // Create new profile for this application
+      await db.query(
+        `INSERT INTO healthcare_profiles (candidate_id, application_id, trade_applied_for, availability_to_join, willingness_to_relocate, countries_preference, trades_preference)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [req.candidateId, appId, trade_applied_for, availability_to_join, willingness_to_relocate, countriesJson, tradesJson]
+      );
+    }
 
     res.json({ success: true, message: 'Trade information updated' });
   } catch (error) {
@@ -188,29 +221,55 @@ router.put('/candidate/profile/trade', requireCandidateAuth, async (req, res) =>
 router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res) => {
   try {
     const {
-      first_name, last_name, father_husband_name, marital_status, gender, religion,
-      date_of_birth, place_of_birth, province, country, cnic,
-      passport_number, email_address,
+      first_name, middle_name, last_name, father_husband_name, marital_status, gender, religion,
+      date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expiry_date,
+      passport_number, passport_issue_date, passport_expiry_date, email_address, confirm_email_address,
       tel_off_no, tel_res_no, mobile_no, present_address, present_street, present_postal_code,
-      permanent_address, permanent_street, permanent_postal_code
+      permanent_address, permanent_street, permanent_postal_code, application_id
     } = req.body;
 
-    await db.query(
-      `UPDATE healthcare_profiles SET 
-       first_name = ?, last_name = ?, father_husband_name = ?, marital_status = ?, gender = ?, religion = ?,
-       date_of_birth = ?, place_of_birth = ?, province = ?, country = ?, cnic = ?,
-       passport_number = ?, email_address = ?,
-       tel_off_no = ?, tel_res_no = ?, mobile_no = ?, present_address = ?, present_street = ?, present_postal_code = ?,
-       permanent_address = ?, permanent_street = ?, permanent_postal_code = ?
-       WHERE candidate_id = ?`,
-      [
-        first_name, last_name, father_husband_name, marital_status, gender, religion,
-        date_of_birth, place_of_birth, province, country, cnic,
-        passport_number, email_address,
-        tel_off_no, tel_res_no, mobile_no, present_address, present_street, present_postal_code,
-        permanent_address, permanent_street, permanent_postal_code, req.candidateId
-      ]
+    const appId = application_id ? parseInt(application_id) : null;
+    
+    // Check if profile exists for this application
+    const [existing] = await db.query(
+      'SELECT id FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
+      [req.candidateId, appId, appId]
     );
+    
+    if (existing.length > 0) {
+      // Update existing profile
+      await db.query(
+        `UPDATE healthcare_profiles SET 
+         first_name = ?, middle_name = ?, last_name = ?, father_husband_name = ?, marital_status = ?, gender = ?, religion = ?,
+         date_of_birth = ?, place_of_birth = ?, province = ?, country = ?, cnic = ?, cnic_issue_date = ?, cnic_expire_date = ?,
+         passport_number = ?, passport_issue_date = ?, passport_expire_date = ?, email_address = ?, confirm_email_address = ?,
+         tel_off_no = ?, tel_res_no = ?, mobile_no = ?, present_address = ?, present_street = ?, present_postal_code = ?,
+         permanent_address = ?, permanent_street = ?, permanent_postal_code = ?
+         WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))`,
+        [
+          first_name, middle_name, last_name, father_husband_name, marital_status, gender, religion,
+          date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expiry_date,
+          passport_number, passport_issue_date, passport_expiry_date, email_address, confirm_email_address,
+          tel_off_no, tel_res_no, mobile_no, present_address, present_street, present_postal_code,
+          permanent_address, permanent_street, permanent_postal_code, req.candidateId, appId, appId
+        ]
+      );
+    } else {
+      // Create new profile for this application
+      await db.query(
+        `INSERT INTO healthcare_profiles (candidate_id, application_id, first_name, middle_name, last_name, father_husband_name, 
+         marital_status, gender, religion, date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expire_date,
+         passport_number, passport_issue_date, passport_expire_date, email_address, confirm_email_address, tel_off_no, tel_res_no, 
+         mobile_no, present_address, present_street, present_postal_code, permanent_address, permanent_street, permanent_postal_code)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          req.candidateId, appId, first_name, middle_name, last_name, father_husband_name,
+          marital_status, gender, religion, date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expiry_date,
+          passport_number, passport_issue_date, passport_expiry_date, email_address, confirm_email_address, tel_off_no, tel_res_no,
+          mobile_no, present_address, present_street, present_postal_code, permanent_address, permanent_street, permanent_postal_code
+        ]
+      );
+    }
 
     res.json({ success: true, message: 'Personal information updated' });
   } catch (error) {
@@ -220,11 +279,12 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
 
 router.post('/candidate/profile/experience', requireCandidateAuth, async (req, res) => {
   try {
-    const { job_title, employer_hospital, specialization, from_date, to_date, total_experience } = req.body;
+    const { job_title, employer_hospital, specialization, from_date, to_date, total_experience, application_id } = req.body;
+    const appId = application_id ? parseInt(application_id) : null;
 
     await db.query(
-      'INSERT INTO work_experience (candidate_id, job_title, employer_hospital, specialization, from_date, to_date, total_experience) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [req.candidateId, job_title, employer_hospital, specialization, from_date, to_date, total_experience]
+      'INSERT INTO work_experience (candidate_id, application_id, job_title, employer_hospital, specialization, from_date, to_date, total_experience) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [req.candidateId, appId, job_title, employer_hospital, specialization, from_date, to_date, total_experience]
     );
 
     res.json({ success: true, message: 'Experience added' });
@@ -261,11 +321,12 @@ router.put('/candidate/profile/experience/:id', requireCandidateAuth, async (req
 
 router.post('/candidate/profile/education', requireCandidateAuth, async (req, res) => {
   try {
-    const { degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage } = req.body;
+    const { degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage, application_id } = req.body;
+    const appId = application_id ? parseInt(application_id) : null;
 
     await db.query(
-      'INSERT INTO education_records (candidate_id, degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [req.candidateId, degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage]
+      'INSERT INTO education_records (candidate_id, application_id, degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [req.candidateId, appId, degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage]
     );
 
     res.json({ success: true, message: 'Education added' });

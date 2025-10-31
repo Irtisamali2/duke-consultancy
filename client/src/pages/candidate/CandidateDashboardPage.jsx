@@ -197,7 +197,7 @@ export default function CandidateDashboardPage() {
                         {app.status === 'draft' ? (
                           <div className="flex gap-3">
                             <button 
-                              onClick={() => setLocation(`/candidate/profile?job_id=${app.job_id}`)}
+                              onClick={() => setLocation(`/candidate/profile?job_id=${app.job_id}&application_id=${app.id}`)}
                               className="text-blue-600 hover:text-blue-800 font-medium"
                               title="Continue editing draft"
                             >

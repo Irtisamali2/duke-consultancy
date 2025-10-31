@@ -16,9 +16,11 @@ export default function CandidateProfileFormPage() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [availableCountries, setAvailableCountries] = useState([]);
   const [availableTrades, setAvailableTrades] = useState([]);
+  const [applicationId, setApplicationId] = useState(null);
   
   const urlParams = new URLSearchParams(window.location.search);
   const jobIdFromUrl = urlParams.get('job_id');
+  const applicationIdFromUrl = urlParams.get('application_id');
   
   const [accountData, setAccountData] = useState({
     firstName: '',
@@ -80,6 +82,9 @@ export default function CandidateProfileFormPage() {
       setCurrentStep(1);
     } else {
       setCurrentStep(0);
+    }
+    if (applicationIdFromUrl) {
+      setApplicationId(parseInt(applicationIdFromUrl));
     }
   }, []);
   
@@ -178,7 +183,8 @@ export default function CandidateProfileFormPage() {
 
   const fetchProfile = async () => {
     try {
-      const response = await fetch('/api/candidate/profile');
+      const url = applicationId ? `/api/candidate/profile?application_id=${applicationId}` : '/api/candidate/profile';
+      const response = await fetch(url);
       const data = await response.json();
       if (data.success) {
         if (data.profile) {
@@ -360,7 +366,7 @@ export default function CandidateProfileFormPage() {
       const response = await fetch('/api/candidate/profile/trade', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(tradeData)
+        body: JSON.stringify({ ...tradeData, application_id: applicationId })
       });
       if (response.ok) {
         setCurrentStep(2);
@@ -456,7 +462,7 @@ export default function CandidateProfileFormPage() {
       const response = await fetch('/api/candidate/profile/personal', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formattedPersonalData)
+        body: JSON.stringify({ ...formattedPersonalData, application_id: applicationId })
       });
       const data = await response.json();
       if (response.ok && data.success) {
@@ -480,7 +486,7 @@ export default function CandidateProfileFormPage() {
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newExperience)
+        body: JSON.stringify({ ...newExperience, application_id: applicationId })
       });
       if (response.ok) {
         await fetchProfile();
@@ -500,7 +506,7 @@ export default function CandidateProfileFormPage() {
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newEducation)
+        body: JSON.stringify({ ...newEducation, application_id: applicationId })
       });
       if (response.ok) {
         await fetchProfile();
@@ -708,6 +714,10 @@ export default function CandidateProfileFormPage() {
         });
         
         if (draftResponse.ok) {
+          const draftData = await draftResponse.json();
+          if (draftData.applicationId && !applicationId) {
+            setApplicationId(draftData.applicationId);
+          }
           setMessage({ type: 'success', text: 'Progress saved as draft!' });
           setTimeout(() => setLocation('/candidate/dashboard'), 1500);
         } else {
