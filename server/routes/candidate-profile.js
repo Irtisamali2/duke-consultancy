@@ -92,20 +92,20 @@ router.get('/candidate/profile', requireCandidateAuth, async (req, res) => {
   try {
     const applicationId = req.query.application_id ? parseInt(req.query.application_id) : null;
     
-    const { rows: profiles } = await pool.query(
-      'SELECT * FROM healthcare_profiles WHERE candidate_id = $1 AND (application_id = $2 OR (application_id IS NULL AND $3 IS NULL))',
+    const [profiles] = await pool.query(
+      'SELECT * FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
       [req.candidateId, applicationId, applicationId]
     );
-    const { rows: education } = await pool.query(
-      'SELECT * FROM education_records WHERE candidate_id = $1 AND (application_id = $2 OR (application_id IS NULL AND $3 IS NULL))',
+    const [education] = await pool.query(
+      'SELECT * FROM education_records WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
       [req.candidateId, applicationId, applicationId]
     );
-    const { rows: experience } = await pool.query(
-      'SELECT * FROM work_experience WHERE candidate_id = $1 AND (application_id = $2 OR (application_id IS NULL AND $3 IS NULL))',
+    const [experience] = await pool.query(
+      'SELECT * FROM work_experience WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
       [req.candidateId, applicationId, applicationId]
     );
-    const { rows: documents } = await pool.query(
-      'SELECT * FROM candidate_documents WHERE candidate_id = $1 AND (application_id = $2 OR (application_id IS NULL AND $3 IS NULL))',
+    const [documents] = await pool.query(
+      'SELECT * FROM candidate_documents WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
       [req.candidateId, applicationId, applicationId]
     );
 
@@ -125,15 +125,15 @@ router.get('/candidate/profile', requireCandidateAuth, async (req, res) => {
 router.get('/candidate/profile/basic', requireCandidateAuth, async (req, res) => {
   try {
     // Get candidate email from candidates table
-    const { rows: candidates } = await pool.query(
-      'SELECT email FROM candidates WHERE id = $1',
+    const [candidates] = await pool.query(
+      'SELECT email FROM candidates WHERE id = ?',
       [req.candidateId]
     );
     
     // Get "My Profile" data only (not application-specific profiles)
     // This ensures sidebar always shows the general profile image, not job application images
-    const { rows: profiles } = await pool.query(
-      'SELECT first_name, last_name, profile_image_url FROM healthcare_profiles WHERE candidate_id = $1 AND application_id IS NULL ORDER BY id DESC LIMIT 1',
+    const [profiles] = await pool.query(
+      'SELECT first_name, last_name, profile_image_url FROM healthcare_profiles WHERE candidate_id = ? AND application_id IS NULL ORDER BY id DESC LIMIT 1',
       [req.candidateId]
     );
     
@@ -171,8 +171,8 @@ router.put('/candidate/profile/account', requireCandidateAuth, async (req, res) 
     }
 
     // Check if email is already used by another candidate
-    const { rows: existingEmail } = await pool.query(
-      'SELECT id FROM candidates WHERE email = $1 AND id != $2',
+    const [existingEmail] = await pool.query(
+      'SELECT id FROM candidates WHERE email = ? AND id != ?',
       [email, req.candidateId]
     );
 
@@ -182,13 +182,13 @@ router.put('/candidate/profile/account', requireCandidateAuth, async (req, res) 
 
     // Update email in candidates table
     await pool.query(
-      'UPDATE candidates SET email = $1 WHERE id = $2',
+      'UPDATE candidates SET email = ? WHERE id = ?',
       [email, req.candidateId]
     );
     
     // Update first_name, last_name, mobile_no in most recent healthcare_profiles
     await pool.query(
-      'UPDATE healthcare_profiles SET first_name = $1, last_name = $2, mobile_no = $3 WHERE id IN (SELECT id FROM healthcare_profiles WHERE candidate_id = $4 ORDER BY id DESC LIMIT 1)',
+      'UPDATE healthcare_profiles SET first_name = ?, last_name = ?, mobile_no = ? WHERE candidate_id = ? ORDER BY id DESC LIMIT 1',
       [firstName, lastName, phone, req.candidateId]
     );
 
@@ -212,7 +212,7 @@ router.put('/candidate/profile/password', requireCandidateAuth, async (req, res)
     }
 
     // Get current password hash from database
-    const { rows: candidates } = await pool.query('SELECT password FROM candidates WHERE id = $1', [req.candidateId]);
+    const [candidates] = await pool.query('SELECT password FROM candidates WHERE id = ?', [req.candidateId]);
 
     if (candidates.length === 0) {
       return res.status(404).json({ success: false, message: 'Candidate not found' });
@@ -229,7 +229,7 @@ router.put('/candidate/profile/password', requireCandidateAuth, async (req, res)
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Update password
-    await pool.query('UPDATE candidates SET password = $1 WHERE id = $2', [hashedPassword, req.candidateId]);
+    await pool.query('UPDATE candidates SET password = ? WHERE id = ?', [hashedPassword, req.candidateId]);
 
     res.json({ success: true, message: 'Password updated successfully' });
   } catch (error) {
@@ -246,8 +246,8 @@ router.put('/candidate/profile/trade', requireCandidateAuth, async (req, res) =>
     const appId = application_id ? parseInt(application_id) : null;
     
     // Check if profile exists for this application
-    const { rows: existing } = await pool.query(
-      'SELECT id FROM healthcare_profiles WHERE candidate_id = $1 AND (application_id = $2 OR (application_id IS NULL AND $3 IS NULL))',
+    const [existing] = await pool.query(
+      'SELECT id FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
       [req.candidateId, appId, appId]
     );
     
@@ -255,12 +255,12 @@ router.put('/candidate/profile/trade', requireCandidateAuth, async (req, res) =>
       // Update existing profile
       await pool.query(
         `UPDATE healthcare_profiles SET 
-          trade_applied_for = $1, 
-          availability_to_join = $2, 
-          willingness_to_relocate = $3,
-          countries_preference = $4,
-          trades_preference = $5
-        WHERE candidate_id = $6 AND (application_id = $7 OR (application_id IS NULL AND $8 IS NULL))`,
+          trade_applied_for = ?, 
+          availability_to_join = ?, 
+          willingness_to_relocate = ?,
+          countries_preference = ?,
+          trades_preference = ?
+        WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))`,
         [
           trade_applied_for, 
           availability_to_join, 
@@ -276,7 +276,7 @@ router.put('/candidate/profile/trade', requireCandidateAuth, async (req, res) =>
       // Create new profile for this application
       await pool.query(
         `INSERT INTO healthcare_profiles (candidate_id, application_id, trade_applied_for, availability_to_join, willingness_to_relocate, countries_preference, trades_preference)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [req.candidateId, appId, trade_applied_for, availability_to_join, willingness_to_relocate, countriesJson, tradesJson]
       );
     }
@@ -307,8 +307,8 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
     const safePassportExpireDate = passport_expire_date || null;
     
     // Check if profile exists for this application
-    const { rows: existing } = await pool.query(
-      'SELECT id FROM healthcare_profiles WHERE candidate_id = $1 AND (application_id = $2 OR (application_id IS NULL AND $3 IS NULL))',
+    const [existing] = await pool.query(
+      'SELECT id FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
       [req.candidateId, appId, appId]
     );
     
@@ -316,12 +316,12 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
       // Update existing profile
       await pool.query(
         `UPDATE healthcare_profiles SET 
-         first_name = $1, middle_name = $2, last_name = $3, father_husband_name = $4, marital_status = $5, gender = $6, religion = $7,
-         date_of_birth = $8, place_of_birth = $9, province = $10, country = $11, cnic = $12, cnic_issue_date = $13, cnic_expire_date = $14,
-         passport_number = $15, passport_issue_date = $16, passport_expire_date = $17, email_address = $18, confirm_email_address = $19,
-         tel_off_no = $20, tel_res_no = $21, mobile_no = $22, present_address = $23, present_street = $24, present_postal_code = $25,
-         permanent_address = $26, permanent_street = $27, permanent_postal_code = $28
-         WHERE candidate_id = $29 AND (application_id = $30 OR (application_id IS NULL AND $31 IS NULL))`,
+         first_name = ?, middle_name = ?, last_name = ?, father_husband_name = ?, marital_status = ?, gender = ?, religion = ?,
+         date_of_birth = ?, place_of_birth = ?, province = ?, country = ?, cnic = ?, cnic_issue_date = ?, cnic_expire_date = ?,
+         passport_number = ?, passport_issue_date = ?, passport_expire_date = ?, email_address = ?, confirm_email_address = ?,
+         tel_off_no = ?, tel_res_no = ?, mobile_no = ?, present_address = ?, present_street = ?, present_postal_code = ?,
+         permanent_address = ?, permanent_street = ?, permanent_postal_code = ?
+         WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))`,
         [
           first_name, middle_name, last_name, father_husband_name, marital_status, gender, religion,
           safeDateOfBirth, place_of_birth, province, country, cnic, safeCnicIssueDate, safeCnicExpireDate,
@@ -337,7 +337,7 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
          marital_status, gender, religion, date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expire_date,
          passport_number, passport_issue_date, passport_expire_date, email_address, confirm_email_address, tel_off_no, tel_res_no, 
          mobile_no, present_address, present_street, present_postal_code, permanent_address, permanent_street, permanent_postal_code)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           req.candidateId, appId, first_name, middle_name, last_name, father_husband_name,
           marital_status, gender, religion, safeDateOfBirth, place_of_birth, province, country, cnic, safeCnicIssueDate, safeCnicExpireDate,
@@ -362,13 +362,23 @@ router.post('/candidate/profile/experience', requireCandidateAuth, async (req, r
     const safeFromDate = from_date || null;
     const safeToDate = to_date || null;
 
-    const { rows } = await pool.query(
-      'INSERT INTO work_experience (candidate_id, application_id, job_title, employer_hospital, specialization, from_date, to_date, total_experience) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+    const [result] = await pool.query(
+      'INSERT INTO work_experience (candidate_id, application_id, job_title, employer_hospital, specialization, from_date, to_date, total_experience) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [req.candidateId, appId, job_title, employer_hospital, specialization, safeFromDate, safeToDate, total_experience]
     );
 
     // Return the newly created experience with its ID
-    const newExperience = rows[0];
+    const newExperience = {
+      id: result.insertId,
+      candidate_id: req.candidateId,
+      application_id: appId,
+      job_title,
+      employer_hospital,
+      specialization,
+      from_date: safeFromDate,
+      to_date: safeToDate,
+      total_experience
+    };
 
     res.json({ success: true, message: 'Experience added', experience: newExperience });
   } catch (error) {
@@ -378,7 +388,7 @@ router.post('/candidate/profile/experience', requireCandidateAuth, async (req, r
 
 router.delete('/candidate/profile/experience/:id', requireCandidateAuth, async (req, res) => {
   try {
-    await pool.query('DELETE FROM work_experience WHERE id = $1 AND candidate_id = $2', [req.params.id, req.candidateId]);
+    await pool.query('DELETE FROM work_experience WHERE id = ? AND candidate_id = ?', [req.params.id, req.candidateId]);
     res.json({ success: true, message: 'Experience deleted' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -395,8 +405,8 @@ router.put('/candidate/profile/experience/:id', requireCandidateAuth, async (req
     
     await pool.query(
       `UPDATE work_experience SET 
-       job_title = $1, employer_hospital = $2, specialization = $3, from_date = $4, to_date = $5, total_experience = $6
-       WHERE id = $7 AND candidate_id = $8`,
+       job_title = ?, employer_hospital = ?, specialization = ?, from_date = ?, to_date = ?, total_experience = ?
+       WHERE id = ? AND candidate_id = ?`,
       [job_title, employer_hospital, specialization, safeFromDate, safeToDate, total_experience, req.params.id, req.candidateId]
     );
     
@@ -415,7 +425,7 @@ router.post('/candidate/profile/education', requireCandidateAuth, async (req, re
     const safeGraduationYear = graduation_year || null;
 
     await pool.query(
-      'INSERT INTO education_records (candidate_id, application_id, degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+      'INSERT INTO education_records (candidate_id, application_id, degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [req.candidateId, appId, degree_diploma_title, university_institute_name, safeGraduationYear, program_duration, registration_number, marks_percentage]
     );
 
@@ -427,7 +437,7 @@ router.post('/candidate/profile/education', requireCandidateAuth, async (req, re
 
 router.delete('/candidate/profile/education/:id', requireCandidateAuth, async (req, res) => {
   try {
-    await pool.query('DELETE FROM education_records WHERE id = $1 AND candidate_id = $2', [req.params.id, req.candidateId]);
+    await pool.query('DELETE FROM education_records WHERE id = ? AND candidate_id = ?', [req.params.id, req.candidateId]);
     res.json({ success: true, message: 'Education deleted' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -443,8 +453,8 @@ router.put('/candidate/profile/education/:id', requireCandidateAuth, async (req,
     
     await pool.query(
       `UPDATE education_records SET 
-       degree_diploma_title = $1, university_institute_name = $2, graduation_year = $3, program_duration = $4, registration_number = $5, marks_percentage = $6
-       WHERE id = $7 AND candidate_id = $8`,
+       degree_diploma_title = ?, university_institute_name = ?, graduation_year = ?, program_duration = ?, registration_number = ?, marks_percentage = ?
+       WHERE id = ? AND candidate_id = ?`,
       [degree_diploma_title, university_institute_name, safeGraduationYear, program_duration, registration_number, marks_percentage, req.params.id, req.candidateId]
     );
     
@@ -458,19 +468,19 @@ router.put('/candidate/profile/documents', requireCandidateAuth, async (req, res
   try {
     const { cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url } = req.body;
 
-    const { rows: existing } = await pool.query('SELECT id FROM candidate_documents WHERE candidate_id = $1', [req.candidateId]);
+    const [existing] = await pool.query('SELECT id FROM candidate_documents WHERE candidate_id = ?', [req.candidateId]);
 
     if (existing.length > 0) {
       await pool.query(
         `UPDATE candidate_documents SET 
-         cv_resume_url = $1, passport_url = $2, degree_certificates_url = $3, 
-         license_certificate_url = $4, ielts_oet_certificate_url = $5, experience_letters_url = $6
-         WHERE candidate_id = $7`,
+         cv_resume_url = ?, passport_url = ?, degree_certificates_url = ?, 
+         license_certificate_url = ?, ielts_oet_certificate_url = ?, experience_letters_url = ?
+         WHERE candidate_id = ?`,
         [cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, req.candidateId]
       );
     } else {
       await pool.query(
-        'INSERT INTO candidate_documents (candidate_id, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+        'INSERT INTO candidate_documents (candidate_id, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url) VALUES (?, ?, ?, ?, ?, ?, ?)',
         [req.candidateId, cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url]
       );
     }
@@ -490,8 +500,8 @@ router.post('/candidate/profile/image', requireCandidateAuth, profileUpload.sing
     const application_id = req.body.application_id ? parseInt(req.body.application_id) : null;
 
     // Get existing profile image for this specific application
-    const { rows: profiles } = await pool.query(
-      'SELECT profile_image_url FROM healthcare_profiles WHERE candidate_id = $1 AND (application_id = $2 OR (application_id IS NULL AND $3 IS NULL))',
+    const [profiles] = await pool.query(
+      'SELECT profile_image_url FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
       [req.candidateId, application_id, application_id]
     );
     const oldImageUrl = profiles[0]?.profile_image_url;
@@ -510,13 +520,13 @@ router.post('/candidate/profile/image', requireCandidateAuth, profileUpload.sing
     if (profiles.length > 0) {
       // Update existing profile
       await pool.query(
-        'UPDATE healthcare_profiles SET profile_image_url = $1 WHERE candidate_id = $2 AND (application_id = $3 OR (application_id IS NULL AND $4 IS NULL))',
+        'UPDATE healthcare_profiles SET profile_image_url = ? WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
         [imageUrl, req.candidateId, application_id, application_id]
       );
     } else {
       // Create new profile for this application with just the image
       await pool.query(
-        'INSERT INTO healthcare_profiles (candidate_id, application_id, profile_image_url) VALUES ($1, $2, $3)',
+        'INSERT INTO healthcare_profiles (candidate_id, application_id, profile_image_url) VALUES (?, ?, ?)',
         [req.candidateId, application_id, imageUrl]
       );
     }
@@ -530,7 +540,7 @@ router.post('/candidate/profile/image', requireCandidateAuth, profileUpload.sing
 router.delete('/candidate/profile/image', requireCandidateAuth, async (req, res) => {
   try {
     // Get existing profile image
-    const { rows: profiles } = await pool.query('SELECT profile_image_url FROM healthcare_profiles WHERE candidate_id = $1', [req.candidateId]);
+    const [profiles] = await pool.query('SELECT profile_image_url FROM healthcare_profiles WHERE candidate_id = ?', [req.candidateId]);
     const imageUrl = profiles[0]?.profile_image_url;
 
     if (!imageUrl) {
@@ -544,7 +554,7 @@ router.delete('/candidate/profile/image', requireCandidateAuth, async (req, res)
     }
 
     // Remove from database
-    await pool.query('UPDATE healthcare_profiles SET profile_image_url = NULL WHERE candidate_id = $1', [req.candidateId]);
+    await pool.query('UPDATE healthcare_profiles SET profile_image_url = NULL WHERE candidate_id = ?', [req.candidateId]);
 
     res.json({ success: true, message: 'Profile image removed successfully' });
   } catch (error) {
@@ -578,14 +588,14 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
     }
 
     // Check if there's a draft application for this job
-    const { rows: draftApp } = await pool.query(
-      'SELECT id FROM applications WHERE candidate_id = $1 AND job_id = $2 AND status = $3',
+    const [draftApp] = await pool.query(
+      'SELECT id FROM applications WHERE candidate_id = ? AND job_id = ? AND status = ?',
       [req.candidateId, job_id, 'draft']
     );
 
     // Check if candidate has an active non-draft application for this job
-    const { rows: existingApp } = await pool.query(
-      'SELECT id FROM applications WHERE candidate_id = $1 AND job_id = $2 AND status != $3',
+    const [existingApp] = await pool.query(
+      'SELECT id FROM applications WHERE candidate_id = ? AND job_id = ? AND status != ?',
       [req.candidateId, job_id, 'draft']
     );
 
@@ -603,24 +613,24 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
       // Update existing draft to pending status
       applicationId = draftApp[0].id;
       await pool.query(
-        'UPDATE applications SET status = $1, submitted_at = $2, modified_at = $3, modified_by = $4, modified_by_type = $5 WHERE id = $6',
+        'UPDATE applications SET status = ?, submitted_at = ?, modified_at = ?, modified_by = ?, modified_by_type = ? WHERE id = ?',
         ['pending', now, now, req.candidateId, 'candidate', applicationId]
       );
     } else {
       // Create new application (shouldn't happen in current flow, but keep for safety)
-      const { rows: result } = await pool.query(
-        'INSERT INTO applications (candidate_id, job_id, applied_date, status, submitted_at, modified_at, modified_by, modified_by_type) VALUES ($1, $2, NOW(), $3, $4, $5, $6, $7) RETURNING id',
+      const [result] = await pool.query(
+        'INSERT INTO applications (candidate_id, job_id, applied_date, status, submitted_at, modified_at, modified_by, modified_by_type) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)',
         [req.candidateId, job_id || null, 'pending', now, now, req.candidateId, 'candidate']
       );
-      applicationId = result[0].id;
+      applicationId = result.insertId;
     }
 
-    const { rows: candidate } = await pool.query('SELECT email FROM candidates WHERE id = $1', [req.candidateId]);
-    const { rows: profile } = await pool.query('SELECT first_name, last_name, trade_applied_for FROM healthcare_profiles WHERE candidate_id = $1', [req.candidateId]);
+    const [candidate] = await pool.query('SELECT email FROM candidates WHERE id = ?', [req.candidateId]);
+    const [profile] = await pool.query('SELECT first_name, last_name, trade_applied_for FROM healthcare_profiles WHERE candidate_id = ?', [req.candidateId]);
     
     let jobTitle = 'General Application';
     if (job_id) {
-      const { rows: job } = await pool.query('SELECT title FROM jobs WHERE id = $1', [job_id]);
+      const [job] = await pool.query('SELECT title FROM jobs WHERE id = ?', [job_id]);
       if (job.length > 0) {
         jobTitle = job[0].title;
       }
@@ -647,11 +657,11 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
 
 router.get('/candidate/applications', requireCandidateAuth, async (req, res) => {
   try {
-    const { rows: applications } = await pool.query(`
+    const [applications] = await pool.query(`
       SELECT a.*, j.title as job_title, j.location, j.country
       FROM applications a
       LEFT JOIN jobs j ON a.job_id = j.id
-      WHERE a.candidate_id = $1
+      WHERE a.candidate_id = ?
       ORDER BY a.applied_date DESC
     `, [req.candidateId]);
 
@@ -663,8 +673,8 @@ router.get('/candidate/applications', requireCandidateAuth, async (req, res) => 
 
 router.delete('/candidate/application/:id', requireCandidateAuth, async (req, res) => {
   try {
-    const { rows: application } = await pool.query(
-      'SELECT status FROM applications WHERE id = $1 AND candidate_id = $2',
+    const [application] = await pool.query(
+      'SELECT status FROM applications WHERE id = ? AND candidate_id = ?',
       [req.params.id, req.candidateId]
     );
 
@@ -676,7 +686,7 @@ router.delete('/candidate/application/:id', requireCandidateAuth, async (req, re
       return res.status(403).json({ success: false, message: 'Only draft applications can be deleted' });
     }
 
-    await pool.query('DELETE FROM applications WHERE id = $1 AND candidate_id = $2', [req.params.id, req.candidateId]);
+    await pool.query('DELETE FROM applications WHERE id = ? AND candidate_id = ?', [req.params.id, req.candidateId]);
     res.json({ success: true, message: 'Draft application deleted' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -688,25 +698,25 @@ router.post('/candidate/save-draft-application', requireCandidateAuth, async (re
     const { job_id } = req.body;
     
     // Check if draft already exists for this job
-    const { rows: existing } = await pool.query(
-      'SELECT id FROM applications WHERE candidate_id = $1 AND job_id = $2 AND status = $3',
+    const [existing] = await pool.query(
+      'SELECT id FROM applications WHERE candidate_id = ? AND job_id = ? AND status = ?',
       [req.candidateId, job_id, 'draft']
     );
     
     if (existing.length > 0) {
       // Update existing draft
       await pool.query(
-        'UPDATE applications SET applied_date = NOW() WHERE id = $1',
+        'UPDATE applications SET applied_date = NOW() WHERE id = ?',
         [existing[0].id]
       );
       res.json({ success: true, message: 'Draft updated', applicationId: existing[0].id });
     } else {
       // Create new draft
-      const { rows: result } = await pool.query(
-        'INSERT INTO applications (candidate_id, job_id, status, applied_date) VALUES ($1, $2, $3, NOW()) RETURNING id',
+      const [result] = await pool.query(
+        'INSERT INTO applications (candidate_id, job_id, status, applied_date) VALUES (?, ?, ?, NOW())',
         [req.candidateId, job_id, 'draft']
       );
-      res.json({ success: true, message: 'Draft created', applicationId: result[0].id });
+      res.json({ success: true, message: 'Draft created', applicationId: result.insertId });
     }
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

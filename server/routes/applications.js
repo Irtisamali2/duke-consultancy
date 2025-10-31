@@ -34,41 +34,40 @@ router.get('/applications', requireAuth, async (req, res) => {
     `;
     
     const params = [];
-    let paramCount = 1;
     
     if (job_id) {
-      query += ` AND a.job_id = $${paramCount++}`;
+      query += ` AND a.job_id = ?`;
       params.push(job_id);
     }
     
     if (country) {
-      query += ` AND hp.country = $${paramCount++}`;
+      query += ` AND hp.country = ?`;
       params.push(country);
     }
     
     if (trade) {
-      query += ` AND hp.trade_applied_for = $${paramCount++}`;
+      query += ` AND hp.trade_applied_for = ?`;
       params.push(trade);
     }
     
     if (status) {
-      query += ` AND a.status = $${paramCount++}`;
+      query += ` AND a.status = ?`;
       params.push(status);
     }
     
     if (from_date) {
-      query += ` AND DATE(a.applied_date) >= $${paramCount++}`;
+      query += ` AND DATE(a.applied_date) >= ?`;
       params.push(from_date);
     }
     
     if (to_date) {
-      query += ` AND DATE(a.applied_date) <= $${paramCount++}`;
+      query += ` AND DATE(a.applied_date) <= ?`;
       params.push(to_date);
     }
     
     query += ' ORDER BY a.applied_date DESC';
     
-    const { rows } = await pool.query(query, params);
+    const [rows] = await pool.query(query, params);
     res.json({ success: true, applications: rows });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -77,11 +76,11 @@ router.get('/applications', requireAuth, async (req, res) => {
 
 router.get('/applications/:id', requireAuth, async (req, res) => {
   try {
-    const { rows: appRows } = await pool.query(`
+    const [appRows] = await pool.query(`
       SELECT a.*, j.title as job_title, j.location, j.country
       FROM applications a
       LEFT JOIN jobs j ON a.job_id = j.id
-      WHERE a.id = $1
+      WHERE a.id = ?
     `, [req.params.id]);
     
     if (appRows.length === 0) {
@@ -90,10 +89,10 @@ router.get('/applications/:id', requireAuth, async (req, res) => {
 
     const application = appRows[0];
 
-    const { rows: profileRows } = await pool.query('SELECT * FROM healthcare_profiles WHERE application_id = $1', [req.params.id]);
-    const { rows: educationRows } = await pool.query('SELECT * FROM education_records WHERE application_id = $1', [req.params.id]);
-    const { rows: experienceRows } = await pool.query('SELECT * FROM work_experience WHERE application_id = $1', [req.params.id]);
-    const { rows: documentsRows } = await pool.query('SELECT * FROM candidate_documents WHERE application_id = $1', [req.params.id]);
+    const [profileRows] = await pool.query('SELECT * FROM healthcare_profiles WHERE application_id = ?', [req.params.id]);
+    const [educationRows] = await pool.query('SELECT * FROM education_records WHERE application_id = ?', [req.params.id]);
+    const [experienceRows] = await pool.query('SELECT * FROM work_experience WHERE application_id = ?', [req.params.id]);
+    const [documentsRows] = await pool.query('SELECT * FROM candidate_documents WHERE application_id = ?', [req.params.id]);
 
     res.json({
       success: true,
@@ -114,7 +113,7 @@ router.put('/applications/:id', requireAuth, async (req, res) => {
     const now = new Date();
     
     await pool.query(
-      'UPDATE applications SET status = $1, remarks = $2, modified_at = $3, modified_by = $4, modified_by_type = $5 WHERE id = $6',
+      'UPDATE applications SET status = ?, remarks = ?, modified_at = ?, modified_by = ?, modified_by_type = ? WHERE id = ?',
       [status, remarks, now, req.admin.id, 'admin', req.params.id]
     );
     
@@ -128,13 +127,13 @@ router.patch('/applications/:id/status', requireAuth, async (req, res) => {
   try {
     const { status } = req.body;
     
-    const { rows: appData } = await pool.query(`
+    const [appData] = await pool.query(`
       SELECT a.*, c.email, hp.first_name, hp.last_name, hp.trade_applied_for, j.title as job_title
       FROM applications a
       LEFT JOIN candidates c ON a.candidate_id = c.id
       LEFT JOIN healthcare_profiles hp ON c.id = hp.candidate_id
       LEFT JOIN jobs j ON a.job_id = j.id
-      WHERE a.id = $1
+      WHERE a.id = ?
     `, [req.params.id]);
 
     if (appData.length === 0) {
@@ -143,7 +142,7 @@ router.patch('/applications/:id/status', requireAuth, async (req, res) => {
 
     const now = new Date();
     await pool.query(
-      'UPDATE applications SET status = $1, modified_at = $2, modified_by = $3, modified_by_type = $4 WHERE id = $5',
+      'UPDATE applications SET status = ?, modified_at = ?, modified_by = ?, modified_by_type = ? WHERE id = ?',
       [status, now, req.admin.id, 'admin', req.params.id]
     );
 
@@ -175,7 +174,7 @@ router.patch('/applications/:id/status', requireAuth, async (req, res) => {
 router.delete('/applications/:id', requireAuth, async (req, res) => {
   try {
     // Get the candidate_id before deleting the application
-    const { rows: appRows } = await pool.query('SELECT candidate_id FROM applications WHERE id = $1', [req.params.id]);
+    const [appRows] = await pool.query('SELECT candidate_id FROM applications WHERE id = ?', [req.params.id]);
     
     if (appRows.length === 0) {
       return res.status(404).json({ success: false, message: 'Application not found' });
@@ -184,14 +183,14 @@ router.delete('/applications/:id', requireAuth, async (req, res) => {
     const candidateId = appRows[0].candidate_id;
     
     // Delete the application
-    await pool.query('DELETE FROM applications WHERE id = $1', [req.params.id]);
+    await pool.query('DELETE FROM applications WHERE id = ?', [req.params.id]);
     
     // Check if candidate has any other applications
-    const { rows: remainingApps } = await pool.query('SELECT COUNT(*) as count FROM applications WHERE candidate_id = $1', [candidateId]);
+    const [remainingApps] = await pool.query('SELECT COUNT(*) as count FROM applications WHERE candidate_id = ?', [candidateId]);
     
     // If candidate has no other applications, delete their documents and associated files
     if (remainingApps[0].count === 0) {
-      const { rows: docs } = await pool.query('SELECT * FROM candidate_documents WHERE candidate_id = $1', [candidateId]);
+      const [docs] = await pool.query('SELECT * FROM candidate_documents WHERE candidate_id = ?', [candidateId]);
       
       if (docs.length > 0) {
         const doc = docs[0];
@@ -225,7 +224,7 @@ router.delete('/applications/:id', requireAuth, async (req, res) => {
         }
         
         // Delete document records from database
-        await pool.query('DELETE FROM candidate_documents WHERE candidate_id = $1', [candidateId]);
+        await pool.query('DELETE FROM candidate_documents WHERE candidate_id = ?', [candidateId]);
       }
     }
     
@@ -321,7 +320,7 @@ router.post('/applications/export', requireAuth, async (req, res) => {
     
     query += ' ORDER BY a.applied_date DESC';
     
-    const [applications] = await db.query(query, params);
+    const [applications] = await pool.query(query, params);
     
     if (applications.length === 0) {
       return res.status(404).json({ success: false, message: 'No applications found to export' });

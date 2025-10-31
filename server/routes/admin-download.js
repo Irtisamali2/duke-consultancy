@@ -2,44 +2,25 @@ import express from 'express';
 import PDFDocument from 'pdfkit';
 import archiver from 'archiver';
 import pool from '../db.js';
-import jwt from 'jsonwebtoken';
+import { requireAuth } from '../middleware/auth.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import https from 'https';
-import http from 'http';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 const router = express.Router();
 
-// Authentication middleware
-const requireCandidateAuth = (req, res, next) => {
-  try {
-    const token = req.cookies.candidate_token;
-    if (!token) {
-      return res.status(401).json({ success: false, message: 'Not authenticated' });
-    }
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.candidateId = decoded.id;
-    next();
-  } catch (error) {
-    res.status(401).json({ success: false, message: 'Invalid token' });
-  }
-};
-
-// Download application as PDF with attached files
-router.get('/candidate/application/download/:applicationId', requireCandidateAuth, async (req, res) => {
+// Admin download application as PDF with attached files
+router.get('/admin/applications/:applicationId/download', requireAuth, async (req, res) => {
   try {
     const { applicationId } = req.params;
-    const candidateId = req.candidateId;
 
     // Fetch application data
     const [applications] = await pool.query(
-      'SELECT * FROM applications WHERE id = ? AND candidate_id = ?',
-      [applicationId, candidateId]
+      'SELECT * FROM applications WHERE id = ?',
+      [applicationId]
     );
 
     if (!applications || applications.length === 0) {
@@ -164,12 +145,12 @@ router.get('/candidate/application/download/:applicationId', requireCandidateAut
         doc.moveDown(0.5);
       });
     } else {
-      doc.fontSize(10).text('No work experience records', { italics: true });
+      doc.fontSize(10).text('No work experience', { italics: true });
     }
 
     doc.moveDown();
 
-    // Education & Certifications
+    // Education
     addSection(doc, 'Education & Certifications');
     if (educations && educations.length > 0) {
       educations.forEach((edu, index) => {
@@ -264,19 +245,7 @@ function downloadFile(url) {
         }
       });
     } else {
-      const protocol = url.startsWith('https') ? https : http;
-      
-      protocol.get(url, (response) => {
-        if (response.statusCode !== 200) {
-          reject(new Error(`Failed to download file: ${response.statusCode}`));
-          return;
-        }
-
-        const chunks = [];
-        response.on('data', (chunk) => chunks.push(chunk));
-        response.on('end', () => resolve(Buffer.concat(chunks)));
-        response.on('error', reject);
-      }).on('error', reject);
+      reject(new Error('Only local file paths are supported'));
     }
   });
 }
