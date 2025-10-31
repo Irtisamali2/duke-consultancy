@@ -19,12 +19,12 @@ export default function AdminSidebar({ admin, onLogout, isOpen, onClose }) {
     { path: "/admin/contact-leads", label: "Contact Leads", icon: "📬" },
     { path: "/admin/blogs", label: "Blogs", icon: "📰" },
     { path: "/admin/testimonials", label: "Testimonials", icon: "💬" },
-    // { path: '/admin/company-profile', label: 'Company Profile', icon: '🏢' },
-    // { path: '/admin/social-links', label: 'Social Links', icon: '🔗' },
-    // { path: '/admin/email-settings', label: 'Email Settings', icon: '📧' },
-    // { path: '/admin/email-templates', label: 'Email Templates', icon: '✉️' },
-    // { path: '/admin/email-logs', label: 'Email Logs', icon: '📋' },
-    // { path: '/admin/email-inbox', label: 'Email Inbox', icon: '📬' },
+    { path: "/admin/company-profile", label: "Company Profile", icon: "🏢" },
+    { path: "/admin/social-links", label: "Social Links", icon: "🔗" },
+    { path: "/admin/email-settings", label: "Email Settings", icon: "📧" },
+    { path: "/admin/email-templates", label: "Email Templates", icon: "✉️" },
+    { path: "/admin/email-logs", label: "Email Logs", icon: "📋" },
+    { path: "/admin/email-inbox", label: "Email Inbox", icon: "📬" },
     { path: "/admin/account-settings", label: "Account Settings", icon: "⚙️" },
   ];
 
