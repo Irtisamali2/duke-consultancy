@@ -242,6 +242,23 @@ router.delete('/candidate/profile/experience/:id', requireCandidateAuth, async (
   }
 });
 
+router.put('/candidate/profile/experience/:id', requireCandidateAuth, async (req, res) => {
+  try {
+    const { job_title, employer_hospital, specialization, from_date, to_date, total_experience } = req.body;
+    
+    await db.query(
+      `UPDATE work_experience SET 
+       job_title = ?, employer_hospital = ?, specialization = ?, from_date = ?, to_date = ?, total_experience = ?
+       WHERE id = ? AND candidate_id = ?`,
+      [job_title, employer_hospital, specialization, from_date, to_date, total_experience, req.params.id, req.candidateId]
+    );
+    
+    res.json({ success: true, message: 'Experience updated' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 router.post('/candidate/profile/education', requireCandidateAuth, async (req, res) => {
   try {
     const { degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage } = req.body;
@@ -261,6 +278,23 @@ router.delete('/candidate/profile/education/:id', requireCandidateAuth, async (r
   try {
     await db.query('DELETE FROM education_records WHERE id = ? AND candidate_id = ?', [req.params.id, req.candidateId]);
     res.json({ success: true, message: 'Education deleted' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.put('/candidate/profile/education/:id', requireCandidateAuth, async (req, res) => {
+  try {
+    const { degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage } = req.body;
+    
+    await db.query(
+      `UPDATE education_records SET 
+       degree_diploma_title = ?, university_institute_name = ?, graduation_year = ?, program_duration = ?, registration_number = ?, marks_percentage = ?
+       WHERE id = ? AND candidate_id = ?`,
+      [degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage, req.params.id, req.candidateId]
+    );
+    
+    res.json({ success: true, message: 'Education updated' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -417,6 +451,28 @@ router.get('/candidate/applications', requireCandidateAuth, async (req, res) => 
     `, [req.candidateId]);
 
     res.json({ success: true, applications });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/candidate/application/:id', requireCandidateAuth, async (req, res) => {
+  try {
+    const [application] = await db.query(
+      'SELECT status FROM applications WHERE id = ? AND candidate_id = ?',
+      [req.params.id, req.candidateId]
+    );
+
+    if (application.length === 0) {
+      return res.status(404).json({ success: false, message: 'Application not found' });
+    }
+
+    if (application[0].status !== 'draft') {
+      return res.status(403).json({ success: false, message: 'Only draft applications can be deleted' });
+    }
+
+    await db.query('DELETE FROM applications WHERE id = ? AND candidate_id = ?', [req.params.id, req.candidateId]);
+    res.json({ success: true, message: 'Draft application deleted' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

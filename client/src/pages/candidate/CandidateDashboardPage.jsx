@@ -58,6 +58,27 @@ export default function CandidateDashboardPage() {
     }
   };
 
+  const handleDeleteDraft = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this draft application? This action cannot be undone.')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/candidate/application/${id}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        await fetchApplications();
+      } else {
+        alert('Failed to delete draft application');
+      }
+    } catch (error) {
+      console.error('Failed to delete draft:', error);
+      alert('An error occurred while deleting the draft');
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await fetch('/api/candidate/logout', { method: 'POST' });
@@ -174,13 +195,22 @@ export default function CandidateDashboardPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         {app.status === 'draft' ? (
-                          <button 
-                            onClick={() => setLocation(`/candidate/profile?job_id=${app.job_id}`)}
-                            className="text-[#00A6CE] hover:text-[#0090B5] font-medium"
-                            title="Continue editing draft"
-                          >
-                            ✏️ Edit
-                          </button>
+                          <div className="flex gap-3">
+                            <button 
+                              onClick={() => setLocation(`/candidate/profile?job_id=${app.job_id}`)}
+                              className="text-blue-600 hover:text-blue-800 font-medium"
+                              title="Continue editing draft"
+                            >
+                              ✏️ Edit
+                            </button>
+                            <button 
+                              onClick={() => handleDeleteDraft(app.id)}
+                              className="text-red-600 hover:text-red-800 font-medium"
+                              title="Delete draft"
+                            >
+                              🗑️ Delete
+                            </button>
+                          </div>
                         ) : (
                           <button 
                             onClick={() => setLocation('/candidate/profile')}
@@ -192,9 +222,11 @@ export default function CandidateDashboardPage() {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <button className="text-[#00A6CE] hover:text-[#0090B5]">
-                          ⬇️
-                        </button>
+                        {app.status !== 'draft' && (
+                          <button className="text-[#00A6CE] hover:text-[#0090B5]">
+                            ⬇️
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))

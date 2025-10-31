@@ -441,8 +441,12 @@ export default function CandidateProfileFormPage() {
 
   const addExperience = async () => {
     try {
-      const response = await fetch('/api/candidate/profile/experience', {
-        method: 'POST',
+      const isEditing = newExperience.id;
+      const url = isEditing ? `/api/candidate/profile/experience/${newExperience.id}` : '/api/candidate/profile/experience';
+      const method = isEditing ? 'PUT' : 'POST';
+      
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newExperience)
       });
@@ -451,14 +455,18 @@ export default function CandidateProfileFormPage() {
         setNewExperience({ job_title: '', employer_hospital: '', specialization: '', from_date: '', to_date: '', total_experience: '' });
       }
     } catch (error) {
-      console.error('Failed to add experience:', error);
+      console.error('Failed to add/update experience:', error);
     }
   };
 
   const addEducation = async () => {
     try {
-      const response = await fetch('/api/candidate/profile/education', {
-        method: 'POST',
+      const isEditing = newEducation.id;
+      const url = isEditing ? `/api/candidate/profile/education/${newEducation.id}` : '/api/candidate/profile/education';
+      const method = isEditing ? 'PUT' : 'POST';
+      
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEducation)
       });
@@ -467,7 +475,59 @@ export default function CandidateProfileFormPage() {
         setNewEducation({ degree_diploma_title: '', university_institute_name: '', graduation_year: '', program_duration: '', registration_number: '', marks_percentage: '' });
       }
     } catch (error) {
-      console.error('Failed to add education:', error);
+      console.error('Failed to add/update education:', error);
+    }
+  };
+
+  const editExperience = (exp) => {
+    setNewExperience({
+      id: exp.id,
+      job_title: exp.job_title,
+      employer_hospital: exp.employer_hospital,
+      specialization: exp.specialization,
+      from_date: exp.from_date,
+      to_date: exp.to_date,
+      total_experience: exp.total_experience
+    });
+  };
+
+  const deleteExperience = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this experience?')) return;
+    try {
+      const response = await fetch(`/api/candidate/profile/experience/${id}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        await fetchProfile();
+      }
+    } catch (error) {
+      console.error('Failed to delete experience:', error);
+    }
+  };
+
+  const editEducation = (edu) => {
+    setNewEducation({
+      id: edu.id,
+      degree_diploma_title: edu.degree_diploma_title,
+      university_institute_name: edu.university_institute_name,
+      graduation_year: edu.graduation_year,
+      program_duration: edu.program_duration,
+      registration_number: edu.registration_number,
+      marks_percentage: edu.marks_percentage
+    });
+  };
+
+  const deleteEducation = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this education record?')) return;
+    try {
+      const response = await fetch(`/api/candidate/profile/education/${id}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        await fetchProfile();
+      }
+    } catch (error) {
+      console.error('Failed to delete education:', error);
     }
   };
 
@@ -1352,6 +1412,7 @@ export default function CandidateProfileFormPage() {
                           <th className="border p-3 text-left text-sm font-semibold">From</th>
                           <th className="border p-3 text-left text-sm font-semibold">To</th>
                           <th className="border p-3 text-left text-sm font-semibold">Total Experience</th>
+                          <th className="border p-3 text-left text-sm font-semibold">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1363,6 +1424,24 @@ export default function CandidateProfileFormPage() {
                             <td className="border p-3 text-sm">{exp.from_date}</td>
                             <td className="border p-3 text-sm">{exp.to_date}</td>
                             <td className="border p-3 text-sm">{exp.total_experience}</td>
+                            <td className="border p-3 text-sm">
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => editExperience(exp)}
+                                  className="text-blue-600 hover:text-blue-800"
+                                  title="Edit"
+                                >
+                                  ✏️
+                                </button>
+                                <button
+                                  onClick={() => deleteExperience(exp.id)}
+                                  className="text-red-600 hover:text-red-800"
+                                  title="Delete"
+                                >
+                                  🗑️
+                                </button>
+                              </div>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -1442,8 +1521,16 @@ export default function CandidateProfileFormPage() {
                     onClick={addExperience}
                     className="bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-lg px-6"
                   >
-                    Add Experience
+                    {newExperience.id ? 'Update Experience' : 'Add Experience'}
                   </Button>
+                  {newExperience.id && (
+                    <Button
+                      onClick={() => setNewExperience({ job_title: '', employer_hospital: '', specialization: '', from_date: '', to_date: '', total_experience: '' })}
+                      className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg px-6 ml-3"
+                    >
+                      Cancel
+                    </Button>
+                  )}
                 </div>
                 
                 <div className="flex justify-between mt-8">
@@ -1492,6 +1579,7 @@ export default function CandidateProfileFormPage() {
                           <th className="border p-3 text-left text-sm font-semibold">Program Duration</th>
                           <th className="border p-3 text-left text-sm font-semibold">Registration Number</th>
                           <th className="border p-3 text-left text-sm font-semibold">Marks/Percentage</th>
+                          <th className="border p-3 text-left text-sm font-semibold">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1503,6 +1591,24 @@ export default function CandidateProfileFormPage() {
                             <td className="border p-3 text-sm">{edu.program_duration}</td>
                             <td className="border p-3 text-sm">{edu.registration_number}</td>
                             <td className="border p-3 text-sm">{edu.marks_percentage}</td>
+                            <td className="border p-3 text-sm">
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => editEducation(edu)}
+                                  className="text-blue-600 hover:text-blue-800"
+                                  title="Edit"
+                                >
+                                  ✏️
+                                </button>
+                                <button
+                                  onClick={() => deleteEducation(edu.id)}
+                                  className="text-red-600 hover:text-red-800"
+                                  title="Delete"
+                                >
+                                  🗑️
+                                </button>
+                              </div>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -1584,8 +1690,16 @@ export default function CandidateProfileFormPage() {
                     onClick={addEducation}
                     className="bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-lg px-6"
                   >
-                    Add Education
+                    {newEducation.id ? 'Update Education' : 'Add Education'}
                   </Button>
+                  {newEducation.id && (
+                    <Button
+                      onClick={() => setNewEducation({ degree_diploma_title: '', university_institute_name: '', graduation_year: '', program_duration: '', registration_number: '', marks_percentage: '' })}
+                      className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg px-6 ml-3"
+                    >
+                      Cancel
+                    </Button>
+                  )}
                 </div>
                 
                 <div className="flex justify-between mt-8">
