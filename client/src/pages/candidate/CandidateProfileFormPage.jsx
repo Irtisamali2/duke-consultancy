@@ -422,20 +422,52 @@ export default function CandidateProfileFormPage() {
 
   const handlePersonalSubmit = async () => {
     try {
+      // Validate required fields
+      const requiredFields = [
+        { field: 'first_name', label: 'First Name' },
+        { field: 'father_husband_name', label: 'Father/Husband Name' },
+        { field: 'gender', label: 'Gender' },
+        { field: 'date_of_birth', label: 'Date of Birth' },
+        { field: 'cnic', label: 'CNIC' },
+        { field: 'email_address', label: 'Email' },
+        { field: 'mobile_no', label: 'Mobile No' }
+      ];
+
+      for (const { field, label } of requiredFields) {
+        if (!personalData[field] || personalData[field].trim() === '') {
+          setMessage({ type: 'error', text: `${label} is required` });
+          return;
+        }
+      }
+
+      // Validate email confirmation
+      if (personalData.email_address !== personalData.confirm_email_address) {
+        setMessage({ type: 'error', text: 'Email and Confirm Email must match' });
+        return;
+      }
+
+      // Format dates to MySQL format
+      const formattedPersonalData = {
+        ...personalData,
+        date_of_birth: personalData.date_of_birth ? personalData.date_of_birth.split('T')[0] : null,
+        passport_expire_date: personalData.passport_expire_date ? personalData.passport_expire_date.split('T')[0] : null
+      };
+
       const response = await fetch('/api/candidate/profile/personal', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(personalData)
+        body: JSON.stringify(formattedPersonalData)
       });
       const data = await response.json();
       if (response.ok && data.success) {
+        setMessage({ type: '', text: '' });
         setCurrentStep(3);
       } else {
-        alert(data.message || 'Failed to save personal information');
+        setMessage({ type: 'error', text: data.message || 'Failed to save personal information' });
       }
     } catch (error) {
       console.error('Failed to save personal info:', error);
-      alert('An error occurred while saving your information');
+      setMessage({ type: 'error', text: 'An error occurred while saving your information' });
     }
   };
 
@@ -590,10 +622,15 @@ export default function CandidateProfileFormPage() {
           });
           break;
         case 2:
+          const formattedPersonalData = {
+            ...personalData,
+            date_of_birth: personalData.date_of_birth ? personalData.date_of_birth.split('T')[0] : null,
+            passport_expire_date: personalData.passport_expire_date ? personalData.passport_expire_date.split('T')[0] : null
+          };
           response = await fetch('/api/candidate/profile/personal', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(personalData)
+            body: JSON.stringify(formattedPersonalData)
           });
           break;
         case 3:
@@ -663,8 +700,19 @@ export default function CandidateProfileFormPage() {
       
       const data = await response.json();
       if (response.ok && data.success) {
-        setMessage({ type: 'success', text: 'Progress saved successfully!' });
-        setTimeout(() => setLocation('/candidate/dashboard'), 1500);
+        // Create or update draft application
+        const draftResponse = await fetch('/api/candidate/save-draft-application', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ job_id: selectedJobId || null })
+        });
+        
+        if (draftResponse.ok) {
+          setMessage({ type: 'success', text: 'Progress saved as draft!' });
+          setTimeout(() => setLocation('/candidate/dashboard'), 1500);
+        } else {
+          setMessage({ type: 'error', text: 'Progress saved but failed to create draft application' });
+        }
       } else {
         setMessage({ type: 'error', text: data.message || 'Failed to save progress' });
       }
@@ -1065,13 +1113,14 @@ export default function CandidateProfileFormPage() {
                 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">First Name</label>
+                    <label className="block text-sm font-medium mb-2">First Name *</label>
                     <input
                       type="text"
                       value={personalData.first_name}
                       onChange={(e) => setPersonalData({ ...personalData, first_name: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                       placeholder="First Name"
+                      required
                     />
                   </div>
                   <div>
@@ -1081,20 +1130,21 @@ export default function CandidateProfileFormPage() {
                       value={personalData.last_name}
                       onChange={(e) => setPersonalData({ ...personalData, last_name: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                      placeholder="First Name"
+                      placeholder="Last Name"
                     />
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-4 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Father's/Husband's Name</label>
+                    <label className="block text-sm font-medium mb-2">Father's/Husband's Name *</label>
                     <input
                       type="text"
                       value={personalData.father_husband_name}
                       onChange={(e) => setPersonalData({ ...personalData, father_husband_name: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                       placeholder="Father's/Husband's Name"
+                      required
                     />
                   </div>
                   <div>
@@ -1108,13 +1158,14 @@ export default function CandidateProfileFormPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Gender</label>
+                    <label className="block text-sm font-medium mb-2">Gender *</label>
                     <input
                       type="text"
                       value={personalData.gender}
                       onChange={(e) => setPersonalData({ ...personalData, gender: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                       placeholder="Gender"
+                      required
                     />
                   </div>
                   <div>
@@ -1131,12 +1182,13 @@ export default function CandidateProfileFormPage() {
                 
                 <div className="grid grid-cols-4 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Date Of Birth</label>
+                    <label className="block text-sm font-medium mb-2">Date Of Birth *</label>
                     <input
                       type="date"
                       value={personalData.date_of_birth}
                       onChange={(e) => setPersonalData({ ...personalData, date_of_birth: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      required
                     />
                   </div>
                   <div>
@@ -1173,13 +1225,14 @@ export default function CandidateProfileFormPage() {
                 
                 <div className="grid grid-cols-3 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">CNIC</label>
+                    <label className="block text-sm font-medium mb-2">CNIC *</label>
                     <input
                       type="text"
                       value={personalData.cnic}
                       onChange={(e) => setPersonalData({ ...personalData, cnic: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                       placeholder="35202**********0"
+                      required
                     />
                   </div>
                   <div>
@@ -1239,23 +1292,25 @@ export default function CandidateProfileFormPage() {
                 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Email Address</label>
+                    <label className="block text-sm font-medium mb-2">Email Address *</label>
                     <input
                       type="email"
                       value={personalData.email_address}
                       onChange={(e) => setPersonalData({ ...personalData, email_address: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                       placeholder="Email Address"
+                      required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Confirm Email Address</label>
+                    <label className="block text-sm font-medium mb-2">Confirm Email Address *</label>
                     <input
                       type="email"
                       value={personalData.confirm_email_address || ''}
                       onChange={(e) => setPersonalData({ ...personalData, confirm_email_address: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                       placeholder="Email Address"
+                      required
                     />
                   </div>
                 </div>
@@ -1282,13 +1337,14 @@ export default function CandidateProfileFormPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Mobile No</label>
+                    <label className="block text-sm font-medium mb-2">Mobile No *</label>
                     <input
                       type="tel"
                       value={personalData.mobile_no}
                       onChange={(e) => setPersonalData({ ...personalData, mobile_no: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
                       placeholder="03*********0"
+                      required
                     />
                   </div>
                 </div>

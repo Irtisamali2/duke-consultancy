@@ -478,4 +478,34 @@ router.delete('/candidate/application/:id', requireCandidateAuth, async (req, re
   }
 });
 
+router.post('/candidate/save-draft-application', requireCandidateAuth, async (req, res) => {
+  try {
+    const { job_id } = req.body;
+    
+    // Check if draft already exists for this job
+    const [existing] = await db.query(
+      'SELECT id FROM applications WHERE candidate_id = ? AND job_id = ? AND status = ?',
+      [req.candidateId, job_id, 'draft']
+    );
+    
+    if (existing.length > 0) {
+      // Update existing draft
+      await db.query(
+        'UPDATE applications SET applied_date = NOW() WHERE id = ?',
+        [existing[0].id]
+      );
+      res.json({ success: true, message: 'Draft updated', applicationId: existing[0].id });
+    } else {
+      // Create new draft
+      const [result] = await db.query(
+        'INSERT INTO applications (candidate_id, job_id, status, applied_date) VALUES (?, ?, ?, NOW())',
+        [req.candidateId, job_id, 'draft']
+      );
+      res.json({ success: true, message: 'Draft created', applicationId: result.insertId });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 export default router;
