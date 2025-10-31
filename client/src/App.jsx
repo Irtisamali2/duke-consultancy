@@ -40,6 +40,7 @@ import CandidateLoginPage from "@/pages/candidate/CandidateLoginPage";
 import CandidateRegisterPage from "@/pages/candidate/CandidateRegisterPage";
 import CandidateProfileFormPage from "@/pages/candidate/CandidateProfileFormPage";
 import CandidateDashboardPage from "@/pages/candidate/CandidateDashboardPage";
+import CandidateApplicationViewPage from "@/pages/candidate/CandidateApplicationViewPage";
 import CandidateForgotPasswordPage from "@/pages/candidate/CandidateForgotPasswordPage";
 import CandidateResetPasswordPage from "@/pages/candidate/CandidateResetPasswordPage";
 import BrowseJobsPage from "@/pages/candidate/BrowseJobsPage";
@@ -61,6 +62,7 @@ function Router() {
       <Route path="/candidate/reset-password" component={CandidateResetPasswordPage} />
       <Route path="/candidate/dashboard" component={CandidateDashboardPage} />
       <Route path="/candidate/profile" component={CandidateProfileFormPage} />
+      <Route path="/candidate/application/view" component={CandidateApplicationViewPage} />
       <Route path="/candidate/browse-jobs" component={BrowseJobsPage} />
       <Route path="/candidate/register-profile" component={CandidateProfileFormPage} />
       

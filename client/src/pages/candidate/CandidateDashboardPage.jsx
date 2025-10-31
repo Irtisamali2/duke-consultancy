@@ -214,7 +214,7 @@ export default function CandidateDashboardPage() {
                           </div>
                         ) : (
                           <button 
-                            onClick={() => setLocation(`/candidate/profile?job_id=${app.job_id}&application_id=${app.id}`)}
+                            onClick={() => setLocation(`/candidate/application/view?application_id=${app.id}`)}
                             className="text-[#00A6CE] hover:text-[#0090B5]"
                             title="View application"
                           >
@@ -287,7 +287,7 @@ export default function CandidateDashboardPage() {
                     ) : (
                       <>
                         <button 
-                          onClick={() => setLocation(`/candidate/profile?job_id=${app.job_id}&application_id=${app.id}`)}
+                          onClick={() => setLocation(`/candidate/application/view?application_id=${app.id}`)}
                           className="flex-1 px-4 py-2 bg-[#00A6CE] text-white text-sm rounded-lg hover:bg-[#0090B5]"
                         >
                           👁️ View
