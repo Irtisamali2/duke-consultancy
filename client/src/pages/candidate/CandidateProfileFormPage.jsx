@@ -549,10 +549,17 @@ export default function CandidateProfileFormPage() {
       const url = isEditing ? `/api/candidate/profile/education/${newEducation.id}` : '/api/candidate/profile/education';
       const method = isEditing ? 'PUT' : 'POST';
       
+      // Format dates for MySQL
+      const formattedEducation = {
+        ...newEducation,
+        graduation_year: formatDateForMySQL(newEducation.graduation_year),
+        application_id: applicationId
+      };
+      
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...newEducation, application_id: applicationId })
+        body: JSON.stringify(formattedEducation)
       });
       if (response.ok) {
         await fetchProfile();
@@ -1985,39 +1992,58 @@ export default function CandidateProfileFormPage() {
                 <div className="grid grid-cols-2 gap-6 mb-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">Updated CV/Resume (PDF)</label>
-                    <div className="flex gap-3">
+                    <div className="space-y-2">
                       {documents.cv_resume_url && (
-                        <span className="text-sm text-gray-600 py-2">XYZ Resume.Pdf</span>
+                        <div className="text-sm text-gray-600 py-1">
+                          <a href={documents.cv_resume_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">View uploaded file</a>
+                        </div>
                       )}
                       <input
                         type="file"
                         accept=".pdf"
                         className="hidden"
-                        id="cv_resume"
+                        id="cv_resume_url"
+                        onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], 'cv_resume_url')}
                       />
                       <label
-                        htmlFor="cv_resume"
+                        htmlFor="cv_resume_url"
                         className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
                       >
-                        Choose File
+                        {documents.cv_resume_url ? 'Replace File' : 'Choose File'}
                       </label>
+                      {uploadProgress.cv_resume_url !== null && uploadProgress.cv_resume_url !== undefined && (
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${uploadProgress.cv_resume_url}%` }}></div>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">Passport</label>
-                    <div className="flex gap-3">
+                    <div className="space-y-2">
+                      {documents.passport_url && (
+                        <div className="text-sm text-gray-600 py-1">
+                          <a href={documents.passport_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">View uploaded file</a>
+                        </div>
+                      )}
                       <input
                         type="file"
                         accept="image/*,.pdf"
                         className="hidden"
-                        id="passport"
+                        id="passport_url"
+                        onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], 'passport_url')}
                       />
                       <label
-                        htmlFor="passport"
+                        htmlFor="passport_url"
                         className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
                       >
-                        Choose File
+                        {documents.passport_url ? 'Replace File' : 'Choose File'}
                       </label>
+                      {uploadProgress.passport_url !== null && uploadProgress.passport_url !== undefined && (
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${uploadProgress.passport_url}%` }}></div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -2025,36 +2051,58 @@ export default function CandidateProfileFormPage() {
                 <div className="grid grid-cols-2 gap-6 mb-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">Degree/Diploma Certificates</label>
-                    <div className="flex gap-3">
+                    <div className="space-y-2">
+                      {documents.degree_certificates_url && (
+                        <div className="text-sm text-gray-600 py-1">
+                          <a href={documents.degree_certificates_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">View uploaded file</a>
+                        </div>
+                      )}
                       <input
                         type="file"
                         accept="image/*,.pdf"
                         className="hidden"
-                        id="degree_certificates"
+                        id="degree_certificates_url"
+                        onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], 'degree_certificates_url')}
                       />
                       <label
-                        htmlFor="degree_certificates"
+                        htmlFor="degree_certificates_url"
                         className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
                       >
-                        Choose File
+                        {documents.degree_certificates_url ? 'Replace File' : 'Choose File'}
                       </label>
+                      {uploadProgress.degree_certificates_url !== null && uploadProgress.degree_certificates_url !== undefined && (
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${uploadProgress.degree_certificates_url}%` }}></div>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">Professional License / Registration Certificate</label>
-                    <div className="flex gap-3">
+                    <div className="space-y-2">
+                      {documents.license_certificate_url && (
+                        <div className="text-sm text-gray-600 py-1">
+                          <a href={documents.license_certificate_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">View uploaded file</a>
+                        </div>
+                      )}
                       <input
                         type="file"
                         accept="image/*,.pdf"
                         className="hidden"
-                        id="license_certificate"
+                        id="license_certificate_url"
+                        onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], 'license_certificate_url')}
                       />
                       <label
-                        htmlFor="license_certificate"
+                        htmlFor="license_certificate_url"
                         className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
                       >
-                        Choose File
+                        {documents.license_certificate_url ? 'Replace File' : 'Choose File'}
                       </label>
+                      {uploadProgress.license_certificate_url !== null && uploadProgress.license_certificate_url !== undefined && (
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${uploadProgress.license_certificate_url}%` }}></div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -2062,37 +2110,98 @@ export default function CandidateProfileFormPage() {
                 <div className="grid grid-cols-2 gap-6 mb-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">IELTS/OET Certificate (If Applicable)</label>
-                    <div className="flex gap-3">
+                    <div className="space-y-2">
+                      {documents.ielts_oet_certificate_url && (
+                        <div className="text-sm text-gray-600 py-1">
+                          <a href={documents.ielts_oet_certificate_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">View uploaded file</a>
+                        </div>
+                      )}
                       <input
                         type="file"
                         accept="image/*,.pdf"
                         className="hidden"
-                        id="ielts_oet_certificate"
+                        id="ielts_oet_certificate_url"
+                        onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], 'ielts_oet_certificate_url')}
                       />
                       <label
-                        htmlFor="ielts_oet_certificate"
+                        htmlFor="ielts_oet_certificate_url"
                         className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
                       >
-                        Choose File
+                        {documents.ielts_oet_certificate_url ? 'Replace File' : 'Choose File'}
                       </label>
+                      {uploadProgress.ielts_oet_certificate_url !== null && uploadProgress.ielts_oet_certificate_url !== undefined && (
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${uploadProgress.ielts_oet_certificate_url}%` }}></div>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">Experience Letters (From Previous Employers)</label>
-                    <div className="flex gap-3">
+                    <div className="space-y-2">
+                      {documents.experience_letters_url && (
+                        <div className="text-sm text-gray-600 py-1">
+                          <a href={documents.experience_letters_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">View uploaded file</a>
+                        </div>
+                      )}
                       <input
                         type="file"
                         accept="image/*,.pdf"
                         className="hidden"
-                        id="experience_letters"
+                        id="experience_letters_url"
+                        onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0], 'experience_letters_url')}
                       />
                       <label
-                        htmlFor="experience_letters"
+                        htmlFor="experience_letters_url"
                         className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
                       >
-                        Choose File
+                        {documents.experience_letters_url ? 'Replace File' : 'Choose File'}
                       </label>
+                      {uploadProgress.experience_letters_url !== null && uploadProgress.experience_letters_url !== undefined && (
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${uploadProgress.experience_letters_url}%` }}></div>
+                        </div>
+                      )}
                     </div>
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <label className="block text-sm font-medium mb-2">Additional Files (Maximum 5 files, 5MB each)</label>
+                  <div className="space-y-3">
+                    {documents.additional_files.map((file, index) => (
+                      <div key={index} className="flex items-center gap-3 bg-gray-50 p-2 rounded">
+                        <a href={file.url} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline flex-1">{file.name}</a>
+                        <button
+                          onClick={() => removeAdditionalFile(index)}
+                          className="text-red-600 hover:text-red-800 px-3 py-1 text-sm"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                    {documents.additional_files.length < 5 && (
+                      <div>
+                        <input
+                          type="file"
+                          accept="image/*,.pdf"
+                          className="hidden"
+                          id="additional_file"
+                          onChange={(e) => {
+                            if (e.target.files[0]) {
+                              handleAdditionalFileUpload(e.target.files[0]);
+                              e.target.value = '';
+                            }
+                          }}
+                        />
+                        <label
+                          htmlFor="additional_file"
+                          className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
+                        >
+                          Add Additional File ({documents.additional_files.length}/5)
+                        </label>
+                      </div>
+                    )}
                   </div>
                 </div>
                 
