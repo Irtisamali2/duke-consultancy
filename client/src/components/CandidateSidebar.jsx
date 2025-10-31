@@ -18,17 +18,17 @@ export default function CandidateSidebar({ candidate, profileImage, onLogout, is
       {/* Mobile overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
           onClick={onClose}
         />
       )}
       
       {/* Sidebar */}
       <div className={`
-        fixed md:static inset-y-0 left-0 z-50
+        fixed lg:static inset-y-0 left-0 z-50
         w-64 lg:w-72 bg-white border-r border-gray-200 min-h-screen p-4 sm:p-6
         transform transition-transform duration-300 ease-in-out
-        ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         <img src="/Group_1760620436964.png" alt="Duke Consultancy Logo" className="h-10 mb-6 sm:mb-8" />
         
