@@ -121,6 +121,38 @@ router.get('/candidate/profile', requireCandidateAuth, async (req, res) => {
   }
 });
 
+// Get basic profile info only (for new applications - only name, email, profile image)
+router.get('/candidate/profile/basic', requireCandidateAuth, async (req, res) => {
+  try {
+    // Get candidate basic info
+    const [candidates] = await db.query(
+      'SELECT firstName, lastName, email FROM candidates WHERE id = ?',
+      [req.candidateId]
+    );
+    
+    // Get most recent profile image (if any)
+    const [profiles] = await db.query(
+      'SELECT first_name, last_name, email_address, profile_image_url FROM healthcare_profiles WHERE candidate_id = ? ORDER BY id DESC LIMIT 1',
+      [req.candidateId]
+    );
+    
+    const candidate = candidates[0] || {};
+    const profile = profiles[0] || {};
+    
+    res.json({
+      success: true,
+      profile: {
+        first_name: profile.first_name || candidate.firstName || '',
+        last_name: profile.last_name || candidate.lastName || '',
+        email_address: profile.email_address || candidate.email || '',
+        profile_image_url: profile.profile_image_url || null
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 router.put('/candidate/profile/account', requireCandidateAuth, async (req, res) => {
   try {
     const { firstName, lastName, email, phone } = req.body;

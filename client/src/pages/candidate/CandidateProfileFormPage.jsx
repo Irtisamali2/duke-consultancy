@@ -215,30 +215,65 @@ export default function CandidateProfileFormPage() {
 
   const fetchProfile = async () => {
     try {
-      const url = applicationId ? `/api/candidate/profile?application_id=${applicationId}` : '/api/candidate/profile';
-      const response = await fetch(url);
-      const data = await response.json();
-      if (data.success) {
-        if (data.profile) {
-          const countriesPref = data.profile.countries_preference ? JSON.parse(data.profile.countries_preference) : [];
-          const tradesPref = data.profile.trades_preference ? JSON.parse(data.profile.trades_preference) : [];
-          
-          setTradeData({
-            trade_applied_for: data.profile.trade_applied_for || '',
-            availability_to_join: data.profile.availability_to_join || '',
-            willingness_to_relocate: data.profile.willingness_to_relocate || '',
-            countries_preference: countriesPref,
-            trades_preference: tradesPref
+      if (applicationId) {
+        // Editing existing application - fetch ALL data for this specific application
+        const url = `/api/candidate/profile?application_id=${applicationId}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.success) {
+          if (data.profile) {
+            const countriesPref = data.profile.countries_preference ? JSON.parse(data.profile.countries_preference) : [];
+            const tradesPref = data.profile.trades_preference ? JSON.parse(data.profile.trades_preference) : [];
+            
+            setTradeData({
+              trade_applied_for: data.profile.trade_applied_for || '',
+              availability_to_join: data.profile.availability_to_join || '',
+              willingness_to_relocate: data.profile.willingness_to_relocate || '',
+              countries_preference: countriesPref,
+              trades_preference: tradesPref
+            });
+            setPersonalData({ ...personalData, ...data.profile });
+            
+            if (data.profile.profile_image_url) {
+              setProfileImagePreview(data.profile.profile_image_url);
+            }
+          }
+          if (data.experience) setExperiences(data.experience);
+          if (data.education) setEducations(data.education);
+          if (data.documents) setDocuments({ ...documents, ...data.documents });
+        }
+      } else {
+        // New application - only fetch basic profile info (name, email, profile image)
+        const response = await fetch('/api/candidate/profile/basic');
+        const data = await response.json();
+        if (data.success && data.profile) {
+          // Only set basic info - first name, last name, email, and profile image
+          setPersonalData({
+            ...personalData,
+            first_name: data.profile.first_name || '',
+            last_name: data.profile.last_name || '',
+            email_address: data.profile.email_address || ''
           });
-          setPersonalData({ ...personalData, ...data.profile });
           
           if (data.profile.profile_image_url) {
             setProfileImagePreview(data.profile.profile_image_url);
           }
         }
-        if (data.experience) setExperiences(data.experience);
-        if (data.education) setEducations(data.education);
-        if (data.documents) setDocuments({ ...documents, ...data.documents });
+        
+        // Clear other form sections for new application
+        setTradeData({
+          trade_applied_for: '',
+          availability_to_join: '',
+          willingness_to_relocate: '',
+          countries_preference: [],
+          trades_preference: []
+        });
+        setExperiences([]);
+        setEducations([]);
+        setDocuments({
+          cv_resume_url: '', passport_url: '', degree_certificates_url: '',
+          license_certificate_url: '', ielts_oet_certificate_url: '', experience_letters_url: '', additional_files: []
+        });
       }
     } catch (error) {
       console.error('Failed to fetch profile:', error);

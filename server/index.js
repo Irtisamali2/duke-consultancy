@@ -16,6 +16,7 @@ import { fixCandidateStatusEnum } from "./migrations/fix-candidate-status-enum.j
 import { addBlogSlug } from "./migrations/add-blog-slug.js";
 import { linkProfilesToApplications } from "./migrations/link-profiles-to-applications.js";
 import { addDraftStatus } from "./migrations/add-draft-status.js";
+import { fixWillingnessRelocateEnum } from "./migrations/fix-willingness-relocate-enum.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -72,6 +73,7 @@ app.use((req, res, next) => {
   await addBlogSlug();
   await linkProfilesToApplications();
   await addDraftStatus();
+  await fixWillingnessRelocateEnum();
   
   const server = await registerRoutes(app);
 
