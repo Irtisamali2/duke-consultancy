@@ -25,11 +25,19 @@ export default function CandidateProfileFormPage() {
   
   // Utility function to convert date to MySQL format (YYYY-MM-DD)
   const formatDateForMySQL = (dateValue) => {
-    if (!dateValue) return null;
+    // Handle empty, null, undefined, or whitespace-only values
+    if (!dateValue || (typeof dateValue === 'string' && dateValue.trim() === '')) {
+      return null;
+    }
+    
     // If it's already in YYYY-MM-DD format, return as is
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) return dateValue;
+    
     // If it has time component, extract date part
-    if (dateValue.includes('T')) return dateValue.split('T')[0];
+    if (typeof dateValue === 'string' && dateValue.includes('T')) {
+      return dateValue.split('T')[0];
+    }
+    
     // Try to parse and format
     try {
       const date = new Date(dateValue);

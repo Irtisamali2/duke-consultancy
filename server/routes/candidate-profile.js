@@ -299,6 +299,13 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
 
     const appId = application_id ? parseInt(application_id) : null;
     
+    // Convert empty strings to NULL for date fields to prevent MySQL errors
+    const safeDateOfBirth = date_of_birth || null;
+    const safeCnicIssueDate = cnic_issue_date || null;
+    const safeCnicExpireDate = cnic_expire_date || null;
+    const safePassportIssueDate = passport_issue_date || null;
+    const safePassportExpireDate = passport_expire_date || null;
+    
     // Check if profile exists for this application
     const [existing] = await db.query(
       'SELECT id FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
@@ -317,8 +324,8 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
          WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))`,
         [
           first_name, middle_name, last_name, father_husband_name, marital_status, gender, religion,
-          date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expire_date,
-          passport_number, passport_issue_date, passport_expire_date, email_address, confirm_email_address,
+          safeDateOfBirth, place_of_birth, province, country, cnic, safeCnicIssueDate, safeCnicExpireDate,
+          passport_number, safePassportIssueDate, safePassportExpireDate, email_address, confirm_email_address,
           tel_off_no, tel_res_no, mobile_no, present_address, present_street, present_postal_code,
           permanent_address, permanent_street, permanent_postal_code, req.candidateId, appId, appId
         ]
@@ -333,8 +340,8 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           req.candidateId, appId, first_name, middle_name, last_name, father_husband_name,
-          marital_status, gender, religion, date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expire_date,
-          passport_number, passport_issue_date, passport_expire_date, email_address, confirm_email_address, tel_off_no, tel_res_no,
+          marital_status, gender, religion, safeDateOfBirth, place_of_birth, province, country, cnic, safeCnicIssueDate, safeCnicExpireDate,
+          passport_number, safePassportIssueDate, safePassportExpireDate, email_address, confirm_email_address, tel_off_no, tel_res_no,
           mobile_no, present_address, present_street, present_postal_code, permanent_address, permanent_street, permanent_postal_code
         ]
       );
@@ -350,10 +357,14 @@ router.post('/candidate/profile/experience', requireCandidateAuth, async (req, r
   try {
     const { job_title, employer_hospital, specialization, from_date, to_date, total_experience, application_id } = req.body;
     const appId = application_id ? parseInt(application_id) : null;
+    
+    // Convert empty strings to NULL for date fields
+    const safeFromDate = from_date || null;
+    const safeToDate = to_date || null;
 
     const [result] = await db.query(
       'INSERT INTO work_experience (candidate_id, application_id, job_title, employer_hospital, specialization, from_date, to_date, total_experience) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [req.candidateId, appId, job_title, employer_hospital, specialization, from_date, to_date, total_experience]
+      [req.candidateId, appId, job_title, employer_hospital, specialization, safeFromDate, safeToDate, total_experience]
     );
 
     // Return the newly created experience with its ID
@@ -364,8 +375,8 @@ router.post('/candidate/profile/experience', requireCandidateAuth, async (req, r
       job_title,
       employer_hospital,
       specialization,
-      from_date,
-      to_date,
+      from_date: safeFromDate,
+      to_date: safeToDate,
       total_experience
     };
 
@@ -388,11 +399,15 @@ router.put('/candidate/profile/experience/:id', requireCandidateAuth, async (req
   try {
     const { job_title, employer_hospital, specialization, from_date, to_date, total_experience } = req.body;
     
+    // Convert empty strings to NULL for date fields
+    const safeFromDate = from_date || null;
+    const safeToDate = to_date || null;
+    
     await db.query(
       `UPDATE work_experience SET 
        job_title = ?, employer_hospital = ?, specialization = ?, from_date = ?, to_date = ?, total_experience = ?
        WHERE id = ? AND candidate_id = ?`,
-      [job_title, employer_hospital, specialization, from_date, to_date, total_experience, req.params.id, req.candidateId]
+      [job_title, employer_hospital, specialization, safeFromDate, safeToDate, total_experience, req.params.id, req.candidateId]
     );
     
     res.json({ success: true, message: 'Experience updated' });
@@ -405,10 +420,13 @@ router.post('/candidate/profile/education', requireCandidateAuth, async (req, re
   try {
     const { degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage, application_id } = req.body;
     const appId = application_id ? parseInt(application_id) : null;
+    
+    // Convert empty strings to NULL for date fields
+    const safeGraduationYear = graduation_year || null;
 
     await db.query(
       'INSERT INTO education_records (candidate_id, application_id, degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [req.candidateId, appId, degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage]
+      [req.candidateId, appId, degree_diploma_title, university_institute_name, safeGraduationYear, program_duration, registration_number, marks_percentage]
     );
 
     res.json({ success: true, message: 'Education added' });
@@ -430,11 +448,14 @@ router.put('/candidate/profile/education/:id', requireCandidateAuth, async (req,
   try {
     const { degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage } = req.body;
     
+    // Convert empty strings to NULL for date fields
+    const safeGraduationYear = graduation_year || null;
+    
     await db.query(
       `UPDATE education_records SET 
        degree_diploma_title = ?, university_institute_name = ?, graduation_year = ?, program_duration = ?, registration_number = ?, marks_percentage = ?
        WHERE id = ? AND candidate_id = ?`,
-      [degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage, req.params.id, req.candidateId]
+      [degree_diploma_title, university_institute_name, safeGraduationYear, program_duration, registration_number, marks_percentage, req.params.id, req.candidateId]
     );
     
     res.json({ success: true, message: 'Education updated' });
