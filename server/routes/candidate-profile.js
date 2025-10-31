@@ -249,14 +249,41 @@ router.put('/candidate/profile/trade', requireCandidateAuth, async (req, res) =>
   try {
     const { trade_applied_for, availability_to_join, willingness_to_relocate, countries_preference, trades_preference, application_id } = req.body;
 
+    // CRITICAL: Require application_id to prevent orphaned data
+    if (!application_id) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Application ID is required. Please create an application first.' 
+      });
+    }
+
+    const appId = parseInt(application_id);
+    if (Number.isNaN(appId) || appId <= 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid application ID provided.' 
+      });
+    }
+
+    // CRITICAL: Verify application exists and belongs to this candidate
+    const [applications] = await pool.query(
+      'SELECT id FROM applications WHERE id = ? AND candidate_id = ?',
+      [appId, req.candidateId]
+    );
+    if (applications.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Application not found or does not belong to you.' 
+      });
+    }
+
     const countriesJson = countries_preference ? JSON.stringify(countries_preference) : null;
     const tradesJson = trades_preference ? JSON.stringify(trades_preference) : null;
-    const appId = application_id ? parseInt(application_id) : null;
     
-    // Check if profile exists for this application
+    // Check if profile exists for this specific application
     const [existing] = await pool.query(
-      'SELECT id FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
-      [req.candidateId, appId, appId]
+      'SELECT id FROM healthcare_profiles WHERE candidate_id = ? AND application_id = ?',
+      [req.candidateId, appId]
     );
     
     if (existing.length > 0) {
@@ -268,7 +295,7 @@ router.put('/candidate/profile/trade', requireCandidateAuth, async (req, res) =>
           willingness_to_relocate = ?,
           countries_preference = ?,
           trades_preference = ?
-        WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))`,
+        WHERE candidate_id = ? AND application_id = ?`,
         [
           trade_applied_for, 
           availability_to_join, 
@@ -276,7 +303,6 @@ router.put('/candidate/profile/trade', requireCandidateAuth, async (req, res) =>
           countriesJson,
           tradesJson,
           req.candidateId,
-          appId,
           appId
         ]
       );
@@ -305,7 +331,33 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
       permanent_address, permanent_street, permanent_postal_code, application_id
     } = req.body;
 
-    const appId = application_id ? parseInt(application_id) : null;
+    // CRITICAL: Require application_id to prevent orphaned data
+    if (!application_id) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Application ID is required. Please create an application first.' 
+      });
+    }
+
+    const appId = parseInt(application_id);
+    if (Number.isNaN(appId) || appId <= 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid application ID provided.' 
+      });
+    }
+
+    // CRITICAL: Verify application exists and belongs to this candidate
+    const [applications] = await pool.query(
+      'SELECT id FROM applications WHERE id = ? AND candidate_id = ?',
+      [appId, req.candidateId]
+    );
+    if (applications.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Application not found or does not belong to you.' 
+      });
+    }
     
     // Convert empty strings to NULL for date fields to prevent MySQL errors
     const safeDateOfBirth = date_of_birth || null;
@@ -314,10 +366,10 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
     const safePassportIssueDate = passport_issue_date || null;
     const safePassportExpireDate = passport_expire_date || null;
     
-    // Check if profile exists for this application
+    // Check if profile exists for this specific application
     const [existing] = await pool.query(
-      'SELECT id FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
-      [req.candidateId, appId, appId]
+      'SELECT id FROM healthcare_profiles WHERE candidate_id = ? AND application_id = ?',
+      [req.candidateId, appId]
     );
     
     if (existing.length > 0) {
@@ -329,13 +381,13 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
          passport_number = ?, passport_issue_date = ?, passport_expire_date = ?, email_address = ?, confirm_email_address = ?,
          tel_off_no = ?, tel_res_no = ?, mobile_no = ?, present_address = ?, present_street = ?, present_postal_code = ?,
          permanent_address = ?, permanent_street = ?, permanent_postal_code = ?
-         WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))`,
+         WHERE candidate_id = ? AND application_id = ?`,
         [
           first_name, middle_name, last_name, father_husband_name, marital_status, gender, religion,
           safeDateOfBirth, place_of_birth, province, country, cnic, safeCnicIssueDate, safeCnicExpireDate,
           passport_number, safePassportIssueDate, safePassportExpireDate, email_address, confirm_email_address,
           tel_off_no, tel_res_no, mobile_no, present_address, present_street, present_postal_code,
-          permanent_address, permanent_street, permanent_postal_code, req.candidateId, appId, appId
+          permanent_address, permanent_street, permanent_postal_code, req.candidateId, appId
         ]
       );
     } else {
@@ -364,7 +416,34 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
 router.post('/candidate/profile/experience', requireCandidateAuth, async (req, res) => {
   try {
     const { job_title, employer_hospital, specialization, from_date, to_date, total_experience, application_id } = req.body;
-    const appId = application_id ? parseInt(application_id) : null;
+    
+    // CRITICAL: Require application_id to prevent orphaned data
+    if (!application_id) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Application ID is required. Please create an application first.' 
+      });
+    }
+    
+    const appId = parseInt(application_id);
+    if (Number.isNaN(appId) || appId <= 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid application ID provided.' 
+      });
+    }
+
+    // CRITICAL: Verify application exists and belongs to this candidate
+    const [applications] = await pool.query(
+      'SELECT id FROM applications WHERE id = ? AND candidate_id = ?',
+      [appId, req.candidateId]
+    );
+    if (applications.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Application not found or does not belong to you.' 
+      });
+    }
     
     // Convert empty strings to NULL for date fields
     const safeFromDate = from_date || null;
@@ -427,7 +506,34 @@ router.put('/candidate/profile/experience/:id', requireCandidateAuth, async (req
 router.post('/candidate/profile/education', requireCandidateAuth, async (req, res) => {
   try {
     const { degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage, application_id } = req.body;
-    const appId = application_id ? parseInt(application_id) : null;
+    
+    // CRITICAL: Require application_id to prevent orphaned data
+    if (!application_id) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Application ID is required. Please create an application first.' 
+      });
+    }
+    
+    const appId = parseInt(application_id);
+    if (Number.isNaN(appId) || appId <= 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid application ID provided.' 
+      });
+    }
+
+    // CRITICAL: Verify application exists and belongs to this candidate
+    const [applications] = await pool.query(
+      'SELECT id FROM applications WHERE id = ? AND candidate_id = ?',
+      [appId, req.candidateId]
+    );
+    if (applications.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Application not found or does not belong to you.' 
+      });
+    }
     
     // Convert empty strings to NULL for date fields
     const safeGraduationYear = graduation_year || null;
@@ -488,11 +594,37 @@ router.put('/candidate/profile/documents', requireCandidateAuth, async (req, res
   try {
     const { cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, application_id } = req.body;
     
-    const appId = application_id ? parseInt(application_id) : null;
+    // CRITICAL: Require application_id to prevent orphaned data
+    if (!application_id) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Application ID is required. Please create an application first.' 
+      });
+    }
+    
+    const appId = parseInt(application_id);
+    if (Number.isNaN(appId) || appId <= 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid application ID provided.' 
+      });
+    }
+
+    // CRITICAL: Verify application exists and belongs to this candidate
+    const [applications] = await pool.query(
+      'SELECT id FROM applications WHERE id = ? AND candidate_id = ?',
+      [appId, req.candidateId]
+    );
+    if (applications.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Application not found or does not belong to you.' 
+      });
+    }
 
     const [existing] = await pool.query(
-      'SELECT id FROM candidate_documents WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
-      [req.candidateId, appId, appId]
+      'SELECT id FROM candidate_documents WHERE candidate_id = ? AND application_id = ?',
+      [req.candidateId, appId]
     );
 
     if (existing.length > 0) {
@@ -500,8 +632,8 @@ router.put('/candidate/profile/documents', requireCandidateAuth, async (req, res
         `UPDATE candidate_documents SET 
          cv_resume_url = ?, passport_url = ?, degree_certificates_url = ?, 
          license_certificate_url = ?, ielts_oet_certificate_url = ?, experience_letters_url = ?
-         WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))`,
-        [cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, req.candidateId, appId, appId]
+         WHERE candidate_id = ? AND application_id = ?`,
+        [cv_resume_url, passport_url, degree_certificates_url, license_certificate_url, ielts_oet_certificate_url, experience_letters_url, req.candidateId, appId]
       );
     } else {
       await pool.query(
