@@ -37,8 +37,8 @@ router.get('/candidate/application/download/:applicationId', requireCandidateAut
     const candidateId = req.candidateId;
 
     // Fetch application data
-    const [applications] = await pool.query(
-      'SELECT * FROM applications WHERE id = ? AND candidate_id = ?',
+    const { rows: applications } = await pool.query(
+      'SELECT * FROM applications WHERE id = $1 AND candidate_id = $2',
       [applicationId, candidateId]
     );
 
@@ -49,23 +49,23 @@ router.get('/candidate/application/download/:applicationId', requireCandidateAut
     const application = applications[0];
 
     // Fetch profile, experience, education, and documents
-    const [profiles] = await pool.query(
-      'SELECT * FROM healthcare_profiles WHERE application_id = ?',
+    const { rows: profiles } = await pool.query(
+      'SELECT * FROM healthcare_profiles WHERE application_id = $1',
       [applicationId]
     );
 
-    const [experiences] = await pool.query(
-      'SELECT * FROM work_experience WHERE application_id = ?',
+    const { rows: experiences } = await pool.query(
+      'SELECT * FROM work_experience WHERE application_id = $1',
       [applicationId]
     );
 
-    const [educations] = await pool.query(
-      'SELECT * FROM education_certifications WHERE application_id = ?',
+    const { rows: educations } = await pool.query(
+      'SELECT * FROM education_records WHERE application_id = $1',
       [applicationId]
     );
 
-    const [docs] = await pool.query(
-      'SELECT * FROM document_uploads WHERE application_id = ?',
+    const { rows: docs } = await pool.query(
+      'SELECT * FROM candidate_documents WHERE application_id = $1',
       [applicationId]
     );
 
@@ -250,22 +250,34 @@ function addField(doc, label, value) {
   }
 }
 
-// Helper function to download files from URL
+// Helper function to download files from URL or local path
 function downloadFile(url) {
   return new Promise((resolve, reject) => {
-    const protocol = url.startsWith('https') ? https : http;
-    
-    protocol.get(url, (response) => {
-      if (response.statusCode !== 200) {
-        reject(new Error(`Failed to download file: ${response.statusCode}`));
-        return;
-      }
+    if (url.startsWith('/uploads/') || url.startsWith('uploads/')) {
+      const filePath = path.join(__dirname, '..', url.startsWith('/') ? url.substring(1) : url);
+      fs.readFile(filePath, (err, data) => {
+        if (err) {
+          console.error(`Error reading local file ${filePath}:`, err);
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    } else {
+      const protocol = url.startsWith('https') ? https : http;
+      
+      protocol.get(url, (response) => {
+        if (response.statusCode !== 200) {
+          reject(new Error(`Failed to download file: ${response.statusCode}`));
+          return;
+        }
 
-      const chunks = [];
-      response.on('data', (chunk) => chunks.push(chunk));
-      response.on('end', () => resolve(Buffer.concat(chunks)));
-      response.on('error', reject);
-    }).on('error', reject);
+        const chunks = [];
+        response.on('data', (chunk) => chunks.push(chunk));
+        response.on('end', () => resolve(Buffer.concat(chunks)));
+        response.on('error', reject);
+      }).on('error', reject);
+    }
   });
 }
 

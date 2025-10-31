@@ -60,20 +60,9 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Run database migrations
-  await migrateBlogsTable();
-  await addAuditLogging();
-  await addTagsColumn();
-  await addCompanySettings();
-  await ensureGeneralJob();
-  await updateJobsForMultiselect();
-  await updateProfilesForMultiselect();
-  await migrateProfileImageAndJobDates();
-  await fixCandidateStatusEnum();
-  await addBlogSlug();
-  await linkProfilesToApplications();
-  await addDraftStatus();
-  await fixWillingnessRelocateEnum();
+  // Database migrations are now handled by Drizzle ORM
+  // Schema is pushed using: npm run db:push
+  // Old MySQL migrations disabled as we're now using PostgreSQL
   
   const server = await registerRoutes(app);
 
