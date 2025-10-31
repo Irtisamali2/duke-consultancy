@@ -12,6 +12,40 @@ const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
+// Get filter options (countries and trades) based on job selection
+router.get('/applications/filters/options', requireAuth, async (req, res) => {
+  try {
+    const { job_id } = req.query;
+    
+    let query = `
+      SELECT DISTINCT 
+        hp.country,
+        hp.trade_applied_for,
+        j.title as job_title
+      FROM applications a
+      LEFT JOIN healthcare_profiles hp ON a.id = hp.application_id
+      LEFT JOIN jobs j ON a.job_id = j.id
+      WHERE 1=1
+    `;
+    
+    const params = [];
+    
+    if (job_id) {
+      query += ' AND a.job_id = ?';
+      params.push(job_id);
+    }
+    
+    const [rows] = await pool.query(query, params);
+    
+    const countries = [...new Set(rows.map(r => r.country).filter(Boolean))].sort();
+    const trades = [...new Set(rows.map(r => r.trade_applied_for).filter(Boolean))].sort();
+    
+    res.json({ success: true, countries, trades });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 router.get('/applications', requireAuth, async (req, res) => {
   try {
     const { job_id, country, trade, from_date, to_date, status } = req.query;

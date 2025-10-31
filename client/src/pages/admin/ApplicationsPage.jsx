@@ -25,11 +25,16 @@ export default function ApplicationsPage() {
 
   useEffect(() => {
     fetchJobs();
+    fetchFilterOptions();
   }, []);
   
   useEffect(() => {
     fetchApplications();
   }, [filters]);
+
+  useEffect(() => {
+    fetchFilterOptions();
+  }, [filters.job_id]);
 
   const fetchJobs = async () => {
     try {
@@ -40,6 +45,32 @@ export default function ApplicationsPage() {
       }
     } catch (error) {
       console.error('Failed to fetch jobs:', error);
+    }
+  };
+
+  const fetchFilterOptions = async () => {
+    try {
+      const queryParams = new URLSearchParams();
+      if (filters.job_id) {
+        queryParams.append('job_id', filters.job_id);
+      }
+      
+      const response = await fetch(`/api/applications/filters/options?${queryParams}`);
+      const data = await response.json();
+      if (data.success) {
+        setCountries(data.countries);
+        setTrades(data.trades);
+        
+        if (filters.trade && !data.trades.includes(filters.trade)) {
+          setFilters(prev => ({ ...prev, trade: '' }));
+        }
+        
+        if (filters.country && !data.countries.includes(filters.country)) {
+          setFilters(prev => ({ ...prev, country: '' }));
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch filter options:', error);
     }
   };
 
@@ -54,11 +85,6 @@ export default function ApplicationsPage() {
       const data = await response.json();
       if (data.success) {
         setApplications(data.applications);
-        
-        const uniqueCountries = [...new Set(data.applications.map(a => a.country).filter(Boolean))];
-        const uniqueTrades = [...new Set(data.applications.map(a => a.trade_applied_for).filter(Boolean))];
-        setCountries(uniqueCountries);
-        setTrades(uniqueTrades);
       }
     } catch (error) {
       console.error('Failed to fetch applications:', error);
