@@ -28,7 +28,7 @@ router.get('/applications', requireAuth, async (req, res) => {
         j.title as job_title
       FROM applications a
       LEFT JOIN candidates c ON a.candidate_id = c.id
-      LEFT JOIN healthcare_profiles hp ON c.id = hp.candidate_id
+      LEFT JOIN healthcare_profiles hp ON a.id = hp.application_id
       LEFT JOIN jobs j ON a.job_id = j.id
       WHERE 1=1
     `;
@@ -131,7 +131,7 @@ router.patch('/applications/:id/status', requireAuth, async (req, res) => {
       SELECT a.*, c.email, hp.first_name, hp.last_name, hp.trade_applied_for, j.title as job_title
       FROM applications a
       LEFT JOIN candidates c ON a.candidate_id = c.id
-      LEFT JOIN healthcare_profiles hp ON c.id = hp.candidate_id
+      LEFT JOIN healthcare_profiles hp ON a.id = hp.application_id
       LEFT JOIN jobs j ON a.job_id = j.id
       WHERE a.id = ?
     `, [req.params.id]);
