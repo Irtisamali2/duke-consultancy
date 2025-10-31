@@ -70,15 +70,24 @@ export default function CandidateProfileFormPage() {
 
   const [profileImage, setProfileImage] = useState(null);
   const [profileImagePreview, setProfileImagePreview] = useState(null);
+  const [applications, setApplications] = useState([]);
 
   useEffect(() => {
     checkAuth();
-    fetchJobs();
+    fetchApplications();
     if (jobIdFromUrl) {
       setSelectedJobId(jobIdFromUrl);
       setCurrentStep(1);
+    } else {
+      setCurrentStep(0);
     }
   }, []);
+  
+  useEffect(() => {
+    if (applications.length >= 0) {
+      fetchJobs();
+    }
+  }, [applications]);
   
   useEffect(() => {
     if (selectedJobId) {
@@ -90,12 +99,26 @@ export default function CandidateProfileFormPage() {
     }
   }, [selectedJobId]);
   
+  const fetchApplications = async () => {
+    try {
+      const response = await fetch('/api/candidate/applications');
+      const data = await response.json();
+      if (data.success) {
+        setApplications(data.applications || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch applications:', error);
+    }
+  };
+
   const fetchJobs = async () => {
     try {
       const response = await fetch('/api/jobs/public');
       const data = await response.json();
       if (data.success) {
-        setJobs(data.jobs);
+        const appliedJobIds = applications.map(app => app.job_id);
+        const availableJobs = data.jobs.filter(job => !appliedJobIds.includes(job.id));
+        setJobs(availableJobs);
       }
     } catch (error) {
       console.error('Failed to fetch jobs:', error);
@@ -306,13 +329,28 @@ export default function CandidateProfileFormPage() {
 
   const handleTradeSubmit = async () => {
     try {
+      if (!selectedJobId) {
+        setMessage({ type: 'error', text: 'Please select a job position' });
+        return;
+      }
+      
       if (tradeData.countries_preference.length === 0) {
-        alert('Please select at least one country preference');
+        setMessage({ type: 'error', text: 'Please select at least one country preference' });
         return;
       }
       
       if (tradeData.trades_preference.length === 0) {
-        alert('Please select at least one trade');
+        setMessage({ type: 'error', text: 'Please select at least one trade/specialization' });
+        return;
+      }
+      
+      if (!tradeData.availability_to_join) {
+        setMessage({ type: 'error', text: 'Please select your availability to join' });
+        return;
+      }
+      
+      if (!tradeData.willingness_to_relocate) {
+        setMessage({ type: 'error', text: 'Please select your willingness to relocate' });
         return;
       }
       
@@ -321,7 +359,10 @@ export default function CandidateProfileFormPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(tradeData)
       });
-      if (response.ok) setCurrentStep(2);
+      if (response.ok) {
+        setCurrentStep(2);
+        setMessage({ type: '', text: '' });
+      }
     } catch (error) {
       console.error('Failed to save trade info:', error);
     }
@@ -603,21 +644,23 @@ export default function CandidateProfileFormPage() {
 
         <div className="flex-1 p-4 md:p-8 overflow-auto">
           <div className="bg-white rounded-lg shadow p-6 mb-6">
-            <div className="flex justify-between items-center mb-8">
-              {steps.map((step, index) => (
-                <div key={step.number} className="flex items-center flex-1">
-                  <div className={`flex items-center gap-2 ${currentStep === step.number ? 'text-[#00A6CE] font-medium' : currentStep > step.number ? 'text-[#00A6CE]' : 'text-gray-400'}`}>
-                    <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${currentStep === step.number ? 'bg-[#00A6CE] text-white' : currentStep > step.number ? 'bg-[#00A6CE] text-white' : 'bg-gray-200'}`}>
-                      {step.number}
-                    </span>
-                    <span className="text-sm whitespace-nowrap">{step.label}</span>
+            {jobIdFromUrl && (
+              <div className="flex justify-between items-center mb-8">
+                {steps.map((step, index) => (
+                  <div key={step.number} className="flex items-center flex-1">
+                    <div className={`flex items-center gap-2 ${currentStep === step.number ? 'text-[#00A6CE] font-medium' : currentStep > step.number ? 'text-[#00A6CE]' : 'text-gray-400'}`}>
+                      <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${currentStep === step.number ? 'bg-[#00A6CE] text-white' : currentStep > step.number ? 'bg-[#00A6CE] text-white' : 'bg-gray-200'}`}>
+                        {step.number}
+                      </span>
+                      <span className="text-sm whitespace-nowrap">{step.label}</span>
+                    </div>
+                    {index < steps.length - 1 && (
+                      <div className={`flex-1 h-0.5 mx-2 ${currentStep > step.number ? 'bg-[#00A6CE]' : 'bg-gray-200'}`} />
+                    )}
                   </div>
-                  {index < steps.length - 1 && (
-                    <div className={`flex-1 h-0.5 mx-2 ${currentStep > step.number ? 'bg-[#00A6CE]' : 'bg-gray-200'}`} />
-                  )}
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
 
             {message.text && (
               <div className={`mb-4 p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
@@ -625,11 +668,11 @@ export default function CandidateProfileFormPage() {
               </div>
             )}
 
-            {currentStep === 0 && (
+            {currentStep === 0 && !jobIdFromUrl && (
               <div>
-                <h2 className="text-xl font-bold mb-6">Select Job Position</h2>
+                <h2 className="text-2xl font-bold mb-8">My Profile</h2>
                 
-                <div className="mb-8">
+                <div className="mb-8 border-b pb-6">
                   <h3 className="text-lg font-semibold mb-4">Account Information</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -684,7 +727,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
 
-                <div className="border-t pt-6">
+                <div className="border-b pb-6 mb-6">
                   <h3 className="text-lg font-semibold mb-4">Profile Image</h3>
                   <div className="flex items-start gap-6">
                     <div className="flex-shrink-0">
@@ -735,7 +778,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
 
-                <div className="border-t pt-6">
+                <div>
                   <h3 className="text-lg font-semibold mb-4">Change Password</h3>
                   <div className="grid gap-4 max-w-md">
                     <div>
