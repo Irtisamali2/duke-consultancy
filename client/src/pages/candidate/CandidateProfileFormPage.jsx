@@ -121,8 +121,22 @@ export default function CandidateProfileFormPage() {
       const response = await fetch('/api/jobs/public');
       const data = await response.json();
       if (data.success) {
-        const appliedJobIds = applications.map(app => app.job_id);
-        const availableJobs = data.jobs.filter(job => !appliedJobIds.includes(job.id));
+        // Filter out jobs that have non-draft applications
+        const appliedJobIds = applications
+          .filter(app => app.status !== 'draft')
+          .map(app => app.job_id);
+        
+        // If editing a draft, ensure the draft's job is included
+        let availableJobs = data.jobs.filter(job => !appliedJobIds.includes(job.id));
+        
+        // If editing a draft and the job isn't in the available list, add it
+        if (jobIdFromUrl && !availableJobs.find(j => j.id === parseInt(jobIdFromUrl))) {
+          const draftJob = data.jobs.find(j => j.id === parseInt(jobIdFromUrl));
+          if (draftJob) {
+            availableJobs = [draftJob, ...availableJobs];
+          }
+        }
+        
         setJobs(availableJobs);
       }
     } catch (error) {
@@ -962,14 +976,18 @@ export default function CandidateProfileFormPage() {
                   <select
                     value={selectedJobId}
                     onChange={(e) => setSelectedJobId(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                    className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE] ${applicationIdFromUrl ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                     required
+                    disabled={applicationIdFromUrl ? true : false}
                   >
                     <option value="">Select a job position</option>
                     {jobs.map((job) => (
                       <option key={job.id} value={job.id}>{job.title} - {job.location}</option>
                     ))}
                   </select>
+                  {applicationIdFromUrl && (
+                    <p className="text-xs text-gray-500 mt-2">Job position cannot be changed when editing a draft application</p>
+                  )}
                 </div>
                 
                 <div className="mb-6">
