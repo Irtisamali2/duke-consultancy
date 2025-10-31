@@ -460,6 +460,108 @@ export default function CandidateProfileFormPage() {
     setLocation('/');
   };
 
+  const saveAsDraft = async (step) => {
+    try {
+      let response;
+      switch (step) {
+        case 1:
+          response = await fetch('/api/candidate/profile/trade', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(tradeData)
+          });
+          break;
+        case 2:
+          response = await fetch('/api/candidate/profile/personal', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(personalData)
+          });
+          break;
+        case 3:
+          if (newExperience.job_title || newExperience.employer_hospital || newExperience.specialization) {
+            const shouldSave = confirm('You have unsaved experience data. Do you want to save it before closing?');
+            if (shouldSave) {
+              try {
+                const expResponse = await fetch('/api/candidate/profile/experience', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(newExperience)
+                });
+                const expData = await expResponse.json();
+                if (!expResponse.ok || !expData.success) {
+                  setMessage({ type: 'error', text: expData.message || 'Failed to save experience. Please complete all required fields.' });
+                  return;
+                }
+              } catch (error) {
+                setMessage({ type: 'error', text: 'Failed to save experience entry' });
+                return;
+              }
+            } else if (!shouldSave) {
+              return;
+            }
+          }
+          setMessage({ type: 'success', text: 'All experience entries saved!' });
+          setTimeout(() => setLocation('/candidate/dashboard'), 1500);
+          return;
+        case 4:
+          if (newEducation.degree_diploma_title || newEducation.university_institute_name || newEducation.graduation_year) {
+            const shouldSave = confirm('You have unsaved education data. Do you want to save it before closing?');
+            if (shouldSave) {
+              try {
+                const eduResponse = await fetch('/api/candidate/profile/education', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(newEducation)
+                });
+                const eduData = await eduResponse.json();
+                if (!eduResponse.ok || !eduData.success) {
+                  setMessage({ type: 'error', text: eduData.message || 'Failed to save education. Please complete all required fields.' });
+                  return;
+                }
+              } catch (error) {
+                setMessage({ type: 'error', text: 'Failed to save education entry' });
+                return;
+              }
+            } else if (!shouldSave) {
+              return;
+            }
+          }
+          setMessage({ type: 'success', text: 'All education entries saved!' });
+          setTimeout(() => setLocation('/candidate/dashboard'), 1500);
+          return;
+        case 5:
+          response = await fetch('/api/candidate/profile/documents', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(documents)
+          });
+          break;
+        default:
+          setMessage({ type: 'info', text: 'Progress saved as draft' });
+          setTimeout(() => setLocation('/candidate/dashboard'), 1500);
+          return;
+      }
+      
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setMessage({ type: 'success', text: 'Progress saved successfully!' });
+        setTimeout(() => setLocation('/candidate/dashboard'), 1500);
+      } else {
+        setMessage({ type: 'error', text: data.message || 'Failed to save progress' });
+      }
+    } catch (error) {
+      console.error('Failed to save draft:', error);
+      setMessage({ type: 'error', text: 'An error occurred while saving' });
+    }
+  };
+
+  const handleExitWithConfirmation = () => {
+    if (confirm('Are you sure you want to exit? Any unsaved progress on this page will be lost.')) {
+      setLocation('/candidate/dashboard');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <CandidateSidebar 
@@ -765,25 +867,847 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="flex justify-end">
+                <div className="flex justify-between mt-8">
                   <Button
-                    onClick={handleTradeSubmit}
-                    className="bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-full px-8"
+                    onClick={handleExitWithConfirmation}
+                    className="bg-gray-400 hover:bg-gray-500 text-white rounded-full px-8"
                   >
-                    Continue to Personal Information
+                    Exit
                   </Button>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => saveAsDraft(1)}
+                      className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 rounded-full px-8"
+                    >
+                      Save & Close
+                    </Button>
+                    <Button
+                      onClick={handleTradeSubmit}
+                      className="bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-full px-8"
+                    >
+                      Next
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}
-          </div>
 
-          <div className="flex justify-center mt-6">
-            <Button 
-              onClick={() => setLocation('/candidate/dashboard')}
-              className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 rounded-full px-8"
-            >
-              Back To Dashboard
-            </Button>
+            {currentStep === 2 && (
+              <div>
+                <h2 className="text-xl font-bold mb-6">Personal Information</h2>
+                
+                <div className="mb-6 flex items-start gap-6">
+                  <div className="flex-shrink-0">
+                    {profileImagePreview ? (
+                      <img 
+                        src={profileImagePreview} 
+                        alt="Profile" 
+                        className="w-24 h-24 rounded-full object-cover border-4 border-[#00A6CE]"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center border-4 border-gray-300">
+                        <span className="text-2xl text-gray-400">
+                          {personalData.first_name?.[0]}{personalData.last_name?.[0]}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <label className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-4 py-2 rounded-lg cursor-pointer inline-block">
+                      Upload Recent Picture
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                      />
+                    </label>
+                    {profileImage && (
+                      <Button
+                        onClick={handleImageUpload}
+                        className="ml-3 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+                      >
+                        Save Picture
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">First Name</label>
+                    <input
+                      type="text"
+                      value={personalData.first_name}
+                      onChange={(e) => setPersonalData({ ...personalData, first_name: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="First Name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Last Name</label>
+                    <input
+                      type="text"
+                      value={personalData.last_name}
+                      onChange={(e) => setPersonalData({ ...personalData, last_name: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="First Name"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Father's/Husband's Name</label>
+                    <input
+                      type="text"
+                      value={personalData.father_husband_name}
+                      onChange={(e) => setPersonalData({ ...personalData, father_husband_name: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Father's/Husband's Name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Marital Status</label>
+                    <input
+                      type="text"
+                      value={personalData.marital_status}
+                      onChange={(e) => setPersonalData({ ...personalData, marital_status: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Married"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Gender</label>
+                    <input
+                      type="text"
+                      value={personalData.gender}
+                      onChange={(e) => setPersonalData({ ...personalData, gender: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Gender"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Religion</label>
+                    <input
+                      type="text"
+                      value={personalData.religion}
+                      onChange={(e) => setPersonalData({ ...personalData, religion: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Muslim"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Date Of Birth</label>
+                    <input
+                      type="date"
+                      value={personalData.date_of_birth}
+                      onChange={(e) => setPersonalData({ ...personalData, date_of_birth: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Place Of Birth</label>
+                    <input
+                      type="text"
+                      value={personalData.place_of_birth}
+                      onChange={(e) => setPersonalData({ ...personalData, place_of_birth: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="City"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Province</label>
+                    <input
+                      type="text"
+                      value={personalData.province}
+                      onChange={(e) => setPersonalData({ ...personalData, province: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Province"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Country</label>
+                    <input
+                      type="text"
+                      value={personalData.country}
+                      onChange={(e) => setPersonalData({ ...personalData, country: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Country"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">CNIC</label>
+                    <input
+                      type="text"
+                      value={personalData.cnic}
+                      onChange={(e) => setPersonalData({ ...personalData, cnic: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="35202**********0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">CNIC Issue Date</label>
+                    <input
+                      type="date"
+                      value={personalData.cnic_issue_date}
+                      onChange={(e) => setPersonalData({ ...personalData, cnic_issue_date: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="DD/MM/YYYY"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">CNIC Expire Date</label>
+                    <input
+                      type="date"
+                      value={personalData.cnic_expiry_date}
+                      onChange={(e) => setPersonalData({ ...personalData, cnic_expiry_date: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="DD/MM/YYYY"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Passport Number</label>
+                    <input
+                      type="text"
+                      value={personalData.passport_number}
+                      onChange={(e) => setPersonalData({ ...personalData, passport_number: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="HY******"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Passport Issue Date</label>
+                    <input
+                      type="date"
+                      value={personalData.passport_issue_date}
+                      onChange={(e) => setPersonalData({ ...personalData, passport_issue_date: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="DD/MM/YYYY"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Passport Expire Date</label>
+                    <input
+                      type="date"
+                      value={personalData.passport_expiry_date}
+                      onChange={(e) => setPersonalData({ ...personalData, passport_expiry_date: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="DD/MM/YYYY"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Email Address</label>
+                    <input
+                      type="email"
+                      value={personalData.email_address}
+                      onChange={(e) => setPersonalData({ ...personalData, email_address: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Email Address"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Confirm Email Address</label>
+                    <input
+                      type="email"
+                      value={personalData.confirm_email_address || ''}
+                      onChange={(e) => setPersonalData({ ...personalData, confirm_email_address: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Email Address"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Tel. Off. No</label>
+                    <input
+                      type="tel"
+                      value={personalData.tel_off_no}
+                      onChange={(e) => setPersonalData({ ...personalData, tel_off_no: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="051*******0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Tel. Res. No</label>
+                    <input
+                      type="tel"
+                      value={personalData.tel_res_no}
+                      onChange={(e) => setPersonalData({ ...personalData, tel_res_no: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="051*******0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Mobile No</label>
+                    <input
+                      type="tel"
+                      value={personalData.mobile_no}
+                      onChange={(e) => setPersonalData({ ...personalData, mobile_no: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="03*********0"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Present Address</label>
+                    <input
+                      type="text"
+                      value={personalData.present_address}
+                      onChange={(e) => setPersonalData({ ...personalData, present_address: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Present Address"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Street</label>
+                    <input
+                      type="text"
+                      value={personalData.present_street}
+                      onChange={(e) => setPersonalData({ ...personalData, present_street: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="123"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Postal Code</label>
+                    <input
+                      type="text"
+                      value={personalData.present_postal_code}
+                      onChange={(e) => setPersonalData({ ...personalData, present_postal_code: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="56855"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Permanent Address</label>
+                    <input
+                      type="text"
+                      value={personalData.permanent_address}
+                      onChange={(e) => setPersonalData({ ...personalData, permanent_address: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Permanent Address"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Street</label>
+                    <input
+                      type="text"
+                      value={personalData.permanent_street}
+                      onChange={(e) => setPersonalData({ ...personalData, permanent_street: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="123"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Postal Code</label>
+                    <input
+                      type="text"
+                      value={personalData.permanent_postal_code}
+                      onChange={(e) => setPersonalData({ ...personalData, permanent_postal_code: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="56855"
+                    />
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" className="w-4 h-4" />
+                    <span className="text-sm">Same As Present Address</span>
+                  </label>
+                </div>
+                
+                <div className="flex justify-between mt-8">
+                  <Button
+                    onClick={handleExitWithConfirmation}
+                    className="bg-gray-400 hover:bg-gray-500 text-white rounded-full px-8"
+                  >
+                    Exit
+                  </Button>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => setCurrentStep(1)}
+                      className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-full px-8"
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      onClick={() => saveAsDraft(2)}
+                      className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 rounded-full px-8"
+                    >
+                      Save & Close
+                    </Button>
+                    <Button
+                      onClick={handlePersonalSubmit}
+                      className="bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-full px-8"
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {currentStep === 3 && (
+              <div>
+                <h2 className="text-xl font-bold mb-6">Professional Details</h2>
+                
+                {experiences.length > 0 && (
+                  <div className="mb-6 overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="border p-3 text-left text-sm font-semibold">Job Title</th>
+                          <th className="border p-3 text-left text-sm font-semibold">Employer / Hospital Name</th>
+                          <th className="border p-3 text-left text-sm font-semibold">Specialization</th>
+                          <th className="border p-3 text-left text-sm font-semibold">From</th>
+                          <th className="border p-3 text-left text-sm font-semibold">To</th>
+                          <th className="border p-3 text-left text-sm font-semibold">Total Experience</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {experiences.map((exp, idx) => (
+                          <tr key={idx}>
+                            <td className="border p-3 text-sm">{exp.job_title}</td>
+                            <td className="border p-3 text-sm">{exp.employer_hospital}</td>
+                            <td className="border p-3 text-sm">{exp.specialization}</td>
+                            <td className="border p-3 text-sm">{exp.from_date}</td>
+                            <td className="border p-3 text-sm">{exp.to_date}</td>
+                            <td className="border p-3 text-sm">{exp.total_experience}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Job Title</label>
+                    <input
+                      type="text"
+                      value={newExperience.job_title}
+                      onChange={(e) => setNewExperience({ ...newExperience, job_title: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Current Job Title"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Employer / Hospital</label>
+                    <input
+                      type="text"
+                      value={newExperience.employer_hospital}
+                      onChange={(e) => setNewExperience({ ...newExperience, employer_hospital: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Current Employer / Hospital"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Specialization (E.G. ICU Nurse, Pediatric Nurse, General Nurse)</label>
+                    <input
+                      type="text"
+                      value={newExperience.specialization}
+                      onChange={(e) => setNewExperience({ ...newExperience, specialization: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="ICU Nurse"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">From</label>
+                    <input
+                      type="date"
+                      value={newExperience.from_date}
+                      onChange={(e) => setNewExperience({ ...newExperience, from_date: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="DD/MM/YYYY"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">To</label>
+                    <input
+                      type="date"
+                      value={newExperience.to_date}
+                      onChange={(e) => setNewExperience({ ...newExperience, to_date: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="DD/MM/YYYY"
+                    />
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <label className="block text-sm font-medium mb-2">Total Years Of Experience</label>
+                  <input
+                    type="text"
+                    value={newExperience.total_experience}
+                    onChange={(e) => setNewExperience({ ...newExperience, total_experience: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                    placeholder="X Years"
+                  />
+                </div>
+                
+                <div className="flex justify-end mb-6">
+                  <Button
+                    onClick={addExperience}
+                    className="bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-lg px-6"
+                  >
+                    Add Experience
+                  </Button>
+                </div>
+                
+                <div className="flex justify-between mt-8">
+                  <Button
+                    onClick={handleExitWithConfirmation}
+                    className="bg-gray-400 hover:bg-gray-500 text-white rounded-full px-8"
+                  >
+                    Exit
+                  </Button>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => setCurrentStep(2)}
+                      className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-full px-8"
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      onClick={() => saveAsDraft(3)}
+                      className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 rounded-full px-8"
+                    >
+                      Save & Close
+                    </Button>
+                    <Button
+                      onClick={() => setCurrentStep(4)}
+                      className="bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-full px-8"
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {currentStep === 4 && (
+              <div>
+                <h2 className="text-xl font-bold mb-6">Education & Certifications</h2>
+                
+                {educations.length > 0 && (
+                  <div className="mb-6 overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="border p-3 text-left text-sm font-semibold">Degree/Diploma Title</th>
+                          <th className="border p-3 text-left text-sm font-semibold">University/Institute Name</th>
+                          <th className="border p-3 text-left text-sm font-semibold">Graduation Year</th>
+                          <th className="border p-3 text-left text-sm font-semibold">Program Duration</th>
+                          <th className="border p-3 text-left text-sm font-semibold">Registration Number</th>
+                          <th className="border p-3 text-left text-sm font-semibold">Marks/Percentage</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {educations.map((edu, idx) => (
+                          <tr key={idx}>
+                            <td className="border p-3 text-sm">{edu.degree_diploma_title}</td>
+                            <td className="border p-3 text-sm">{edu.university_institute_name}</td>
+                            <td className="border p-3 text-sm">{edu.graduation_year}</td>
+                            <td className="border p-3 text-sm">{edu.program_duration}</td>
+                            <td className="border p-3 text-sm">{edu.registration_number}</td>
+                            <td className="border p-3 text-sm">{edu.marks_percentage}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Degree/Diploma Title (BSc Nursing, Diploma In General Nursing, Etc.)</label>
+                    <input
+                      type="text"
+                      value={newEducation.degree_diploma_title}
+                      onChange={(e) => setNewEducation({ ...newEducation, degree_diploma_title: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="BSc Nursing"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">University/Institute Name</label>
+                    <input
+                      type="text"
+                      value={newEducation.university_institute_name}
+                      onChange={(e) => setNewEducation({ ...newEducation, university_institute_name: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="University/Institute Name"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Graduation Year</label>
+                    <input
+                      type="text"
+                      value={newEducation.graduation_year}
+                      onChange={(e) => setNewEducation({ ...newEducation, graduation_year: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="Graduation Year"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Program Duration</label>
+                    <input
+                      type="text"
+                      value={newEducation.program_duration}
+                      onChange={(e) => setNewEducation({ ...newEducation, program_duration: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="4 Years"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">License/Registration Number (With Nursing Council)</label>
+                    <input
+                      type="text"
+                      value={newEducation.registration_number}
+                      onChange={(e) => setNewEducation({ ...newEducation, registration_number: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="LXXXXXXXXX"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Marks/Percentage</label>
+                    <input
+                      type="text"
+                      value={newEducation.marks_percentage}
+                      onChange={(e) => setNewEducation({ ...newEducation, marks_percentage: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
+                      placeholder="70%"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex justify-end mb-6">
+                  <Button
+                    onClick={addEducation}
+                    className="bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-lg px-6"
+                  >
+                    Add Education
+                  </Button>
+                </div>
+                
+                <div className="flex justify-between mt-8">
+                  <Button
+                    onClick={handleExitWithConfirmation}
+                    className="bg-gray-400 hover:bg-gray-500 text-white rounded-full px-8"
+                  >
+                    Exit
+                  </Button>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => setCurrentStep(3)}
+                      className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-full px-8"
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      onClick={() => saveAsDraft(4)}
+                      className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 rounded-full px-8"
+                    >
+                      Save & Close
+                    </Button>
+                    <Button
+                      onClick={() => setCurrentStep(5)}
+                      className="bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-full px-8"
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {currentStep === 5 && (
+              <div>
+                <h2 className="text-xl font-bold mb-6">Document Uploads</h2>
+                
+                <div className="grid grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Updated CV/Resume (PDF)</label>
+                    <div className="flex gap-3">
+                      {documents.cv_resume_url && (
+                        <span className="text-sm text-gray-600 py-2">XYZ Resume.Pdf</span>
+                      )}
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        className="hidden"
+                        id="cv_resume"
+                      />
+                      <label
+                        htmlFor="cv_resume"
+                        className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
+                      >
+                        Choose File
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Passport</label>
+                    <div className="flex gap-3">
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        id="passport"
+                      />
+                      <label
+                        htmlFor="passport"
+                        className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
+                      >
+                        Choose File
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Degree/Diploma Certificates</label>
+                    <div className="flex gap-3">
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        id="degree_certificates"
+                      />
+                      <label
+                        htmlFor="degree_certificates"
+                        className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
+                      >
+                        Choose File
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Professional License / Registration Certificate</label>
+                    <div className="flex gap-3">
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        id="license_certificate"
+                      />
+                      <label
+                        htmlFor="license_certificate"
+                        className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
+                      >
+                        Choose File
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">IELTS/OET Certificate (If Applicable)</label>
+                    <div className="flex gap-3">
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        id="ielts_oet_certificate"
+                      />
+                      <label
+                        htmlFor="ielts_oet_certificate"
+                        className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
+                      >
+                        Choose File
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Experience Letters (From Previous Employers)</label>
+                    <div className="flex gap-3">
+                      <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        className="hidden"
+                        id="experience_letters"
+                      />
+                      <label
+                        htmlFor="experience_letters"
+                        className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 px-6 py-2 rounded-lg cursor-pointer inline-block"
+                      >
+                        Choose File
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mb-6 space-y-3">
+                  <label className="flex items-start gap-2">
+                    <input type="checkbox" className="w-4 h-4 mt-1" />
+                    <span className="text-sm">I Confirm That The Information Provided Is Accurate And All Documents Uploaded Are Authentic.</span>
+                  </label>
+                  <label className="flex items-start gap-2">
+                    <input type="checkbox" className="w-4 h-4 mt-1" />
+                    <span className="text-sm">I Agree To The Terms & Conditions Of Duke Consultancy.</span>
+                  </label>
+                </div>
+                
+                <div className="flex justify-between mt-8">
+                  <Button
+                    onClick={handleExitWithConfirmation}
+                    className="bg-gray-400 hover:bg-gray-500 text-white rounded-full px-8"
+                  >
+                    Exit
+                  </Button>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => setCurrentStep(4)}
+                      className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-full px-8"
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      onClick={() => saveAsDraft(5)}
+                      className="bg-[#B8E6F3] hover:bg-[#A0D9E8] text-gray-700 rounded-full px-8"
+                    >
+                      Save & Close
+                    </Button>
+                    <Button
+                      onClick={handleDocumentsSubmit}
+                      className="bg-[#00A6CE] hover:bg-[#0090B5] text-white rounded-full px-8"
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
