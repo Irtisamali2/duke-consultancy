@@ -507,9 +507,9 @@ export default function CandidateProfileFormPage() {
               </div>
             )}
 
-            {currentStep === 0 && (
+            {currentStep === 1 && (
               <div>
-                <h2 className="text-xl font-bold mb-6">Account Settings</h2>
+                <h2 className="text-xl font-bold mb-6">Trade Information</h2>
                 
                 <div className="mb-8">
                   <h3 className="text-lg font-semibold mb-4">Account Information</h3>
