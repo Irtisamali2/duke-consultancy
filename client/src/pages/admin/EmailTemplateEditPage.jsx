@@ -91,6 +91,16 @@ export default function EmailTemplateEditPage() {
             </div>
 
             <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Status Type</label>
+              <input
+                type="text"
+                value={template.status_type || template.template_key || ''}
+                disabled
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 capitalize"
+              />
+            </div>
+
+            <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
               <input
                 type="text"

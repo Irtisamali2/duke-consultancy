@@ -18,10 +18,11 @@ router.post('/forgot-password/candidate', async (req, res) => {
 
     const token = crypto.randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + 3600000);
+    const candidateId = candidates[0].id;
 
     await db.query(
-      'INSERT INTO password_reset_tokens (email, token, user_type, expires_at) VALUES (?, ?, ?, ?)',
-      [email, token, 'candidate', expiresAt]
+      'INSERT INTO password_reset_tokens (user_id, email, token, user_type, expires_at) VALUES (?, ?, ?, ?, ?)',
+      [candidateId, email, token, 'candidate', expiresAt]
     );
 
     const resetLink = `${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000'}/candidate/reset-password?token=${token}`;
@@ -50,10 +51,11 @@ router.post('/forgot-password/admin', async (req, res) => {
 
     const token = crypto.randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + 3600000);
+    const adminId = admins[0].id;
 
     await db.query(
-      'INSERT INTO password_reset_tokens (email, token, user_type, expires_at) VALUES (?, ?, ?, ?)',
-      [email, token, 'admin', expiresAt]
+      'INSERT INTO password_reset_tokens (user_id, email, token, user_type, expires_at) VALUES (?, ?, ?, ?, ?)',
+      [adminId, email, token, 'admin', expiresAt]
     );
 
     const resetLink = `${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000'}/admin/reset-password?token=${token}`;

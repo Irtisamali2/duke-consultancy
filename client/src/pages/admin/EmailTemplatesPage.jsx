@@ -26,6 +26,39 @@ export default function EmailTemplatesPage() {
     }
   };
 
+  const handleDelete = async (id, templateName) => {
+    if (confirm(`Are you sure you want to delete the template "${templateName}"?`)) {
+      try {
+        const response = await fetch(`/api/email/templates/${id}`, {
+          method: 'DELETE'
+        });
+        const data = await response.json();
+        if (data.success) {
+          alert('Template deleted successfully');
+          fetchTemplates();
+        } else {
+          alert(data.message || 'Failed to delete template');
+        }
+      } catch (error) {
+        alert('Failed to delete template');
+      }
+    }
+  };
+
+  const getStatusTypeLabel = (statusType) => {
+    const labels = {
+      'application_received': 'Application Received',
+      'verified': 'Application Verified',
+      'approved': 'Application Approved',
+      'rejected': 'Application Rejected',
+      'pending': 'Application Pending',
+      'password_reset': 'Password Reset',
+      'reminder': 'Reminder',
+      'custom': 'Custom'
+    };
+    return labels[statusType] || statusType;
+  };
+
   if (loading) {
     return <AdminLayout><div className="p-8">Loading...</div></AdminLayout>;
   }
@@ -64,6 +97,7 @@ export default function EmailTemplatesPage() {
               <thead className="bg-[#E8F4F8]">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Template Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Status Type</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Subject</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Description</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Actions</th>
@@ -72,7 +106,7 @@ export default function EmailTemplatesPage() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {templates.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
+                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
                       No email templates found. Click "Create New Template" to add one.
                     </td>
                   </tr>
@@ -81,6 +115,11 @@ export default function EmailTemplatesPage() {
                     <tr key={template.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {template.template_name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                          {getStatusTypeLabel(template.status_type)}
+                        </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">{template.subject}</td>
                       <td className="px-6 py-4 text-sm text-gray-600">{template.description}</td>
@@ -96,6 +135,12 @@ export default function EmailTemplatesPage() {
                           className="bg-[#00A6CE] hover:bg-[#0090B5] text-white text-xs px-3 py-1"
                         >
                           Edit
+                        </Button>
+                        <Button
+                          onClick={() => handleDelete(template.id, template.template_name)}
+                          className="bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1"
+                        >
+                          Delete
                         </Button>
                       </td>
                     </tr>

@@ -67,6 +67,13 @@ export default function EmailTemplateViewPage() {
           </div>
 
           <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Status Type</label>
+            <div className="px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg capitalize">
+              {template.status_type || template.template_key || 'N/A'}
+            </div>
+          </div>
+
+          <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
             <div className="px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg">
               {template.description || 'No description'}

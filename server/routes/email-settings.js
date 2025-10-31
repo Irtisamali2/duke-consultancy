@@ -55,12 +55,23 @@ router.post('/email/templates', requireAuth, async (req, res) => {
   try {
     const { template_name, status_type, subject, body, description } = req.body;
     
+    // Check if template already exists for this status type (except reminder and custom)
+    if (status_type !== 'reminder' && status_type !== 'custom') {
+      const [existing] = await db.query('SELECT id FROM email_templates WHERE status_type = ?', [status_type]);
+      if (existing.length > 0) {
+        return res.status(400).json({ 
+          success: false, 
+          message: `A template already exists for status type "${status_type}". Only one template is allowed per status type (except reminder and custom).` 
+        });
+      }
+    }
+    
     const template_key = status_type;
     const variables = '{{candidate_name}}, {{application_id}}, {{trade}}, {{submitted_date}}, {{updated_date}}, {{remarks}}, {{reset_link}}';
 
     await db.query(
-      'INSERT INTO email_templates (template_key, template_name, subject, body, variables, description) VALUES (?, ?, ?, ?, ?, ?)',
-      [template_key, template_name, subject, body, variables, description]
+      'INSERT INTO email_templates (template_key, template_name, status_type, subject, body, variables, description) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [template_key, template_name, status_type, subject, body, variables, description]
     );
 
     res.json({ success: true, message: 'Template created successfully' });
@@ -89,6 +100,15 @@ router.put('/email/templates/:id', requireAuth, async (req, res) => {
       [subject, body, req.params.id]
     );
     res.json({ success: true, message: 'Template updated successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/email/templates/:id', requireAuth, async (req, res) => {
+  try {
+    await db.query('DELETE FROM email_templates WHERE id = ?', [req.params.id]);
+    res.json({ success: true, message: 'Template deleted successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
