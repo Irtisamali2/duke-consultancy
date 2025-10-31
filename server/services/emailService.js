@@ -105,6 +105,7 @@ class EmailService {
 
   async sendStatusChangeEmail(candidateEmail, status, data) {
     const templateMap = {
+      'pending': 'status_pending',
       'verified': 'status_verified',
       'approved': 'status_approved',
       'rejected': 'status_rejected'
@@ -116,6 +117,7 @@ class EmailService {
       return { success: false, message: 'No template for status' };
     }
 
+    console.log(`Sending status change email to ${candidateEmail} for status: ${status}, template: ${templateKey}`);
     return await this.sendEmail(candidateEmail, templateKey, data);
   }
 

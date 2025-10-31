@@ -81,13 +81,6 @@ export default function EmailTemplateViewPage() {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Email Body (HTML)</label>
-            <div className="px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg font-mono text-sm max-h-96 overflow-auto">
-              <pre className="whitespace-pre-wrap">{template.body}</pre>
-            </div>
-          </div>
-
-          <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">Email Preview</label>
             <div className="border border-gray-300 rounded-lg p-4 bg-white">
               <div dangerouslySetInnerHTML={{ __html: template.body }} />

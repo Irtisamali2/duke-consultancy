@@ -148,14 +148,22 @@ router.patch('/applications/:id/status', requireAuth, async (req, res) => {
     );
 
     const app = appData[0];
-    if (app.email && (status === 'verified' || status === 'approved' || status === 'rejected')) {
+    if (app.email && (status === 'pending' || status === 'verified' || status === 'approved' || status === 'rejected')) {
+      console.log(`Triggering email for application ${app.id}, status: ${status}, email: ${app.email}`);
       emailService.sendStatusChangeEmail(app.email, status, {
         candidate_name: `${app.first_name || ''} ${app.last_name || ''}`.trim() || 'Valued Candidate',
         application_id: String(app.id).padStart(4, '0'),
         job_title: app.job_title || 'General Application',
         updated_date: new Date().toLocaleDateString(),
+        status: status,
         remarks: app.remarks || ''
-      }).catch(err => console.error('Email send failed:', err));
+      }).then(result => {
+        if (result.success) {
+          console.log('Email sent successfully:', result.messageId);
+        } else {
+          console.error('Email send failed:', result.message);
+        }
+      }).catch(err => console.error('Email send error:', err));
     }
     
     res.json({ success: true, message: 'Status updated successfully' });
