@@ -978,20 +978,39 @@ export default function CandidateProfileFormPage() {
 
   const saveAsDraft = async (step) => {
     try {
+      // CRITICAL: Create/get draft application FIRST to get application_id
+      // This ensures all profile data is saved with the correct application_id
+      let currentApplicationId = applicationId;
+      
+      if (!currentApplicationId && selectedJobId) {
+        const draftResponse = await fetch('/api/candidate/save-draft-application', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ job_id: selectedJobId })
+        });
+        
+        if (draftResponse.ok) {
+          const draftData = await draftResponse.json();
+          currentApplicationId = draftData.applicationId;
+          setApplicationId(currentApplicationId);
+        }
+      }
+      
       let response;
       switch (step) {
         case 1:
           response = await fetch('/api/candidate/profile/trade', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(tradeData)
+            body: JSON.stringify({ ...tradeData, application_id: currentApplicationId })
           });
           break;
         case 2:
           const formattedPersonalData = {
             ...personalData,
             date_of_birth: personalData.date_of_birth ? personalData.date_of_birth.split('T')[0] : null,
-            passport_expire_date: personalData.passport_expire_date ? personalData.passport_expire_date.split('T')[0] : null
+            passport_expire_date: personalData.passport_expire_date ? personalData.passport_expire_date.split('T')[0] : null,
+            application_id: currentApplicationId
           };
           response = await fetch('/api/candidate/profile/personal', {
             method: 'PUT',
@@ -1007,7 +1026,7 @@ export default function CandidateProfileFormPage() {
                 const expResponse = await fetch('/api/candidate/profile/experience', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(newExperience)
+                  body: JSON.stringify({ ...newExperience, application_id: currentApplicationId })
                 });
                 const expData = await expResponse.json();
                 if (!expResponse.ok || !expData.success) {
@@ -1033,7 +1052,7 @@ export default function CandidateProfileFormPage() {
                 const eduResponse = await fetch('/api/candidate/profile/education', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(newEducation)
+                  body: JSON.stringify({ ...newEducation, application_id: currentApplicationId })
                 });
                 const eduData = await eduResponse.json();
                 if (!eduResponse.ok || !eduData.success) {
@@ -1055,7 +1074,7 @@ export default function CandidateProfileFormPage() {
           response = await fetch('/api/candidate/profile/documents', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(documents)
+            body: JSON.stringify({ ...documents, application_id: currentApplicationId })
           });
           break;
         default:
@@ -1066,23 +1085,16 @@ export default function CandidateProfileFormPage() {
       
       const data = await response.json();
       if (response.ok && data.success) {
-        // Create or update draft application
-        const draftResponse = await fetch('/api/candidate/save-draft-application', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ job_id: selectedJobId || null })
-        });
-        
-        if (draftResponse.ok) {
-          const draftData = await draftResponse.json();
-          if (draftData.applicationId && !applicationId) {
-            setApplicationId(draftData.applicationId);
-          }
-          setMessage({ type: 'success', text: 'Progress saved as draft!' });
-          setTimeout(() => setLocation('/candidate/dashboard'), 1500);
-        } else {
-          setMessage({ type: 'error', text: 'Progress saved but failed to create draft application' });
+        // Update draft application timestamp
+        if (currentApplicationId) {
+          await fetch('/api/candidate/save-draft-application', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ job_id: selectedJobId || null })
+          });
         }
+        setMessage({ type: 'success', text: 'Progress saved as draft!' });
+        setTimeout(() => setLocation('/candidate/dashboard'), 1500);
       } else {
         setMessage({ type: 'error', text: data.message || 'Failed to save progress' });
       }
