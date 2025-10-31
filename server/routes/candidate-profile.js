@@ -527,8 +527,13 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
       });
     }
 
+    // Check if there's a draft application for this job
+    const [draftApp] = await db.query(
+      'SELECT id FROM applications WHERE candidate_id = ? AND job_id = ? AND status = ?',
+      [req.candidateId, job_id, 'draft']
+    );
+
     // Check if candidate has an active non-draft application for this job
-    // Allow reapplication if previous application was deleted or is a draft
     const [existingApp] = await db.query(
       'SELECT id FROM applications WHERE candidate_id = ? AND job_id = ? AND status != ?',
       [req.candidateId, job_id, 'draft']
@@ -542,10 +547,23 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
     }
 
     const now = new Date();
-    const [result] = await db.query(
-      'INSERT INTO applications (candidate_id, job_id, applied_date, status, submitted_at, modified_at, modified_by, modified_by_type) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)',
-      [req.candidateId, job_id || null, 'pending', now, now, req.candidateId, 'candidate']
-    );
+    let applicationId;
+
+    if (draftApp.length > 0) {
+      // Update existing draft to pending status
+      applicationId = draftApp[0].id;
+      await db.query(
+        'UPDATE applications SET status = ?, submitted_at = ?, modified_at = ?, modified_by = ?, modified_by_type = ? WHERE id = ?',
+        ['pending', now, now, req.candidateId, 'candidate', applicationId]
+      );
+    } else {
+      // Create new application (shouldn't happen in current flow, but keep for safety)
+      const [result] = await db.query(
+        'INSERT INTO applications (candidate_id, job_id, applied_date, status, submitted_at, modified_at, modified_by, modified_by_type) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)',
+        [req.candidateId, job_id || null, 'pending', now, now, req.candidateId, 'candidate']
+      );
+      applicationId = result.insertId;
+    }
 
     const [candidate] = await db.query('SELECT email FROM candidates WHERE id = ?', [req.candidateId]);
     const [profile] = await db.query('SELECT first_name, last_name, trade_applied_for FROM healthcare_profiles WHERE candidate_id = ?', [req.candidateId]);
@@ -564,7 +582,7 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
       
       emailService.sendApplicationReceivedEmail(candidateData.email, {
         candidate_name: `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim() || 'Valued Candidate',
-        application_id: String(result.insertId).padStart(4, '0'),
+        application_id: String(applicationId).padStart(4, '0'),
         job_title: jobTitle,
         trade: profileData.trade_applied_for || 'Healthcare Professional',
         submitted_date: new Date().toLocaleDateString()
