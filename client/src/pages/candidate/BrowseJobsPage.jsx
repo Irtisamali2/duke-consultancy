@@ -80,13 +80,37 @@ export default function BrowseJobsPage() {
     setShowModal(true);
   };
 
-  const handleApply = (jobId) => {
+  const handleApply = async (jobId) => {
+    if (!profile) {
+      alert('Please complete your profile before applying to jobs');
+      setLocation('/candidate/register-profile');
+      return;
+    }
+
     if (appliedJobs.includes(jobId)) {
       alert('You have already applied to this job');
       return;
     }
 
-    setLocation(`/candidate/profile?job_id=${jobId}`);
+    try {
+      const response = await fetch('/api/candidate/submit-application', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ job_id: jobId })
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('Application submitted successfully!');
+        setShowModal(false);
+        await fetchApplications();
+      } else {
+        alert(data.message || 'Failed to submit application');
+      }
+    } catch (error) {
+      alert('Failed to submit application');
+    }
   };
 
   const handleLogout = async () => {
@@ -150,38 +174,38 @@ export default function BrowseJobsPage() {
               <p className="text-gray-400 mt-2">Please check back later</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {jobs.map((job) => (
-                <div key={job.id} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-4 md:p-6 flex flex-col">
-                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 break-words">{job.title}</h3>
-                  <div className="space-y-1 md:space-y-2 mb-3 md:mb-4 flex-grow">
-                    <p className="text-xs md:text-sm text-gray-600">
+                <div key={job.id} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{job.title}</h3>
+                  <div className="space-y-2 mb-4">
+                    <p className="text-sm text-gray-600">
                       <span className="font-medium">Location:</span> {job.location}
                     </p>
-                    <p className="text-xs md:text-sm text-gray-600">
+                    <p className="text-sm text-gray-600">
                       <span className="font-medium">Type:</span> {job.job_type}
                     </p>
-                    <p className="text-xs md:text-sm text-gray-600">
+                    <p className="text-sm text-gray-600">
                       <span className="font-medium">Experience:</span> {job.experience_required}
                     </p>
                     {job.salary_range && (
-                      <p className="text-xs md:text-sm text-gray-600">
+                      <p className="text-sm text-gray-600">
                         <span className="font-medium">Salary:</span> {job.salary_range}
                       </p>
                     )}
                   </div>
-                  <p className="text-xs md:text-sm text-gray-700 mb-3 md:mb-4 line-clamp-3">{job.description}</p>
-                  <div className="flex flex-col sm:flex-row gap-2 mt-auto">
+                  <p className="text-sm text-gray-700 mb-4 line-clamp-3">{job.description}</p>
+                  <div className="flex gap-2">
                     <Button
                       onClick={() => handleViewDetails(job)}
-                      className="flex-1 bg-gray-500 hover:bg-gray-600 text-white text-sm py-2"
+                      className="flex-1 bg-gray-500 hover:bg-gray-600 text-white"
                     >
                       View Details
                     </Button>
                     <Button
                       onClick={() => handleApply(job.id)}
                       disabled={appliedJobs.includes(job.id)}
-                      className={`flex-1 text-sm py-2 ${
+                      className={`flex-1 ${
                         appliedJobs.includes(job.id)
                           ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                           : 'bg-[#00A6CE] hover:bg-[#0090B5] text-white'
@@ -200,52 +224,52 @@ export default function BrowseJobsPage() {
       {showModal && selectedJob && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
-              <h2 className="text-xl md:text-2xl font-bold text-gray-900 pr-4">{selectedJob.title}</h2>
+            <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900">{selectedJob.title}</h2>
               <button
                 onClick={() => setShowModal(false)}
-                className="text-gray-500 hover:text-gray-700 text-3xl leading-none flex-shrink-0"
+                className="text-gray-500 hover:text-gray-700 text-2xl"
               >
                 ×
               </button>
             </div>
 
-            <div className="p-4 md:p-6 space-y-4 md:space-y-6">
+            <div className="p-6 space-y-6">
               <div>
-                <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-3">Job Details</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Job Details</h3>
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs md:text-sm text-gray-500">Location</p>
-                    <p className="text-sm md:text-base font-medium text-gray-900">{selectedJob.location}</p>
+                    <p className="text-sm text-gray-500">Location</p>
+                    <p className="text-base font-medium text-gray-900">{selectedJob.location}</p>
                   </div>
                   <div>
-                    <p className="text-xs md:text-sm text-gray-500">Job Type</p>
-                    <p className="text-sm md:text-base font-medium text-gray-900">{selectedJob.job_type}</p>
+                    <p className="text-sm text-gray-500">Job Type</p>
+                    <p className="text-base font-medium text-gray-900">{selectedJob.job_type}</p>
                   </div>
                   <div>
-                    <p className="text-xs md:text-sm text-gray-500">Experience Required</p>
-                    <p className="text-sm md:text-base font-medium text-gray-900">{selectedJob.experience_required}</p>
+                    <p className="text-sm text-gray-500">Experience Required</p>
+                    <p className="text-base font-medium text-gray-900">{selectedJob.experience_required}</p>
                   </div>
                   {selectedJob.salary_range && (
                     <div>
-                      <p className="text-xs md:text-sm text-gray-500">Salary Range</p>
-                      <p className="text-sm md:text-base font-medium text-gray-900">{selectedJob.salary_range}</p>
+                      <p className="text-sm text-gray-500">Salary Range</p>
+                      <p className="text-base font-medium text-gray-900">{selectedJob.salary_range}</p>
                     </div>
                   )}
                 </div>
               </div>
 
               <div>
-                <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-2">Description</h3>
-                <p className="text-sm md:text-base text-gray-700 whitespace-pre-wrap">{selectedJob.description}</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Description</h3>
+                <p className="text-gray-700 whitespace-pre-wrap">{selectedJob.description}</p>
               </div>
 
               {parseJSON(selectedJob.countries).length > 0 && (
                 <div>
-                  <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-2">Available Countries</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Available Countries</h3>
                   <div className="flex flex-wrap gap-2">
                     {parseJSON(selectedJob.countries).map((country, idx) => (
-                      <span key={idx} className="px-2 md:px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs md:text-sm">
+                      <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
                         {country}
                       </span>
                     ))}
@@ -255,10 +279,10 @@ export default function BrowseJobsPage() {
 
               {parseJSON(selectedJob.trades).length > 0 && (
                 <div>
-                  <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-2">Required Trades/Specializations</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Required Trades/Specializations</h3>
                   <div className="flex flex-wrap gap-2">
                     {parseJSON(selectedJob.trades).map((trade, idx) => (
-                      <span key={idx} className="px-2 md:px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs md:text-sm">
+                      <span key={idx} className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
                         {trade}
                       </span>
                     ))}
@@ -278,6 +302,11 @@ export default function BrowseJobsPage() {
                 >
                   {appliedJobs.includes(selectedJob.id) ? 'Already Applied' : 'Apply for This Job'}
                 </Button>
+                {!profile && (
+                  <p className="text-sm text-amber-600 mt-2 text-center">
+                    Complete your profile before applying
+                  </p>
+                )}
               </div>
             </div>
           </div>

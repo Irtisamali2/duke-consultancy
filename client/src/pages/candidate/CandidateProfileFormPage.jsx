@@ -6,7 +6,7 @@ import CandidateSidebar from '../../components/CandidateSidebar';
 
 export default function CandidateProfileFormPage() {
   const [, setLocation] = useLocation();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [candidate, setCandidate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({ type: '', text: '' });
@@ -71,12 +71,6 @@ export default function CandidateProfileFormPage() {
   useEffect(() => {
     checkAuth();
     fetchJobs();
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    const jobId = urlParams.get('job_id');
-    if (jobId) {
-      setSelectedJobId(jobId);
-    }
   }, []);
   
   useEffect(() => {
@@ -446,11 +440,7 @@ export default function CandidateProfileFormPage() {
   }
 
   const steps = [
-    { number: 1, label: '1-Trade Information' },
-    { number: 2, label: '2-Personal Information' },
-    { number: 3, label: '3-Professional Details' },
-    { number: 4, label: '4-Education & Certifications' },
-    { number: 5, label: '5-Document Uploads' }
+    { number: 0, label: 'Account Settings' }
   ];
 
   const handleLogout = async () => {
@@ -507,9 +497,9 @@ export default function CandidateProfileFormPage() {
               </div>
             )}
 
-            {currentStep === 1 && (
+            {currentStep === 0 && (
               <div>
-                <h2 className="text-xl font-bold mb-6">Trade Information</h2>
+                <h2 className="text-xl font-bold mb-6">Account Settings</h2>
                 
                 <div className="mb-8">
                   <h3 className="text-lg font-semibold mb-4">Account Information</h3>
