@@ -499,6 +499,9 @@ export default function CandidateProfileFormPage() {
     try {
       const formData = new FormData();
       formData.append('image', profileImage);
+      if (applicationId) {
+        formData.append('application_id', applicationId);
+      }
 
       const response = await fetch('/api/candidate/profile/image', {
         method: 'POST',
@@ -509,6 +512,7 @@ export default function CandidateProfileFormPage() {
       if (response.ok && data.success) {
         setMessage({ type: 'success', text: 'Profile image uploaded successfully!' });
         setProfileImage(null);
+        setProfileImagePreview(data.imageUrl);
         await fetchProfile();
       } else {
         setMessage({ type: 'error', text: data.message || 'Failed to upload image' });

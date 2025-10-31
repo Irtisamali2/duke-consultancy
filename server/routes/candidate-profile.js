@@ -124,16 +124,18 @@ router.get('/candidate/profile', requireCandidateAuth, async (req, res) => {
 // Get basic profile info only (for new applications - only name, email, profile image)
 router.get('/candidate/profile/basic', requireCandidateAuth, async (req, res) => {
   try {
+    const application_id = req.query.application_id ? parseInt(req.query.application_id) : null;
+    
     // Get candidate basic info
     const [candidates] = await db.query(
       'SELECT firstName, lastName, email FROM candidates WHERE id = ?',
       [req.candidateId]
     );
     
-    // Get most recent profile image (if any)
+    // Get profile for this specific application (if it exists)
     const [profiles] = await db.query(
-      'SELECT first_name, last_name, email_address, profile_image_url FROM healthcare_profiles WHERE candidate_id = ? ORDER BY id DESC LIMIT 1',
-      [req.candidateId]
+      'SELECT first_name, last_name, email_address, profile_image_url FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL)) LIMIT 1',
+      [req.candidateId, application_id, application_id]
     );
     
     const candidate = candidates[0] || {};
@@ -149,6 +151,7 @@ router.get('/candidate/profile/basic', requireCandidateAuth, async (req, res) =>
       }
     });
   } catch (error) {
+    console.error('Error in /candidate/profile/basic:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -302,8 +305,8 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
       await db.query(
         `UPDATE healthcare_profiles SET 
          first_name = ?, middle_name = ?, last_name = ?, father_husband_name = ?, marital_status = ?, gender = ?, religion = ?,
-         date_of_birth = ?, place_of_birth = ?, province = ?, country = ?, cnic = ?, cnic_issue_date = ?, cnic_expire_date = ?,
-         passport_number = ?, passport_issue_date = ?, passport_expire_date = ?, email_address = ?, confirm_email_address = ?,
+         date_of_birth = ?, place_of_birth = ?, province = ?, country = ?, cnic = ?, cnic_issue_date = ?, cnic_expiry_date = ?,
+         passport_number = ?, passport_issue_date = ?, passport_expiry_date = ?, email_address = ?, confirm_email_address = ?,
          tel_off_no = ?, tel_res_no = ?, mobile_no = ?, present_address = ?, present_street = ?, present_postal_code = ?,
          permanent_address = ?, permanent_street = ?, permanent_postal_code = ?
          WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))`,
@@ -319,8 +322,8 @@ router.put('/candidate/profile/personal', requireCandidateAuth, async (req, res)
       // Create new profile for this application
       await db.query(
         `INSERT INTO healthcare_profiles (candidate_id, application_id, first_name, middle_name, last_name, father_husband_name, 
-         marital_status, gender, religion, date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expire_date,
-         passport_number, passport_issue_date, passport_expire_date, email_address, confirm_email_address, tel_off_no, tel_res_no, 
+         marital_status, gender, religion, date_of_birth, place_of_birth, province, country, cnic, cnic_issue_date, cnic_expiry_date,
+         passport_number, passport_issue_date, passport_expiry_date, email_address, confirm_email_address, tel_off_no, tel_res_no, 
          mobile_no, present_address, present_street, present_postal_code, permanent_address, permanent_street, permanent_postal_code)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
@@ -455,8 +458,13 @@ router.post('/candidate/profile/image', requireCandidateAuth, profileUpload.sing
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
 
-    // Get existing profile image
-    const [profiles] = await db.query('SELECT profile_image_url FROM healthcare_profiles WHERE candidate_id = ?', [req.candidateId]);
+    const application_id = req.body.application_id ? parseInt(req.body.application_id) : null;
+
+    // Get existing profile image for this specific application
+    const [profiles] = await db.query(
+      'SELECT profile_image_url FROM healthcare_profiles WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
+      [req.candidateId, application_id, application_id]
+    );
     const oldImageUrl = profiles[0]?.profile_image_url;
 
     // Delete old profile image if exists
@@ -467,9 +475,22 @@ router.post('/candidate/profile/image', requireCandidateAuth, profileUpload.sing
       }
     }
 
-    // Update profile with new image URL
     const imageUrl = `/uploads/${req.file.filename}`;
-    await db.query('UPDATE healthcare_profiles SET profile_image_url = ? WHERE candidate_id = ?', [imageUrl, req.candidateId]);
+    
+    // Check if profile exists for this application
+    if (profiles.length > 0) {
+      // Update existing profile
+      await db.query(
+        'UPDATE healthcare_profiles SET profile_image_url = ? WHERE candidate_id = ? AND (application_id = ? OR (application_id IS NULL AND ? IS NULL))',
+        [imageUrl, req.candidateId, application_id, application_id]
+      );
+    } else {
+      // Create new profile for this application with just the image
+      await db.query(
+        'INSERT INTO healthcare_profiles (candidate_id, application_id, profile_image_url) VALUES (?, ?, ?)',
+        [req.candidateId, application_id, imageUrl]
+      );
+    }
 
     res.json({ success: true, message: 'Profile image uploaded successfully', imageUrl });
   } catch (error) {
