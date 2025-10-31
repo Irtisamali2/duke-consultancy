@@ -60,16 +60,10 @@ router.post('/email/bulk-send', requireAuth, async (req, res) => {
           .replace(/\{\{submitted_date\}\}/g, new Date(app.applied_date).toLocaleDateString())
           .replace(/\{\{email\}\}/g, app.email);
 
-        const result = await emailService.sendEmail(
+        const result = await emailService.sendRawEmail(
           app.email,
           personalizedSubject,
-          personalizedBody,
-          {
-            candidate_name: app.full_name || 'Candidate',
-            application_id: app.id,
-            trade: app.trade || 'N/A',
-            status: app.status || 'pending'
-          }
+          personalizedBody
         );
 
         // Log email

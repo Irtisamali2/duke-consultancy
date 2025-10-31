@@ -19,11 +19,21 @@ router.post('/email/smtp-settings', requireAuth, async (req, res) => {
   try {
     const { smtp_host, smtp_port, smtp_secure, smtp_user, smtp_password, from_email, from_name } = req.body;
 
+    // Get existing settings
+    const [existingSettings] = await db.query(
+      'SELECT smtp_password FROM smtp_settings WHERE is_active = true LIMIT 1'
+    );
+
+    // Use existing password if new password is blank
+    const finalPassword = smtp_password || (existingSettings[0]?.smtp_password || '');
+
+    // Deactivate all settings
     await db.query('UPDATE smtp_settings SET is_active = false');
 
+    // Insert new settings
     await db.query(
       'INSERT INTO smtp_settings (smtp_host, smtp_port, smtp_secure, smtp_user, smtp_password, from_email, from_name, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, true)',
-      [smtp_host, smtp_port, smtp_secure ? 1 : 0, smtp_user, smtp_password, from_email, from_name]
+      [smtp_host, smtp_port, smtp_secure ? 1 : 0, smtp_user, finalPassword, from_email, from_name]
     );
 
     res.json({ success: true, message: 'SMTP settings saved successfully' });

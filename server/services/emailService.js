@@ -122,6 +122,32 @@ class EmailService {
   async sendPasswordResetEmail(email, data) {
     return await this.sendEmail(email, 'password_reset', data);
   }
+
+  async sendRawEmail(to, subject, html) {
+    try {
+      if (!this.transporter) {
+        const initialized = await this.initializeTransporter();
+        if (!initialized) {
+          console.error('Email service not configured');
+          return { success: false, message: 'Email service not configured' };
+        }
+      }
+
+      const mailOptions = {
+        from: `"${this.fromName}" <${this.fromEmail}>`,
+        to,
+        subject,
+        html
+      };
+
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log('Email sent:', info.messageId);
+      return { success: true, messageId: info.messageId };
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      return { success: false, message: error.message };
+    }
+  }
 }
 
 export default new EmailService();
