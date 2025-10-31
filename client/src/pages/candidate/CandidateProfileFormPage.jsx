@@ -1104,9 +1104,9 @@ export default function CandidateProfileFormPage() {
         onClose={() => setSidebarOpen(false)}
       />
       
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile header with hamburger */}
-        <div className="md:hidden sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+        <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => setSidebarOpen(true)}
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -1119,20 +1119,20 @@ export default function CandidateProfileFormPage() {
           <div className="w-10" />
         </div>
 
-        <div className="flex-1 p-4 md:p-8 overflow-auto">
-          <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
+          <div className="bg-white rounded-lg shadow p-4 sm:p-6 mb-4 sm:mb-6">
             {jobIdFromUrl && (
-              <div className="flex justify-between items-center mb-8">
+              <div className="flex justify-between items-center mb-6 sm:mb-8 overflow-x-auto pb-2">
                 {steps.map((step, index) => (
-                  <div key={step.number} className="flex items-center flex-1">
-                    <div className={`flex items-center gap-2 ${currentStep === step.number ? 'text-[#00A6CE] font-medium' : currentStep > step.number ? 'text-[#00A6CE]' : 'text-gray-400'}`}>
-                      <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${currentStep === step.number ? 'bg-[#00A6CE] text-white' : currentStep > step.number ? 'bg-[#00A6CE] text-white' : 'bg-gray-200'}`}>
+                  <div key={step.number} className="flex items-center flex-1 min-w-0">
+                    <div className={`flex items-center gap-1 sm:gap-2 ${currentStep === step.number ? 'text-[#00A6CE] font-medium' : currentStep > step.number ? 'text-[#00A6CE]' : 'text-gray-400'}`}>
+                      <span className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm flex-shrink-0 ${currentStep === step.number ? 'bg-[#00A6CE] text-white' : currentStep > step.number ? 'bg-[#00A6CE] text-white' : 'bg-gray-200'}`}>
                         {step.number}
                       </span>
-                      <span className="text-sm whitespace-nowrap">{step.label}</span>
+                      <span className="text-xs sm:text-sm hidden sm:inline whitespace-nowrap">{step.label}</span>
                     </div>
                     {index < steps.length - 1 && (
-                      <div className={`flex-1 h-0.5 mx-2 ${currentStep > step.number ? 'bg-[#00A6CE]' : 'bg-gray-200'}`} />
+                      <div className={`flex-1 h-0.5 mx-1 sm:mx-2 ${currentStep > step.number ? 'bg-[#00A6CE]' : 'bg-gray-200'}`} />
                     )}
                   </div>
                 ))}
@@ -1147,11 +1147,11 @@ export default function CandidateProfileFormPage() {
 
             {currentStep === 0 && !jobIdFromUrl && (
               <div>
-                <h2 className="text-2xl font-bold mb-8">My Profile</h2>
+                <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8">My Profile</h2>
                 
-                <div className="mb-8 border-b pb-6">
-                  <h3 className="text-lg font-semibold mb-4">Account Information</h3>
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="mb-6 sm:mb-8 border-b pb-4 sm:pb-6">
+                  <h3 className="text-base sm:text-lg font-semibold mb-4">Account Information</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-2">First Name *</label>
                       <input
@@ -1204,8 +1204,8 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
 
-                <div className="border-b pb-6 mb-6">
-                  <h3 className="text-lg font-semibold mb-4">Profile Image</h3>
+                <div className="border-b pb-4 sm:pb-6 mb-4 sm:mb-6">
+                  <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Profile Image</h3>
                   <div className="flex items-start gap-6">
                     <div className="flex-shrink-0">
                       {profileImagePreview ? (
@@ -1256,7 +1256,7 @@ export default function CandidateProfileFormPage() {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+                  <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Change Password</h3>
                   <div className="grid gap-4 max-w-md">
                     <div>
                       <label className="block text-sm font-medium mb-2">Current Password *</label>
@@ -1339,7 +1339,7 @@ export default function CandidateProfileFormPage() {
                       ({tradeData.countries_preference.filter(c => availableCountries.includes(c)).length} / {selectedJob ? selectedJob.max_countries_selectable : 10} selected)
                     </span>
                   </label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                     {availableCountries.map((countryName) => (
                       <button
                         key={countryName}
@@ -1364,7 +1364,7 @@ export default function CandidateProfileFormPage() {
                       ({tradeData.trades_preference.filter(t => availableTrades.includes(t)).length} / {selectedJob ? selectedJob.max_trades_selectable : 10} selected)
                     </span>
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {availableTrades.map((trade) => (
                       <button
                         key={trade}
@@ -1382,7 +1382,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">Availability to Join *</label>
                     <select
@@ -1481,7 +1481,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">First Name *</label>
                     <input
@@ -1505,7 +1505,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-4 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Father's/Husband's Name *</label>
                     <input
@@ -1552,7 +1552,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-4 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Date Of Birth *</label>
                     <input
@@ -1642,7 +1642,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">CNIC *</label>
                     <input
@@ -1676,7 +1676,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Passport Number</label>
                     <input
@@ -1709,7 +1709,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Email Address *</label>
                     <input
@@ -1734,7 +1734,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Tel. Off. No</label>
                     <input
@@ -1768,7 +1768,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Present Address</label>
                     <input
@@ -1801,7 +1801,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Permanent Address</label>
                     <input
@@ -1924,7 +1924,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 )}
                 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Job Title</label>
                     <input
@@ -1947,7 +1947,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Specialization (E.G. ICU Nurse, Pediatric Nurse, General Nurse)</label>
                     <input
@@ -2091,7 +2091,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 )}
                 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Degree/Diploma Title (BSc Nursing, Diploma In General Nursing, Etc.)</label>
                     <input
@@ -2114,7 +2114,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Graduation Year</label>
                     <input
@@ -2137,7 +2137,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">License/Registration Number (With Nursing Council)</label>
                     <input
@@ -2212,7 +2212,7 @@ export default function CandidateProfileFormPage() {
               <div>
                 <h2 className="text-xl font-bold mb-6">Document Uploads</h2>
                 
-                <div className="grid grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">Updated CV/Resume (PDF)</label>
                     <div className="space-y-2">
@@ -2271,7 +2271,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">Degree/Diploma Certificates</label>
                     <div className="space-y-2">
@@ -2330,7 +2330,7 @@ export default function CandidateProfileFormPage() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">IELTS/OET Certificate (If Applicable)</label>
                     <div className="space-y-2">
