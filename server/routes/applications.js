@@ -173,63 +173,142 @@ router.patch('/applications/:id/status', requireAuth, async (req, res) => {
 
 router.delete('/applications/:id', requireAuth, async (req, res) => {
   try {
-    // Get the candidate_id before deleting the application
-    const [appRows] = await pool.query('SELECT candidate_id FROM applications WHERE id = ?', [req.params.id]);
+    const applicationId = req.params.id;
+    
+    // Get application and candidate info before deleting
+    const [appRows] = await pool.query(
+      'SELECT candidate_id, job_id FROM applications WHERE id = ?', 
+      [applicationId]
+    );
     
     if (appRows.length === 0) {
       return res.status(404).json({ success: false, message: 'Application not found' });
     }
     
-    const candidateId = appRows[0].candidate_id;
+    const { candidate_id, job_id } = appRows[0];
     
-    // Delete the application
-    await pool.query('DELETE FROM applications WHERE id = ?', [req.params.id]);
+    // Get all documents for this specific application to delete files
+    const [docs] = await pool.query(
+      'SELECT * FROM candidate_documents WHERE candidate_id = ? AND application_id = ?',
+      [candidate_id, applicationId]
+    );
     
-    // Check if candidate has any other applications
-    const [remainingApps] = await pool.query('SELECT COUNT(*) as count FROM applications WHERE candidate_id = ?', [candidateId]);
-    
-    // If candidate has no other applications, delete their documents and associated files
-    if (remainingApps[0].count === 0) {
-      const [docs] = await pool.query('SELECT * FROM candidate_documents WHERE candidate_id = ?', [candidateId]);
+    // Delete physical files if they exist
+    if (docs.length > 0) {
+      const doc = docs[0];
+      const fileFields = [
+        'cv_resume_url',
+        'passport_url',
+        'degree_certificates_url',
+        'license_certificate_url',
+        'ielts_oet_certificate_url',
+        'experience_letters_url'
+      ];
       
-      if (docs.length > 0) {
-        const doc = docs[0];
-        const fileFields = [
-          'cv_resume_url',
-          'passport_url',
-          'degree_certificates_url',
-          'license_certificate_url',
-          'ielts_oet_certificate_url',
-          'experience_letters_url'
-        ];
-        
-        // Delete each file from disk
-        for (const field of fileFields) {
-          const fileUrl = doc[field];
-          if (fileUrl && fileUrl.startsWith('/uploads/')) {
-            // Strip leading slash to make it a relative path
-            const relativePath = fileUrl.substring(1);
-            const filePath = path.join(__dirname, '..', relativePath);
-            if (fs.existsSync(filePath)) {
-              try {
-                fs.unlinkSync(filePath);
-                console.log(`Deleted file: ${filePath}`);
-              } catch (fileError) {
-                console.error(`Failed to delete file ${filePath}:`, fileError);
-              }
-            } else {
-              console.log(`File not found for deletion: ${filePath}`);
+      // Delete standard document files
+      for (const field of fileFields) {
+        const fileUrl = doc[field];
+        if (fileUrl && fileUrl.startsWith('/uploads/')) {
+          const relativePath = fileUrl.substring(1);
+          const filePath = path.join(__dirname, '..', relativePath);
+          if (fs.existsSync(filePath)) {
+            try {
+              fs.unlinkSync(filePath);
+              console.log(`Deleted file: ${filePath}`);
+            } catch (fileError) {
+              console.error(`Failed to delete file ${filePath}:`, fileError);
             }
           }
         }
-        
-        // Delete document records from database
-        await pool.query('DELETE FROM candidate_documents WHERE candidate_id = ?', [candidateId]);
+      }
+      
+      // Delete additional_files if they exist
+      if (doc.additional_files) {
+        try {
+          const additionalFiles = typeof doc.additional_files === 'string' 
+            ? JSON.parse(doc.additional_files) 
+            : doc.additional_files;
+          
+          if (Array.isArray(additionalFiles)) {
+            for (const file of additionalFiles) {
+              const fileUrl = file.url || file;
+              if (fileUrl && fileUrl.startsWith('/uploads/')) {
+                const relativePath = fileUrl.substring(1);
+                const filePath = path.join(__dirname, '..', relativePath);
+                if (fs.existsSync(filePath)) {
+                  try {
+                    fs.unlinkSync(filePath);
+                    console.log(`Deleted additional file: ${filePath}`);
+                  } catch (fileError) {
+                    console.error(`Failed to delete additional file ${filePath}:`, fileError);
+                  }
+                }
+              }
+            }
+          }
+        } catch (parseError) {
+          console.error('Error parsing additional_files:', parseError);
+        }
       }
     }
     
-    res.json({ success: true, message: 'Application deleted successfully' });
+    // Delete profile image if it exists and is application-specific
+    const [profiles] = await pool.query(
+      'SELECT profile_image_url FROM healthcare_profiles WHERE candidate_id = ? AND application_id = ?',
+      [candidate_id, applicationId]
+    );
+    
+    if (profiles.length > 0 && profiles[0].profile_image_url) {
+      const imageUrl = profiles[0].profile_image_url;
+      if (imageUrl.startsWith('/uploads/')) {
+        const relativePath = imageUrl.substring(1);
+        const filePath = path.join(__dirname, '..', relativePath);
+        if (fs.existsSync(filePath)) {
+          try {
+            fs.unlinkSync(filePath);
+            console.log(`Deleted profile image: ${filePath}`);
+          } catch (fileError) {
+            console.error(`Failed to delete profile image ${filePath}:`, fileError);
+          }
+        }
+      }
+    }
+    
+    // CASCADE DELETE: Delete all application-specific data
+    // Order matters: delete child records first, then parent
+    
+    // 1. Delete documents for this application
+    await pool.query(
+      'DELETE FROM candidate_documents WHERE candidate_id = ? AND application_id = ?',
+      [candidate_id, applicationId]
+    );
+    
+    // 2. Delete work experience for this application
+    await pool.query(
+      'DELETE FROM work_experience WHERE candidate_id = ? AND application_id = ?',
+      [candidate_id, applicationId]
+    );
+    
+    // 3. Delete education records for this application
+    await pool.query(
+      'DELETE FROM education_records WHERE candidate_id = ? AND application_id = ?',
+      [candidate_id, applicationId]
+    );
+    
+    // 4. Delete healthcare profile for this application
+    await pool.query(
+      'DELETE FROM healthcare_profiles WHERE candidate_id = ? AND application_id = ?',
+      [candidate_id, applicationId]
+    );
+    
+    // 5. Finally, delete the application itself
+    await pool.query('DELETE FROM applications WHERE id = ?', [applicationId]);
+    
+    console.log(`Successfully deleted application ${applicationId} and all related data`);
+    
+    res.json({ success: true, message: 'Application and all related data deleted successfully' });
   } catch (error) {
+    console.error('Error deleting application:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });

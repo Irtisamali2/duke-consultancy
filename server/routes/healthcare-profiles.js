@@ -138,11 +138,11 @@ router.delete('/healthcare-profiles/:id', requireAuth, async (req, res) => {
   try {
     const candidateId = req.params.id;
 
-    // Get all document URLs before deletion
-    const [docs] = await db.query('SELECT * FROM candidate_documents WHERE candidate_id = ?', [candidateId]);
+    // Get ALL documents for this candidate (all applications)
+    const [allDocs] = await db.query('SELECT * FROM candidate_documents WHERE candidate_id = ?', [candidateId]);
 
-    if (docs.length > 0) {
-      const doc = docs[0];
+    // Delete all document files for all applications
+    for (const doc of allDocs) {
       const fileFields = [
         'cv_resume_url',
         'passport_url',
@@ -152,11 +152,10 @@ router.delete('/healthcare-profiles/:id', requireAuth, async (req, res) => {
         'experience_letters_url'
       ];
 
-      // Delete each file from disk
+      // Delete standard document files
       for (const field of fileFields) {
         const fileUrl = doc[field];
         if (fileUrl && fileUrl.startsWith('/uploads/')) {
-          // Strip leading slash to make it a relative path
           const relativePath = fileUrl.substring(1);
           const filePath = path.join(__dirname, '..', relativePath);
           if (fs.existsSync(filePath)) {
@@ -166,22 +165,70 @@ router.delete('/healthcare-profiles/:id', requireAuth, async (req, res) => {
             } catch (fileError) {
               console.error(`Failed to delete file ${filePath}:`, fileError);
             }
-          } else {
-            console.log(`File not found for deletion: ${filePath}`);
+          }
+        }
+      }
+      
+      // Delete additional_files
+      if (doc.additional_files) {
+        try {
+          const additionalFiles = typeof doc.additional_files === 'string' 
+            ? JSON.parse(doc.additional_files) 
+            : doc.additional_files;
+          
+          if (Array.isArray(additionalFiles)) {
+            for (const file of additionalFiles) {
+              const fileUrl = file.url || file;
+              if (fileUrl && fileUrl.startsWith('/uploads/')) {
+                const relativePath = fileUrl.substring(1);
+                const filePath = path.join(__dirname, '..', relativePath);
+                if (fs.existsSync(filePath)) {
+                  try {
+                    fs.unlinkSync(filePath);
+                    console.log(`Deleted additional file: ${filePath}`);
+                  } catch (fileError) {
+                    console.error(`Failed to delete additional file:`, fileError);
+                  }
+                }
+              }
+            }
+          }
+        } catch (parseError) {
+          console.error('Error parsing additional_files:', parseError);
+        }
+      }
+    }
+    
+    // Delete all profile images for all applications
+    const [allProfiles] = await db.query('SELECT profile_image_url FROM healthcare_profiles WHERE candidate_id = ?', [candidateId]);
+    
+    for (const profile of allProfiles) {
+      if (profile.profile_image_url && profile.profile_image_url.startsWith('/uploads/')) {
+        const relativePath = profile.profile_image_url.substring(1);
+        const filePath = path.join(__dirname, '..', relativePath);
+        if (fs.existsSync(filePath)) {
+          try {
+            fs.unlinkSync(filePath);
+            console.log(`Deleted profile image: ${filePath}`);
+          } catch (fileError) {
+            console.error(`Failed to delete profile image:`, fileError);
           }
         }
       }
     }
 
-    // Delete in correct order due to foreign key constraints
+    // CASCADE DELETE: Delete all data for this candidate
+    // Order matters: delete child records first, then parent
     await db.query('DELETE FROM candidate_documents WHERE candidate_id = ?', [candidateId]);
     await db.query('DELETE FROM work_experience WHERE candidate_id = ?', [candidateId]);
     await db.query('DELETE FROM education_records WHERE candidate_id = ?', [candidateId]);
-    await db.query('DELETE FROM applications WHERE candidate_id = ?', [candidateId]);
     await db.query('DELETE FROM healthcare_profiles WHERE candidate_id = ?', [candidateId]);
+    await db.query('DELETE FROM applications WHERE candidate_id = ?', [candidateId]);
     await db.query('DELETE FROM candidates WHERE id = ?', [candidateId]);
 
-    res.json({ success: true, message: 'Profile and all associated data deleted successfully' });
+    console.log(`Successfully deleted candidate ${candidateId} and ALL related data (all applications, documents, files)`);
+
+    res.json({ success: true, message: 'Candidate profile and ALL related data deleted successfully' });
   } catch (error) {
     console.error('Delete error:', error);
     res.status(500).json({ success: false, message: error.message });

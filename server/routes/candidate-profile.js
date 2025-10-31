@@ -793,37 +793,34 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
       });
     }
 
-    // Check if there's a draft application for this job
-    const [draftApp] = await pool.query(
-      'SELECT id FROM applications WHERE candidate_id = ? AND job_id = ? AND status = ?',
-      [req.candidateId, job_id, 'draft']
-    );
-
-    // Check if candidate has an active non-draft application for this job
+    // CRITICAL: Prevent duplicate applications - Check for ANY existing application for this job
+    // This ensures one application per candidate per job (regardless of status)
     const [existingApp] = await pool.query(
-      'SELECT id FROM applications WHERE candidate_id = ? AND job_id = ? AND status != ?',
-      [req.candidateId, job_id, 'draft']
+      'SELECT id, status FROM applications WHERE candidate_id = ? AND job_id = ?',
+      [req.candidateId, job_id]
     );
-
-    if (existingApp.length > 0) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'You have already submitted an application. You can view/edit it from your profile.'
-      });
-    }
 
     const now = new Date();
     let applicationId;
 
-    if (draftApp.length > 0) {
-      // Update existing draft to pending status
-      applicationId = draftApp[0].id;
-      await pool.query(
-        'UPDATE applications SET status = ?, submitted_at = ?, modified_at = ?, modified_by = ?, modified_by_type = ? WHERE id = ?',
-        ['pending', now, now, req.candidateId, 'candidate', applicationId]
-      );
+    if (existingApp.length > 0) {
+      const appStatus = existingApp[0].status;
+      if (appStatus === 'draft') {
+        // If it's a draft, allow submission by converting draft to pending
+        applicationId = existingApp[0].id;
+        await pool.query(
+          'UPDATE applications SET status = ?, submitted_at = ?, modified_at = ?, modified_by = ?, modified_by_type = ? WHERE id = ?',
+          ['pending', now, now, req.candidateId, 'candidate', applicationId]
+        );
+      } else {
+        // If it's any other status (pending, verified, approved, rejected), reject the submission
+        return res.status(400).json({ 
+          success: false, 
+          message: 'You have already submitted an application for this job. You cannot apply again.'
+        });
+      }
     } else {
-      // Create new application (shouldn't happen in current flow, but keep for safety)
+      // No existing application at all - create new pending application
       const [result] = await pool.query(
         'INSERT INTO applications (candidate_id, job_id, applied_date, status, submitted_at, modified_at, modified_by, modified_by_type) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)',
         [req.candidateId, job_id || null, 'pending', now, now, req.candidateId, 'candidate']
@@ -903,15 +900,23 @@ router.post('/candidate/save-draft-application', requireCandidateAuth, async (re
   try {
     const { job_id } = req.body;
     
-    // Check if draft already exists for this job
+    // CRITICAL: Prevent duplicate applications - Check for ANY existing application for this job
     const [existing] = await pool.query(
-      'SELECT id FROM applications WHERE candidate_id = ? AND job_id = ? AND status = ?',
-      [req.candidateId, job_id, 'draft']
+      'SELECT id, status FROM applications WHERE candidate_id = ? AND job_id = ?',
+      [req.candidateId, job_id]
     );
     
     let draftApplicationId;
     
     if (existing.length > 0) {
+      // If ANY application exists for this job, use it (could be draft or submitted)
+      if (existing[0].status !== 'draft') {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'You have already submitted an application for this job. Cannot create a new draft.'
+        });
+      }
+      
       // Update existing draft
       await pool.query(
         'UPDATE applications SET applied_date = NOW() WHERE id = ?',
@@ -919,7 +924,7 @@ router.post('/candidate/save-draft-application', requireCandidateAuth, async (re
       );
       draftApplicationId = existing[0].id;
     } else {
-      // Create new draft
+      // Create new draft only if no application exists at all
       const [result] = await pool.query(
         'INSERT INTO applications (candidate_id, job_id, status, applied_date) VALUES (?, ?, ?, NOW())',
         [req.candidateId, job_id, 'draft']
