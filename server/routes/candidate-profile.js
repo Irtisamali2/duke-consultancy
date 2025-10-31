@@ -424,12 +424,24 @@ router.post('/candidate/profile/education', requireCandidateAuth, async (req, re
     // Convert empty strings to NULL for date fields
     const safeGraduationYear = graduation_year || null;
 
-    await pool.query(
+    const [result] = await pool.query(
       'INSERT INTO education_records (candidate_id, application_id, degree_diploma_title, university_institute_name, graduation_year, program_duration, registration_number, marks_percentage) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [req.candidateId, appId, degree_diploma_title, university_institute_name, safeGraduationYear, program_duration, registration_number, marks_percentage]
     );
 
-    res.json({ success: true, message: 'Education added' });
+    const newEducation = {
+      id: result.insertId,
+      candidate_id: req.candidateId,
+      application_id: appId,
+      degree_diploma_title,
+      university_institute_name,
+      graduation_year: safeGraduationYear,
+      program_duration,
+      registration_number,
+      marks_percentage
+    };
+
+    res.json({ success: true, message: 'Education added', education: newEducation });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

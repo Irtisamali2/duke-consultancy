@@ -788,8 +788,24 @@ export default function CandidateProfileFormPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formattedEducation)
       });
+      
+      const data = await response.json();
       if (response.ok) {
-        await fetchProfile();
+        if (isEditing) {
+          // Update existing education in the list
+          setEducations(educations.map(edu => 
+            edu.id === newEducation.id ? { ...formattedEducation, id: newEducation.id } : edu
+          ));
+        } else {
+          // Add new education to the list immediately
+          if (data.education) {
+            setEducations([...educations, data.education]);
+          } else {
+            // Fallback: fetch all profile data to get the updated list
+            await fetchProfile();
+          }
+        }
+        
         setNewEducation({ degree_diploma_title: '', university_institute_name: '', graduation_year: '', program_duration: '', registration_number: '', marks_percentage: '' });
         setMessage({ type: 'success', text: isEditing ? 'Education updated successfully' : 'Education added successfully' });
         setTimeout(() => setMessage({ type: '', text: '' }), 3000);
