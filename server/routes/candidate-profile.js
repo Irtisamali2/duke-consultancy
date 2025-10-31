@@ -351,12 +351,25 @@ router.post('/candidate/profile/experience', requireCandidateAuth, async (req, r
     const { job_title, employer_hospital, specialization, from_date, to_date, total_experience, application_id } = req.body;
     const appId = application_id ? parseInt(application_id) : null;
 
-    await db.query(
+    const [result] = await db.query(
       'INSERT INTO work_experience (candidate_id, application_id, job_title, employer_hospital, specialization, from_date, to_date, total_experience) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [req.candidateId, appId, job_title, employer_hospital, specialization, from_date, to_date, total_experience]
     );
 
-    res.json({ success: true, message: 'Experience added' });
+    // Return the newly created experience with its ID
+    const newExperience = {
+      id: result.insertId,
+      candidate_id: req.candidateId,
+      application_id: appId,
+      job_title,
+      employer_hospital,
+      specialization,
+      from_date,
+      to_date,
+      total_experience
+    };
+
+    res.json({ success: true, message: 'Experience added', experience: newExperience });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

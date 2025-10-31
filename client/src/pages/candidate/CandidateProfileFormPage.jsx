@@ -709,8 +709,26 @@ export default function CandidateProfileFormPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formattedExperience)
       });
+      
       if (response.ok) {
-        await fetchProfile();
+        const data = await response.json();
+        
+        // Update experiences list immediately for instant UI update
+        if (isEditing) {
+          // Update existing experience in the list
+          setExperiences(experiences.map(exp => 
+            exp.id === newExperience.id ? { ...formattedExperience, id: newExperience.id } : exp
+          ));
+        } else {
+          // Add new experience to the list (backend returns the new experience with ID)
+          if (data.experience) {
+            setExperiences([...experiences, data.experience]);
+          } else {
+            // Fallback: fetch all profile data to get the updated list
+            await fetchProfile();
+          }
+        }
+        
         setNewExperience({ job_title: '', employer_hospital: '', specialization: '', from_date: '', to_date: '', total_experience: '' });
         setMessage({ type: 'success', text: isEditing ? 'Experience updated successfully' : 'Experience added successfully' });
         setTimeout(() => setMessage({ type: '', text: '' }), 3000);
@@ -1141,11 +1159,11 @@ export default function CandidateProfileFormPage() {
               <div className="flex justify-between items-center mb-6 sm:mb-8 overflow-x-auto pb-2">
                 {steps.map((step, index) => (
                   <div key={step.number} className="flex items-center flex-1 min-w-0">
-                    <div className={`flex items-center gap-1 sm:gap-2 ${currentStep === step.number ? 'text-[#00A6CE] font-medium' : currentStep > step.number ? 'text-[#00A6CE]' : 'text-gray-400'}`}>
+                    <div className={`flex flex-col sm:flex-row items-center gap-1 sm:gap-2 ${currentStep === step.number ? 'text-[#00A6CE] font-medium' : currentStep > step.number ? 'text-[#00A6CE]' : 'text-gray-400'}`}>
                       <span className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm flex-shrink-0 ${currentStep === step.number ? 'bg-[#00A6CE] text-white' : currentStep > step.number ? 'bg-[#00A6CE] text-white' : 'bg-gray-200'}`}>
                         {step.number}
                       </span>
-                      <span className="text-xs sm:text-sm hidden sm:inline whitespace-nowrap">{step.label}</span>
+                      <span className="text-[10px] sm:text-sm text-center sm:text-left whitespace-nowrap hidden md:inline">{step.label}</span>
                     </div>
                     {index < steps.length - 1 && (
                       <div className={`flex-1 h-0.5 mx-1 sm:mx-2 ${currentStep > step.number ? 'bg-[#00A6CE]' : 'bg-gray-200'}`} />
