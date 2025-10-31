@@ -334,12 +334,15 @@ export default function CandidateProfileFormPage() {
         return;
       }
       
-      if (tradeData.countries_preference.length === 0) {
+      const validCountries = tradeData.countries_preference.filter(c => availableCountries.includes(c));
+      const validTrades = tradeData.trades_preference.filter(t => availableTrades.includes(t));
+      
+      if (validCountries.length === 0) {
         setMessage({ type: 'error', text: 'Please select at least one country preference' });
         return;
       }
       
-      if (tradeData.trades_preference.length === 0) {
+      if (validTrades.length === 0) {
         setMessage({ type: 'error', text: 'Please select at least one trade/specialization' });
         return;
       }
@@ -855,7 +858,7 @@ export default function CandidateProfileFormPage() {
                   <label className="block text-sm font-medium mb-2">
                     Select Country Preference (Max: {selectedJob ? selectedJob.max_countries_selectable : 10}) *
                     <span className="ml-2 text-xs text-gray-600">
-                      ({tradeData.countries_preference.length} / {selectedJob ? selectedJob.max_countries_selectable : 10} selected)
+                      ({tradeData.countries_preference.filter(c => availableCountries.includes(c)).length} / {selectedJob ? selectedJob.max_countries_selectable : 10} selected)
                     </span>
                   </label>
                   <div className="grid grid-cols-3 gap-2">
@@ -880,7 +883,7 @@ export default function CandidateProfileFormPage() {
                   <label className="block text-sm font-medium mb-2">
                     Select Trade/Specialization (Max: {selectedJob ? selectedJob.max_trades_selectable : 10}) *
                     <span className="ml-2 text-xs text-gray-600">
-                      ({tradeData.trades_preference.length} / {selectedJob ? selectedJob.max_trades_selectable : 10} selected)
+                      ({tradeData.trades_preference.filter(t => availableTrades.includes(t)).length} / {selectedJob ? selectedJob.max_trades_selectable : 10} selected)
                     </span>
                   </label>
                   <div className="grid grid-cols-2 gap-2">
