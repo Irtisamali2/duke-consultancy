@@ -43,6 +43,35 @@ const profileUpload = multer({
   }
 });
 
+// Configure multer for document uploads
+const documentStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../uploads'));
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'document-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const documentUpload = multer({
+  storage: documentStorage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit for documents
+  },
+  fileFilter: function (req, file, cb) {
+    const allowedTypes = /jpeg|jpg|png|pdf/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Only PDF and image files are allowed (jpeg, jpg, png, pdf)'));
+    }
+  }
+});
+
 // Note: One application per job per candidate (enforced by unique constraint)
 
 const requireCandidateAuth = (req, res, next) => {
@@ -436,6 +465,20 @@ router.delete('/candidate/profile/image', requireCandidateAuth, async (req, res)
     await db.query('UPDATE healthcare_profiles SET profile_image_url = NULL WHERE candidate_id = ?', [req.candidateId]);
 
     res.json({ success: true, message: 'Profile image removed successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Document upload endpoint for application documents
+router.post('/candidate/upload-document', requireCandidateAuth, documentUpload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
+
+    const fileUrl = `/uploads/${req.file.filename}`;
+    res.json({ success: true, message: 'Document uploaded successfully', url: fileUrl });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
