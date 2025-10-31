@@ -122,12 +122,12 @@ export default function CandidateProfileFormPage() {
     }
   }, [selectedJobId]);
   
-  // Fetch profile when applicationId changes (for editing drafts)
+  // Fetch profile when candidate is authenticated or applicationId changes
   useEffect(() => {
     if (candidate) {
       fetchProfile();
     }
-  }, [applicationId, candidate]);
+  }, [candidate, applicationId]);
   
   const fetchApplications = async () => {
     try {
@@ -146,19 +146,22 @@ export default function CandidateProfileFormPage() {
       const response = await fetch('/api/jobs/public');
       const data = await response.json();
       if (data.success) {
-        // Filter out jobs that have non-draft applications
-        const appliedJobIds = applications
-          .filter(app => app.status !== 'draft')
-          .map(app => app.job_id);
+        // Get all job IDs that have applications (both draft and non-draft)
+        const appliedJobIds = applications.map(app => app.job_id);
         
-        // If editing a draft, ensure the draft's job is included
+        // Filter out ALL jobs with any application
         let availableJobs = data.jobs.filter(job => !appliedJobIds.includes(job.id));
         
-        // If editing a draft and the job isn't in the available list, add it
-        if (jobIdFromUrl && !availableJobs.find(j => j.id === parseInt(jobIdFromUrl))) {
-          const draftJob = data.jobs.find(j => j.id === parseInt(jobIdFromUrl));
-          if (draftJob) {
-            availableJobs = [draftJob, ...availableJobs];
+        // If editing a draft, add ONLY that specific job to the available list
+        if (jobIdFromUrl) {
+          const editingJobId = parseInt(jobIdFromUrl);
+          // Check if the job being edited is not already in available jobs
+          if (!availableJobs.find(j => j.id === editingJobId)) {
+            const draftJob = data.jobs.find(j => j.id === editingJobId);
+            if (draftJob) {
+              // Add the draft's job at the beginning
+              availableJobs = [draftJob, ...availableJobs];
+            }
           }
         }
         
@@ -239,7 +242,36 @@ export default function CandidateProfileFormPage() {
               countries_preference: countriesPref,
               trades_preference: tradesPref
             });
-            setPersonalData({ ...personalData, ...data.profile });
+            
+            // Set personal data from fetched profile - use fresh object to avoid stale data
+            setPersonalData({
+              first_name: data.profile.first_name || '',
+              last_name: data.profile.last_name || '',
+              father_husband_name: data.profile.father_husband_name || '',
+              marital_status: data.profile.marital_status || '',
+              gender: data.profile.gender || '',
+              religion: data.profile.religion || '',
+              date_of_birth: data.profile.date_of_birth || '',
+              place_of_birth: data.profile.place_of_birth || '',
+              province: data.profile.province || '',
+              country: data.profile.country || '',
+              cnic: data.profile.cnic || '',
+              cnic_issue_date: data.profile.cnic_issue_date || '',
+              cnic_expiry_date: data.profile.cnic_expiry_date || '',
+              passport_number: data.profile.passport_number || '',
+              passport_issue_date: data.profile.passport_issue_date || '',
+              passport_expiry_date: data.profile.passport_expiry_date || '',
+              email_address: data.profile.email_address || '',
+              tel_off_no: data.profile.tel_off_no || '',
+              tel_res_no: data.profile.tel_res_no || '',
+              mobile_no: data.profile.mobile_no || '',
+              present_address: data.profile.present_address || '',
+              present_street: data.profile.present_street || '',
+              present_postal_code: data.profile.present_postal_code || '',
+              permanent_address: data.profile.permanent_address || '',
+              permanent_street: data.profile.permanent_street || '',
+              permanent_postal_code: data.profile.permanent_postal_code || ''
+            });
             
             if (data.profile.profile_image_url) {
               setProfileImagePreview(data.profile.profile_image_url);
@@ -247,27 +279,22 @@ export default function CandidateProfileFormPage() {
           }
           if (data.experience) setExperiences(data.experience);
           if (data.education) setEducations(data.education);
-          if (data.documents) setDocuments({ ...documents, ...data.documents });
-        }
-      } else {
-        // New application - only fetch basic profile info (name, email, profile image)
-        const response = await fetch('/api/candidate/profile/basic');
-        const data = await response.json();
-        if (data.success && data.profile) {
-          // Only set basic info - first name, last name, email, and profile image
-          setPersonalData({
-            ...personalData,
-            first_name: data.profile.first_name || '',
-            last_name: data.profile.last_name || '',
-            email_address: data.profile.email_address || ''
-          });
-          
-          if (data.profile.profile_image_url) {
-            setProfileImagePreview(data.profile.profile_image_url);
+          if (data.documents) {
+            // Use fresh object to avoid stale data from previous drafts
+            setDocuments({
+              cv_resume_url: data.documents.cv_resume_url || '',
+              passport_url: data.documents.passport_url || '',
+              degree_certificates_url: data.documents.degree_certificates_url || '',
+              license_certificate_url: data.documents.license_certificate_url || '',
+              ielts_oet_certificate_url: data.documents.ielts_oet_certificate_url || '',
+              experience_letters_url: data.documents.experience_letters_url || '',
+              additional_files: data.documents.additional_files || []
+            });
           }
         }
-        
-        // Clear other form sections for new application
+      } else {
+        // New application - clear ALL form data and only pre-fill basic profile info
+        // ALWAYS clear all sections first to avoid stale data from previous drafts
         setTradeData({
           trade_applied_for: '',
           availability_to_join: '',
@@ -278,9 +305,105 @@ export default function CandidateProfileFormPage() {
         setExperiences([]);
         setEducations([]);
         setDocuments({
-          cv_resume_url: '', passport_url: '', degree_certificates_url: '',
-          license_certificate_url: '', ielts_oet_certificate_url: '', experience_letters_url: '', additional_files: []
+          cv_resume_url: '', 
+          passport_url: '', 
+          degree_certificates_url: '',
+          license_certificate_url: '', 
+          ielts_oet_certificate_url: '', 
+          experience_letters_url: '', 
+          additional_files: []
         });
+        setUploadProgress({});
+        
+        // Reset draft editor states to ensure no residual data
+        setNewExperience({
+          job_title: '', 
+          employer_hospital: '', 
+          specialization: '',
+          from_date: '', 
+          to_date: '', 
+          total_experience: ''
+        });
+        setNewEducation({
+          degree_diploma_title: '', 
+          university_institute_name: '', 
+          graduation_year: '',
+          program_duration: '', 
+          registration_number: '', 
+          marks_percentage: ''
+        });
+        setProfileImage(null);
+        setProfileImagePreview(null);
+        
+        // Fetch and set only basic profile info (name, email, profile image)
+        const response = await fetch('/api/candidate/profile/basic');
+        const data = await response.json();
+        if (data.success && data.profile) {
+          // Reset ALL personal data and only set basic info
+          setPersonalData({
+            first_name: data.profile.first_name || '',
+            last_name: data.profile.last_name || '',
+            father_husband_name: '',
+            marital_status: '',
+            gender: '',
+            religion: '',
+            date_of_birth: '',
+            place_of_birth: '',
+            province: '',
+            country: '',
+            cnic: '',
+            cnic_issue_date: '',
+            cnic_expiry_date: '',
+            passport_number: '',
+            passport_issue_date: '',
+            passport_expiry_date: '',
+            email_address: data.profile.email_address || '',
+            tel_off_no: '',
+            tel_res_no: '',
+            mobile_no: '',
+            present_address: '',
+            present_street: '',
+            present_postal_code: '',
+            permanent_address: '',
+            permanent_street: '',
+            permanent_postal_code: ''
+          });
+          
+          if (data.profile.profile_image_url) {
+            setProfileImagePreview(data.profile.profile_image_url);
+          }
+        } else {
+          // If fetch fails, still clear personal data
+          setPersonalData({
+            first_name: '',
+            last_name: '',
+            father_husband_name: '',
+            marital_status: '',
+            gender: '',
+            religion: '',
+            date_of_birth: '',
+            place_of_birth: '',
+            province: '',
+            country: '',
+            cnic: '',
+            cnic_issue_date: '',
+            cnic_expiry_date: '',
+            passport_number: '',
+            passport_issue_date: '',
+            passport_expiry_date: '',
+            email_address: '',
+            tel_off_no: '',
+            tel_res_no: '',
+            mobile_no: '',
+            present_address: '',
+            present_street: '',
+            present_postal_code: '',
+            permanent_address: '',
+            permanent_street: '',
+            permanent_postal_code: ''
+          });
+          setProfileImagePreview(null);
+        }
       }
     } catch (error) {
       console.error('Failed to fetch profile:', error);
@@ -1397,14 +1520,16 @@ export default function CandidateProfileFormPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">Gender *</label>
-                    <input
-                      type="text"
+                    <select
                       value={personalData.gender}
                       onChange={(e) => setPersonalData({ ...personalData, gender: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                      placeholder="Gender"
                       required
-                    />
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">Religion</label>
@@ -1451,13 +1576,60 @@ export default function CandidateProfileFormPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">Country</label>
-                    <input
-                      type="text"
+                    <select
                       value={personalData.country}
                       onChange={(e) => setPersonalData({ ...personalData, country: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00A6CE]"
-                      placeholder="Country"
-                    />
+                    >
+                      <option value="">Select Country</option>
+                      <option value="Afghanistan">Afghanistan</option>
+                      <option value="Albania">Albania</option>
+                      <option value="Algeria">Algeria</option>
+                      <option value="Argentina">Argentina</option>
+                      <option value="Australia">Australia</option>
+                      <option value="Austria">Austria</option>
+                      <option value="Bangladesh">Bangladesh</option>
+                      <option value="Belgium">Belgium</option>
+                      <option value="Brazil">Brazil</option>
+                      <option value="Canada">Canada</option>
+                      <option value="China">China</option>
+                      <option value="Denmark">Denmark</option>
+                      <option value="Egypt">Egypt</option>
+                      <option value="France">France</option>
+                      <option value="Germany">Germany</option>
+                      <option value="Greece">Greece</option>
+                      <option value="India">India</option>
+                      <option value="Indonesia">Indonesia</option>
+                      <option value="Iran">Iran</option>
+                      <option value="Iraq">Iraq</option>
+                      <option value="Ireland">Ireland</option>
+                      <option value="Italy">Italy</option>
+                      <option value="Japan">Japan</option>
+                      <option value="Jordan">Jordan</option>
+                      <option value="Kuwait">Kuwait</option>
+                      <option value="Malaysia">Malaysia</option>
+                      <option value="Mexico">Mexico</option>
+                      <option value="Netherlands">Netherlands</option>
+                      <option value="New Zealand">New Zealand</option>
+                      <option value="Norway">Norway</option>
+                      <option value="Oman">Oman</option>
+                      <option value="Pakistan">Pakistan</option>
+                      <option value="Poland">Poland</option>
+                      <option value="Portugal">Portugal</option>
+                      <option value="Qatar">Qatar</option>
+                      <option value="Russia">Russia</option>
+                      <option value="Saudi Arabia">Saudi Arabia</option>
+                      <option value="Singapore">Singapore</option>
+                      <option value="South Africa">South Africa</option>
+                      <option value="South Korea">South Korea</option>
+                      <option value="Spain">Spain</option>
+                      <option value="Sweden">Sweden</option>
+                      <option value="Switzerland">Switzerland</option>
+                      <option value="Turkey">Turkey</option>
+                      <option value="United Arab Emirates">United Arab Emirates</option>
+                      <option value="United Kingdom">United Kingdom</option>
+                      <option value="United States">United States</option>
+                    </select>
                   </div>
                 </div>
                 

@@ -527,10 +527,11 @@ router.post('/candidate/submit-application', requireCandidateAuth, async (req, r
       });
     }
 
-    // Check if candidate has already applied to this specific job
+    // Check if candidate has an active non-draft application for this job
+    // Allow reapplication if previous application was deleted or is a draft
     const [existingApp] = await db.query(
-      'SELECT id FROM applications WHERE candidate_id = ? AND job_id = ?',
-      [req.candidateId, job_id]
+      'SELECT id FROM applications WHERE candidate_id = ? AND job_id = ? AND status != ?',
+      [req.candidateId, job_id, 'draft']
     );
 
     if (existingApp.length > 0) {

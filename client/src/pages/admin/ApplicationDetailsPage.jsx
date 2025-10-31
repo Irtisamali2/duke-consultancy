@@ -111,6 +111,58 @@ export default function ApplicationDetailsPage() {
               <p className="text-sm text-gray-600">Passport Number</p>
               <p className="font-medium">{profile.passport_number || 'N/A'}</p>
             </div>
+            <div>
+              <p className="text-sm text-gray-600">Marital Status</p>
+              <p className="font-medium">{profile.marital_status || 'N/A'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Religion</p>
+              <p className="font-medium">{profile.religion || 'N/A'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Place of Birth</p>
+              <p className="font-medium">{profile.place_of_birth || 'N/A'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Province</p>
+              <p className="font-medium">{profile.province || 'N/A'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">CNIC</p>
+              <p className="font-medium">{profile.cnic || 'N/A'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">CNIC Issue Date</p>
+              <p className="font-medium">{profile.cnic_issue_date || 'N/A'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">CNIC Expiry Date</p>
+              <p className="font-medium">{profile.cnic_expiry_date || 'N/A'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Passport Issue Date</p>
+              <p className="font-medium">{profile.passport_issue_date || 'N/A'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Passport Expiry Date</p>
+              <p className="font-medium">{profile.passport_expiry_date || 'N/A'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Office Tel No</p>
+              <p className="font-medium">{profile.tel_off_no || 'N/A'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Residence Tel No</p>
+              <p className="font-medium">{profile.tel_res_no || 'N/A'}</p>
+            </div>
+            <div className="col-span-3">
+              <p className="text-sm text-gray-600">Present Address</p>
+              <p className="font-medium">{profile.present_address ? `${profile.present_address}, ${profile.present_street || ''}, ${profile.present_postal_code || ''}`.trim() : 'N/A'}</p>
+            </div>
+            <div className="col-span-3">
+              <p className="text-sm text-gray-600">Permanent Address</p>
+              <p className="font-medium">{profile.permanent_address ? `${profile.permanent_address}, ${profile.permanent_street || ''}, ${profile.permanent_postal_code || ''}`.trim() : 'N/A'}</p>
+            </div>
           </div>
 
           <h2 className="text-xl font-bold text-[#00A6CE] mb-4">Professional Details</h2>
@@ -183,6 +235,32 @@ export default function ApplicationDetailsPage() {
               <p className="text-sm text-gray-600">Preferred Job Type</p>
               <p className="font-medium">{profile.trade_applied_for || 'N/A'}</p>
             </div>
+            <div className="col-span-3">
+              <p className="text-sm text-gray-600">Country Preferences</p>
+              <p className="font-medium">
+                {profile.countries_preference ? (() => {
+                  try {
+                    const countries = JSON.parse(profile.countries_preference);
+                    return Array.isArray(countries) && countries.length > 0 ? countries.join(', ') : 'N/A';
+                  } catch (e) {
+                    return 'N/A';
+                  }
+                })() : 'N/A'}
+              </p>
+            </div>
+            <div className="col-span-3">
+              <p className="text-sm text-gray-600">Trade/Specialization Preferences</p>
+              <p className="font-medium">
+                {profile.trades_preference ? (() => {
+                  try {
+                    const trades = JSON.parse(profile.trades_preference);
+                    return Array.isArray(trades) && trades.length > 0 ? trades.join(', ') : 'N/A';
+                  } catch (e) {
+                    return 'N/A';
+                  }
+                })() : 'N/A'}
+              </p>
+            </div>
           </div>
 
           <h2 className="text-xl font-bold text-[#00A6CE] mb-4">Document Uploads (file attachments)</h2>
@@ -191,6 +269,7 @@ export default function ApplicationDetailsPage() {
               { label: 'Updated CV/Resume (PDF)', key: 'cv_resume_url' },
               { label: 'Passport', key: 'passport_url' },
               { label: 'Degree/Diploma Certificates', key: 'degree_certificates_url' },
+              { label: 'Professional License / Registration Certificate', key: 'license_certificate_url' },
               { label: 'IELTS/OET Certificate (If Applicable)', key: 'ielts_oet_certificate_url' },
               { label: 'Experience Letters (From Previous Employers)', key: 'experience_letters_url' },
             ].map((doc, index) => (
@@ -198,8 +277,21 @@ export default function ApplicationDetailsPage() {
                 <span className="text-sm">{doc.label}</span>
                 {documents[doc.key] ? (
                   <div className="flex gap-2">
-                    <button className="text-blue-600 hover:text-blue-800 text-sm">View</button>
-                    <button className="text-green-600 hover:text-green-800 text-sm">Download</button>
+                    <a 
+                      href={documents[doc.key]} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 text-sm"
+                    >
+                      View
+                    </a>
+                    <a 
+                      href={documents[doc.key]} 
+                      download
+                      className="text-green-600 hover:text-green-800 text-sm"
+                    >
+                      Download
+                    </a>
                   </div>
                 ) : (
                   <span className="text-xs text-gray-500">Not uploaded</span>
@@ -207,6 +299,46 @@ export default function ApplicationDetailsPage() {
               </div>
             ))}
           </div>
+          
+          {documents.additional_files && (() => {
+            try {
+              const files = JSON.parse(documents.additional_files || '[]');
+              return Array.isArray(files) && files.length > 0 ? (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-3">Additional Files</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {files.map((file, index) => {
+                      const fileUrl = file.url || file;
+                      return fileUrl ? (
+                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <span className="text-sm">{file.name || `File ${index + 1}`}</span>
+                          <div className="flex gap-2">
+                            <a 
+                              href={fileUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 text-sm"
+                            >
+                              View
+                            </a>
+                            <a 
+                              href={fileUrl} 
+                              download
+                              className="text-green-600 hover:text-green-800 text-sm"
+                            >
+                              Download
+                            </a>
+                          </div>
+                        </div>
+                      ) : null;
+                    })}
+                  </div>
+                </div>
+              ) : null;
+            } catch (e) {
+              return null;
+            }
+          })()}
 
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
             <label className="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
