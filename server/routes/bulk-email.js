@@ -28,9 +28,13 @@ router.post('/email/bulk-send', requireAuth, async (req, res) => {
     }
 
     const [applications] = await db.query(
-      `SELECT a.id, a.email, c.full_name, a.trade, a.status, a.applied_date 
+      `SELECT a.id, c.email, 
+              CONCAT(hp.first_name, ' ', hp.last_name) as full_name,
+              hp.trade_applied_for as trade, 
+              a.status, a.applied_date 
        FROM applications a 
        LEFT JOIN candidates c ON a.candidate_id = c.id 
+       LEFT JOIN healthcare_profiles hp ON c.id = hp.candidate_id
        WHERE a.id IN (?)`,
       [applicationIds]
     );
