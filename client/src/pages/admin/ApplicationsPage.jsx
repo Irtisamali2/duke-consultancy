@@ -232,12 +232,21 @@ export default function ApplicationsPage() {
                   </svg>
                   Export Selected
                 </button>
-                <button
-                  onClick={() => setShowBulkEmail(true)}
-                  className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-4 py-2 rounded-lg text-sm font-medium"
-                >
-                  Send Bulk Email
-                </button>
+                {selectedIds.length === 1 ? (
+                  <button
+                    onClick={() => setShowBulkEmail(true)}
+                    className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-4 py-2 rounded-lg text-sm font-medium"
+                  >
+                    Send Email
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setShowBulkEmail(true)}
+                    className="bg-[#00A6CE] hover:bg-[#0090B5] text-white px-4 py-2 rounded-lg text-sm font-medium"
+                  >
+                    Send Bulk Email
+                  </button>
+                )}
                 <button
                   onClick={() => setSelectedIds([])}
                   className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium"
