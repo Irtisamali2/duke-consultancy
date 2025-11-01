@@ -11,9 +11,15 @@ export default function AdminDashboardPage() {
     healthcareProfiles: 0,
     publishedBlogs: 0
   });
+  const [recentActivity, setRecentActivity] = useState({
+    recentApplications: [],
+    recentCandidates: [],
+    statusBreakdown: []
+  });
 
   useEffect(() => {
     fetchStats();
+    fetchRecentActivity();
   }, []);
 
   const fetchStats = async () => {
@@ -26,6 +32,47 @@ export default function AdminDashboardPage() {
     } catch (error) {
       console.error('Failed to fetch stats:', error);
     }
+  };
+
+  const fetchRecentActivity = async () => {
+    try {
+      const response = await fetch('/api/stats/recent-activity');
+      const data = await response.json();
+      if (data.success) {
+        setRecentActivity({
+          recentApplications: data.recentApplications || [],
+          recentCandidates: data.recentCandidates || [],
+          statusBreakdown: data.statusBreakdown || []
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch recent activity:', error);
+    }
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      pending: 'bg-yellow-100 text-yellow-800',
+      verified: 'bg-blue-100 text-blue-800',
+      approved: 'bg-green-100 text-green-800',
+      rejected: 'bg-red-100 text-red-800'
+    };
+    return colors[status] || 'bg-gray-100 text-gray-800';
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString();
   };
 
   return (
@@ -121,10 +168,124 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Recent Activity */}
-        <div className="mt-6 sm:mt-8 bg-white rounded-lg shadow p-4 sm:p-6">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Recent Activity</h2>
-          <div className="text-center py-8 text-gray-500">
-            <p>No recent activity to display</p>
+        <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Recent Applications */}
+          <div className="lg:col-span-2 bg-white rounded-lg shadow">
+            <div className="p-4 sm:p-6 border-b border-gray-200">
+              <div className="flex justify-between items-center">
+                <h2 className="text-lg font-bold text-gray-900">Recent Applications</h2>
+                <button
+                  onClick={() => setLocation('/admin/applications')}
+                  className="text-sm text-[#00A6CE] hover:text-[#0090B5] font-medium"
+                >
+                  View All
+                </button>
+              </div>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {recentActivity.recentApplications.length > 0 ? (
+                recentActivity.recentApplications.map((app) => (
+                  <div
+                    key={app.id}
+                    onClick={() => setLocation(`/admin/applications/${app.id}`)}
+                    className="p-4 hover:bg-gray-50 cursor-pointer transition-colors"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-medium text-gray-900 truncate">
+                            {`${app.first_name || ''} ${app.last_name || ''}`.trim() || 'Unnamed Candidate'}
+                          </p>
+                          <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${getStatusColor(app.status)}`}>
+                            {app.status}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 truncate">
+                          {app.job_title || 'General Application'}
+                          {app.trade_applied_for && ` • ${app.trade_applied_for}`}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">{app.email}</p>
+                      </div>
+                      <div className="text-xs text-gray-500 whitespace-nowrap">
+                        {formatDate(app.applied_date)}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-8 text-center text-gray-500">
+                  <p>No recent applications</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Application Status Overview */}
+          <div className="bg-white rounded-lg shadow">
+            <div className="p-4 sm:p-6 border-b border-gray-200">
+              <h2 className="text-lg font-bold text-gray-900">Application Status</h2>
+            </div>
+            <div className="p-4 sm:p-6">
+              <div className="space-y-4">
+                {recentActivity.statusBreakdown.length > 0 ? (
+                  recentActivity.statusBreakdown.map((item) => {
+                    const total = recentActivity.statusBreakdown.reduce((sum, s) => sum + s.count, 0);
+                    const percentage = total > 0 ? Math.round((item.count / total) * 100) : 0;
+                    
+                    return (
+                      <div key={item.status}>
+                        <div className="flex justify-between items-center mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className={`w-3 h-3 rounded-full ${
+                              item.status === 'pending' ? 'bg-yellow-500' :
+                              item.status === 'verified' ? 'bg-blue-500' :
+                              item.status === 'approved' ? 'bg-green-500' :
+                              'bg-red-500'
+                            }`}></span>
+                            <span className="text-sm font-medium text-gray-700 capitalize">{item.status}</span>
+                          </div>
+                          <span className="text-sm font-semibold text-gray-900">{item.count}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className={`h-2 rounded-full ${
+                              item.status === 'pending' ? 'bg-yellow-500' :
+                              item.status === 'verified' ? 'bg-blue-500' :
+                              item.status === 'approved' ? 'bg-green-500' :
+                              'bg-red-500'
+                            }`}
+                            style={{ width: `${percentage}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="text-center text-gray-500 py-4">
+                    <p className="text-sm">No data available</p>
+                  </div>
+                )}
+              </div>
+
+              {recentActivity.recentCandidates.length > 0 && (
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Recent Signups</h3>
+                  <div className="space-y-3">
+                    {recentActivity.recentCandidates.slice(0, 5).map((candidate) => (
+                      <div key={candidate.id} className="flex items-center justify-between">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-gray-900 truncate">{candidate.email}</p>
+                          <p className="text-xs text-gray-500">{candidate.application_count} application(s)</p>
+                        </div>
+                        <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
+                          {formatDate(candidate.created_at)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
